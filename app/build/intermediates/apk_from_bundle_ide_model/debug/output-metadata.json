@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "EXTRACTED_APKS",
+    "kind": "Directory"
+  },
+  "applicationId": "edu.umich.aehill.reminiscetest",
+  "variantName": "debug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "outputFile": "../../extracted_apks/debug/base-en.apk"
+    },
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "outputFile": "../../extracted_apks/debug/base-master.apk"
+    },
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "outputFile": "../../extracted_apks/debug/base-xxhdpi.apk"
+    }
+  ],
+  "elementType": "File"
+}
