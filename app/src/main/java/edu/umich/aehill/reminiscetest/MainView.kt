@@ -12,5 +12,5 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "TestView", content = { Greeting("you are in the main view") })
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "TripDetails", content = { Greeting("you are in the main view") })
 }
