@@ -1,4 +1,4 @@
-package edu.umich.jonhuber.reminisce
+package edu.umich.aehill.reminiscetest
 
 import org.junit.Test
 
