@@ -13,5 +13,5 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTrip", content = { Greeting("you are in the main view") })
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTrip", content = { Greeting("you are in the trip page view") })
 }
