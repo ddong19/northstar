@@ -17,32 +17,19 @@ import androidx.compose.material.icons.filled.ArrowForward
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun TestView(context: Context, navController: NavHostController) {
-    ReminisceTestTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(title = {
-                    Text(
-                        text = "Reminisce test app",
-                        fontSize = 20.sp
-                    )
-                })
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    backgroundColor = Color(0x333FC107),
-                    contentColor = Color(0xFF222F66),
-                    modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
-                    onClick = {
-                        // navigate to PostView
-                        navController.navigate("MainView")
-                    }
-                ) {
-                    Icon(Icons.Default.ArrowForward, "fwd")
-                }
+fun TestView(context: Context, navController: NavHostController, customModifier: Modifier) {
+    Column(modifier = customModifier){
+        Greeting("You are in the test view!")
+        FloatingActionButton(
+            backgroundColor = Color(0xFFFFC107),
+            contentColor = Color(0xFF00FF00),
+            modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
+            onClick = {
+                // navigate to PostView
+                navController.navigate("MainView")
             }
         ) {
-            Greeting("You are in the test view!")
+            Icon(Icons.Default.ArrowForward, "fwd")
         }
     }
 }

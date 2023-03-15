@@ -1,6 +1,7 @@
 package edu.umich.aehill.reminiscetest
 
 import android.os.Bundle
+import androidx.compose.foundation.background
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,10 @@ import edu.umich.aehill.reminiscetest.ui.theme.ReminisceTestTheme
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import android.Manifest
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
 
 class MainActivity : ComponentActivity() {
@@ -42,12 +47,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+
+            // Declaring 2 Colors
+            val colorStart = Color(255, 131, 95)
+            val colorEnd = Color(87, 67, 174)
+
+            // Creating a Horizontal Gradient Color
+            val mainGradient = Brush.verticalGradient(0f to colorStart, 1000f to colorEnd)
+
+            val reusableModifier = Modifier
+                .background(mainGradient)
+                .fillMaxSize()
+
             NavHost(navController, startDestination = "MainView") {
                 composable("MainView") {
-                    MainView(this@MainActivity, navController)
+                    MainView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("TestView"){
-                    TestView(this@MainActivity, navController)
+                    TestView(this@MainActivity, navController, reusableModifier)
                 }
             }
         }
