@@ -67,13 +67,10 @@ class MainActivity : ComponentActivity() {
                     TestView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("TripDetails"){
-                    TestView(this@MainActivity, navController, reusableModifier)
+                    TripDetailView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("TripPage"){
-                    TestView(this@MainActivity, navController, reusableModifier)
-                }
-                composable("CompletedTrip"){
-                    TestView(this@MainActivity, navController, reusableModifier)
+                    TripPageView(this@MainActivity, navController, reusableModifier)
                 }
             }
         }
