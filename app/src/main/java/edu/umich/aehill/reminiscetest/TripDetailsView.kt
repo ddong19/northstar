@@ -1,5 +1,4 @@
 package edu.umich.aehill.reminiscetest
-
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.*
@@ -12,6 +11,7 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTrip", content = { Greeting("you are in the trip page view") })
+fun TripDetailView(context: Context, navController: NavHostController, customModifier: Modifier) {
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "TripPageView", content = { Greeting("you are in the trip details page") })
 }
+

@@ -13,5 +13,5 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SlideshowView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTrip", content = { Greeting("you are in the shlidshow page view") })
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTripView", content = { Greeting("you are in the shlidshow page view") })
 }

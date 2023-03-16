@@ -12,6 +12,6 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "TravelMap", content = { Greeting("you are in the completed trip page view") })
+fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTripView", content = { Greeting("you are in the trip page view") })
 }
