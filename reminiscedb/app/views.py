@@ -34,7 +34,7 @@ def posttrip(request):
         return HttpResponse(status=404)
 
     json_data = json.loads(request.body)
-    trip_id = json_data['trip_id']
+    # trip_id = json_data['trip_id'] auto increment
     user_id = json_data['user_id']
     trip_name = json_data['trip_name']
     trip_start = json_data['trip_start']
@@ -44,8 +44,8 @@ def posttrip(request):
     trip_description = json_data['trip_description']
 
     cursor = connection.cursor()
-    cursor.execute('INSERT INTO chatts (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
-                   '(%s, %s, %s, %s, %s, %s, %s, %s);', (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
+    cursor.execute('INSERT INTO chatts (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
+                   '(%s, %s, %s, %s, %s, %s, %s);', (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
 
     return JsonResponse({})
 
