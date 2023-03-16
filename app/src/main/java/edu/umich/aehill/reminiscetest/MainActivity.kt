@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
             //Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.ACCESS_FINE_LOCATION
         ))
 
 
