@@ -26,13 +26,24 @@ import com.android.volley.toolbox.JsonObjectRequest
 // add to onclick for navigation button
 fun postTripDetails(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
 description: String) {
+
+    //     cursor.execute('INSERT INTO chatts (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description)
+    //
+    //     VALUES '
+    //                   '(%s, %s, %s, %s, %s, %s, %s, %s);', (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
     val jsonObj = mapOf(
-        "destination" to destination,
+        "user_id" to "dandong", // TODO: FAKE USER
+        "trip_name" to destination,
+        "trip_start" to startDate,
+        "trip_end" to endDate,
+        "trip_spotify" to spotifyUsername,
+        "trip_people" to {},  // TODO: FILL ARR HERE
+        "trip_description" to description
     // add other ones here
     )
-    var serverUrl = ""
+    var serverUrl = "34.75.243.151" // not sure ab this
     val postRequest = JsonObjectRequest(Request.Method.POST,
-        serverUrl+"postTrip/", JSONObject(jsonObj), // TODO: edit endpoint
+        serverUrl+"posttrip/", JSONObject(jsonObj),
         {
             Log.d("postTrip", "trip posted!")
         },
@@ -117,6 +128,7 @@ fun TripDetailView(context: Context, navController: NavHostController, customMod
                 modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
 
                 onClick = {
+                    // TODO: add post request here 
                     navController.navigate("TripPageView")
                 }
             ) {
