@@ -5,13 +5,148 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
+import android.util.Log
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 
+@Composable
+fun TripDetailsViewContent(context: Context){
+
+    var spotifyUsername by remember { mutableStateOf("") }
+    var tripDescription by remember { mutableStateOf("") }
+    var tripLocation by remember { mutableStateOf("")}
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        Text(
+            text = "Enter your trip details!",
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            fontSize = 25.sp,
+            textAlign = TextAlign.Center
+            )
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        OutlinedTextField(
+            value = tripLocation,
+            onValueChange = {
+                tripLocation = it
+                Log.e("tripdetailsview", "value entered into trip location field")},
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Destination", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+        )
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        DateField("Start Date (MM/DD/YYYY)")
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        DateField("End Date (MM/DD/YYYY)")
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        OutlinedTextField(
+            value = spotifyUsername,
+            onValueChange = {
+                spotifyUsername = it
+                Log.e("tripdetailsview", "value entered into spotify field")},
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Spotify", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+        )
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        OutlinedTextField(
+            value = tripDescription,
+            onValueChange = {
+                tripDescription = it
+                Log.e("tripdetailsview", "value entered into description")
+                            },
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Description", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+        )
+    }
+
+}
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripDetailView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "TripPageView", content = { Greeting("you are in the trip details page") })
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
+        navigateTo = "TripPageView", content = { TripDetailsViewContent(context = context) })
 }
+
+
+/* inspired by https://stackoverflow.com/questions/68468942/how-to-apply-a-mask-date-mm-dd-yyyy-in-textfield-with-jetpack-compose
+* */
+fun dateFilter(text: AnnotatedString): TransformedText {
+
+    val trimmed = if (text.text.length >= 8) text.text.substring(0..7) else text.text
+    var out = ""
+    for (i in trimmed.indices) {
+        out += trimmed[i]
+        if (i % 2 == 1 && i < 4) out += "/"
+    }
+
+    val numberOffsetTranslator = object : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int {
+            if (offset <= 1) return offset
+            if (offset <= 3) return offset +1
+            if (offset <= 8) return offset +2
+            return 10
+        }
+
+        override fun transformedToOriginal(offset: Int): Int {
+            if (offset <=2) return offset
+            if (offset <=5) return offset -1
+            if (offset <=10) return offset -2
+            return 8
+        }
+    }
+
+    return TransformedText(AnnotatedString(out), numberOffsetTranslator)
+}
+
+class DateTransformation() : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        return dateFilter(text)
+    }
+}
+
+@Composable
+fun DateField(text: String) {
+    var date by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = date,
+        onValueChange = {
+            if (it.matches("^\\d{0,8}\$".toRegex())) {
+                date = it
+            }
+        },
+        visualTransformation = DateTransformation(),
+        modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+        label = {
+            Text(text, textAlign=TextAlign.Start, fontSize = 18.sp)
+        }
+
+    )
+}
+
 
