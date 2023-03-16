@@ -27,3 +27,24 @@ def adduser(request):
                    '(%s, %s, %s);', (user_id, username, now))
 
     return JsonResponse({'id': user_id, 'lifetime': 0})
+
+@csrf_exempt
+def posttrip(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id = json_data['trip_id']
+    user_id = json_data['user_id']
+    trip_name = json_data['trip_name']
+    trip_start = json_data['trip_start']
+    trip_end = json_data['trip_end']
+    trip_spotify = json_data['trip_spotify']
+    trip_people = json_data['trip_people']
+    trip_description = json_data['trip_description']
+
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO chatts (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
+                   '(%s, %s, %s, %s, %s, %s, %s, %s);', (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
+
+    return JsonResponse({})
