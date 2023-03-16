@@ -18,6 +18,27 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import org.json.JSONObject
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+
+
+// add to onclick for navigation button
+fun postTripDetails(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
+description: String) {
+    val jsonObj = mapOf(
+        "destination" to destination,
+    // add other ones here
+    )
+    var serverUrl = ""
+    val postRequest = JsonObjectRequest(Request.Method.POST,
+        serverUrl+"postTrip/", JSONObject(jsonObj), // TODO: edit endpoint
+        {
+            Log.d("postTrip", "trip posted!")
+        },
+        { error -> Log.e("postTrip", error.localizedMessage ?: "JsonObjectRequest error") }
+    )
+}
 
 @Composable
 fun TripDetailsViewContent(context: Context){
@@ -83,9 +104,6 @@ fun TripDetailsViewContent(context: Context){
             }
         )
     }
-
-
-
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
