@@ -48,3 +48,33 @@ def posttrip(request):
                    '(%s, %s, %s, %s, %s, %s, %s, %s);', (trip_id, user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
 
     return JsonResponse({})
+
+def getalltrips(request):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+    
+    json_data = json.loads(request.body)
+    user_id_request = json_data['user_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT trip_id, trip_name, trip_start, trip_description FROM trips WHERE user_id = {};'.format(user_id_request))
+    data = cursor.fetchall()
+
+    response = {}
+    response['trips'] = data
+    return JsonResponse(response)
+
+def gettripdata(request):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id_request = json_data['trip_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id_request))
+    data = cursor.fetchall()
+
+    response = {}
+    response['trip_data'] = data
+    return JsonResponse(response)
