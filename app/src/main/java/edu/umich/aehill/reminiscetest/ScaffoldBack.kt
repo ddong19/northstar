@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -35,7 +36,14 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                         fontSize = 20.sp,
                     )
                 },
-                actions = { // Add this block to include actions on the right side of the top app bar
+                actions = {
+                    Text(
+                        text = "Daniel Dong", // Replace with the desired text
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold // Add this property to make the text bold
+                    )
+
+
                     IconButton(
                         onClick = {
                             // Handle profile icon click
@@ -49,11 +57,12 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                     }
                 }
             )
-        }, // Set the Scaffold background color to transparent
+        },
         bottomBar = {
             BottomNavigation(
-                backgroundColor = MaterialTheme.colors.primary,
-                contentColor = Color.White
+                backgroundColor = Color.Transparent,
+                contentColor = Color.White,
+                elevation = 0.dp,
             ) {
                 BottomNavigationItem(
                     icon = {
@@ -82,7 +91,13 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                     onClick = { navController.navigate("CompletedTripView") }
                 )
                 BottomNavigationItem(
-                    icon = { Icon(Icons.Filled.Settings, "Settings") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "Settings",
+                            tint = Color.White // Apply the white color tint
+                        )
+                    },
                     label = { Text("Settings") },
                     selected = false,
                     onClick = { navController.navigate("settings") }
