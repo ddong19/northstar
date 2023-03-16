@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -82,13 +84,28 @@ fun TripDetailsViewContent(context: Context){
         )
     }
 
+
+
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripDetailView(context: Context, navController: NavHostController, customModifier: Modifier) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
-        navigateTo = "TripPageView", content = { TripDetailsViewContent(context = context) })
+        content = { TripDetailsViewContent(context = context)
+            FloatingActionButton(
+                backgroundColor = Color(0xFFFFC107),
+                contentColor = Color(0xFF00FF00),
+                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
+
+                onClick = {
+                    navController.navigate("TripPageView")
+                }
+            ) {
+                Icon(Icons.Default.ArrowForward, "fwd")
+            }
+        }
+    )
 }
 
 

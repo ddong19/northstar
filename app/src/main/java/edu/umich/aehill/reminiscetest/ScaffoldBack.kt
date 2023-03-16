@@ -22,7 +22,7 @@ import androidx.navigation.NavHostController
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldBack(context: Context, navController: NavHostController, customModifier: Modifier, navigateTo: String, content: @Composable() () -> Unit) {
+fun ScaffoldBack(context: Context, navController: NavHostController, customModifier: Modifier, content: @Composable() () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,19 +89,6 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                 )
             }
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                backgroundColor = Color(0xFFFFC107),
-                contentColor = Color(0xFF00FF00),
-                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
-
-                onClick = {
-                    navController.navigate(navigateTo)
-                }
-            ) {
-                Icon(Icons.Default.ArrowForward, "fwd")
-            }
-        }
     ) {
         Column(modifier = customModifier) {
             content()
