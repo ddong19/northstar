@@ -12,14 +12,30 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import android.os.ext.SdkExtensions.getExtensionVersion
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, navigateTo = "CompletedTripView",
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = {
-        Greeting("you are in the trip page view") })
+        Greeting("you are in the trip page view")
+            FloatingActionButton(
+                backgroundColor = Color(0xFFFFC107),
+                contentColor = Color(0xFF00FF00),
+                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
+
+                onClick = {
+                    navController.navigate("CompletedTripView")
+                }
+            ) {
+                Icon(Icons.Default.ArrowForward, "fwd")
+            }
+        })
 }
 private fun isPhotoPickerAvailable(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
