@@ -37,7 +37,7 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                     icon = { Icon(Icons.Filled.Home, "Home") },
                     label = { Text("Home") },
                     selected = false,
-                    onClick = { navController.navigate("home") }
+                    onClick = { navController.navigate("MainView") }
                 )
                 BottomNavigationItem(
                     icon = { Icon(Icons.Filled.AccountCircle, "Profile") },
