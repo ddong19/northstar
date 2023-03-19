@@ -77,8 +77,8 @@ def getalltrips(request):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    json_data = json.loads(request.body)
-    user_id_request = json_data['user_id']
+    json_data = request.GET.get('user_id')
+    user_id_request = json_data
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id_request))
