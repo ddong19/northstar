@@ -2,6 +2,7 @@ package edu.umich.aehill.reminiscetest
 
 
 import android.annotation.SuppressLint
+import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -11,6 +12,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +20,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +60,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
     val bitmaps = remember { mutableStateListOf<Bitmap>() }
+    val imageInfo = mutableListOf<Pair<Long, String>>()
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
@@ -87,7 +91,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(128.dp), // 3 images per row
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(imageUris.size) { index ->
@@ -99,6 +103,9 @@ fun TripPageContent(context: Context, navController: NavHostController){
                         ImageDecoder.decodeBitmap(source)
                     }
                     bitmaps.add(newBitmap)
+                    val id = ContentUris.parseId(imageUris[index])
+                    val location = imageUris[index].toString()
+                    imageInfo.add(Pair(id, location))
                     newBitmap
                 }
 
