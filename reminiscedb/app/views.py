@@ -15,7 +15,7 @@ def adduser(request):
         return HttpResponse(status=404)
 
     json_data = json.loads(request.body)
-    user_id = json_data['id']   # the front end app's OAuth 2.0 Client ID
+    # user_id = json_data['id']   # the front end app's OAuth 2.0 Client ID
     username = json_data['username']
 
     now = time.time()                  # secs since epoch (1/1/70, 00:00:00 UTC)
@@ -23,10 +23,10 @@ def adduser(request):
     cursor = connection.cursor()
     cursor.execute('DELETE FROM users WHERE %s > expiration;', (now, ))
 
-    cursor.execute('INSERT INTO users (id, username, expiration) VALUES '
-                   '(%s, %s, %s);', (user_id, username, now))
+    cursor.execute('INSERT INTO users (username, expiration) VALUES '
+                   '({}, {});'.format(username, now))
 
-    return JsonResponse({'id': user_id, 'lifetime': 0})
+    return JsonResponse({'lifetime': 0})
 
 @csrf_exempt
 def posttrip(request):
@@ -40,12 +40,12 @@ def posttrip(request):
     trip_start = json_data['trip_start']
     trip_end = json_data['trip_end']
     trip_spotify = json_data['trip_spotify']
-    trip_people = json_data['trip_people']
+    # trip_people = json_data['trip_people']
     trip_description = json_data['trip_description']
 
     cursor = connection.cursor()
     cursor.execute('INSERT INTO chatts (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
-                   '(%s, %s, %s, %s, %s, %s, %s);', (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description))
+                   '(%s, %s, %s, %s, %s, %s);', (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_description))
 
     return JsonResponse({})
 
