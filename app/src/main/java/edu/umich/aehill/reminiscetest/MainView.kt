@@ -76,7 +76,7 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Button(
-                        onClick = { /* Add your onClick action here */ },
+                        onClick = { navController.navigate("LoginPage") },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
                         modifier = Modifier
