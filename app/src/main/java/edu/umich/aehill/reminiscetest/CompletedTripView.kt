@@ -2,6 +2,7 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 
@@ -22,6 +24,8 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier) {
+//    var lat = MainActivity().lat
+//    var long = MainActivity().long
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -34,7 +38,11 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
                 contentColor = Color(0xFF00FF00),
                 modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
                 onClick = {
-                    navController.navigate("TravelMapView")
+                    //navController.navigate("TravelMapView")
+                    val intent = Intent(context, MapsActivity::class.java)
+//                    intent.putExtra("lat", lat)
+//                    intent.putExtra("long", long)
+                    context.startActivity(intent)
                 }
             ) {
                 Icon(Icons.Default.ArrowForward, "fwd")
