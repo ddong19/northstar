@@ -52,8 +52,10 @@ description: String) {
 fun TripDetailsViewContent(context: Context, navController: NavHostController){
 
     var spotifyUsername by remember { mutableStateOf("") }
-    var tripDescription by remember { mutableStateOf("") }
+    var tripDescription by remember { mutableStateOf("")}
     var tripLocation by remember { mutableStateOf("")}
+    var tripStartDate by remember { mutableStateOf("") }
+    var tripEndDate by remember { mutableStateOf("") }
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
@@ -78,10 +80,40 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
         )
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
-        DateField("Start Date (MM/DD/YYYY)")
+        OutlinedTextField(
+            value = tripStartDate,
+            onValueChange = {
+                if (it.matches("^\\d{0,8}\$".toRegex())) {
+                    tripStartDate = it
+                }
+            },
+            visualTransformation = DateTransformation(),
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Start Date (MM/DD/YYYY)", textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+
+        )
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
-        DateField("End Date (MM/DD/YYYY)")
+        OutlinedTextField(
+            value = tripEndDate,
+            onValueChange = {
+                if (it.matches("^\\d{0,8}\$".toRegex())) {
+                    tripEndDate = it
+                }
+            },
+            visualTransformation = DateTransformation(),
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("End Date (MM/DD/YYYY)", textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+
+        )
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         OutlinedTextField(
@@ -117,7 +149,10 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
         horizontalArrangement = Arrangement.End, // Align to the far right side of the screen
         modifier = Modifier.fillMaxWidth().padding(8.dp) // Add padding to make sure it doesn't touch the edge of the screen
     ) {
-        IconButton(onClick = { navController.navigate("TripPageView") }) {
+        IconButton(onClick = {
+            postTripDetails(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription)
+            navController.navigate("TripPageView")
+        }) {
             Image(
                 painter = painterResource(R.drawable.forwardbutton),
                 contentDescription = "Right Arrow",
@@ -175,25 +210,5 @@ class DateTransformation() : VisualTransformation {
     }
 }
 
-@Composable
-fun DateField(text: String) {
-    var date by remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = date,
-        onValueChange = {
-            if (it.matches("^\\d{0,8}\$".toRegex())) {
-                date = it
-            }
-        },
-        visualTransformation = DateTransformation(),
-        modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
-        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
-        label = {
-            Text(text, textAlign=TextAlign.Start, fontSize = 18.sp)
-        }
-
-    )
-}
 
 
