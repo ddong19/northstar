@@ -87,8 +87,9 @@ fun TripPageContent(context: Context, navController: NavHostController){
         Button(
             onClick = {
                 Log.e("TripPageView", "button clicked")
-                //var tripId = queryForMostRecentTripID(3) // TODO: change to actual user
-                navController.navigate("CompletedTripView/3")
+                var tripId = queryForMostRecentTripID(3) // TODO: change to actual user rn is dan2
+                Log.e("TripPageView", "trip id is $tripId")
+                navController.navigate("CompletedTripView/$tripId")
             }
         ) {
             Text(text = "Finish Trip")
@@ -158,28 +159,13 @@ fun queryForMostRecentTripID(user_id: Int): String {
 
     Log.e("TripPageView", "querying is happening")
 
-    var serverUrl = "34.75.243.151/getalltrips/" // not sure ab this
+    var serverUrl = "34.75.243.151/getalltrips/$user_id/" // not sure ab this
     var nFields = 7 // number of fields that each trip should have returned
-    var returnTripId = "" // TODO: change?
+    var returnTripId = "3" // TODO: change?
 
     Log.e("TripPageView", "User id is $user_id")
-    val jsonObj = mapOf(
-        "user_id" to user_id
-    )
 
-    val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, serverUrl, JSONObject(jsonObj),
-        Response.Listener { response ->
-            Log.e("TripPageView", "Success!")
-        },
-        Response.ErrorListener { error ->
-            // TODO: Handle error
-            Log.e("TripPageView", "Error!")
-        }
-    )
-
-
-    /*
-    val getRequest = JsonObjectRequest(Request.Method.GET,serverUrl+"getalltrips/?user_id=3'
+    val getRequest = JsonObjectRequest(serverUrl,
         { response ->
             val tripsReceived = try { response.getJSONArray("trips") } catch (e: JSONException) { JSONArray() }
             Log.e("TripPageView", "trips received length is $tripsReceived.length()")
@@ -197,8 +183,6 @@ fun queryForMostRecentTripID(user_id: Int): String {
         }, {  }
 
     )
-    */
-
 
     Log.e("TripPageView", "return trip id is $returnTripId")
     return returnTripId

@@ -20,9 +20,6 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
 
-    var lat = 0.0
-    var long = 0.0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
