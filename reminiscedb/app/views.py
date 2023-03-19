@@ -8,6 +8,7 @@ from django.core.files.storage import FileSystemStorage
 # from google.auth.transport import requests
 import urllib.request, json, os, time, hashlib
 from urllib import parse
+from urllib.parse import parse_qs, urlparse
 
 # TEMPORARY FRAMEWORK W/O EXPIRATION
 @csrf_exempt
@@ -81,12 +82,14 @@ def getalltrips(request):
     # with urllib.request.urlopen(request.body) as url:
     #     data = json.load(url)
     # user_id_request = data["user_id"]
-    query_string = request.getQueryString()
-    queryList = query_string.split("=")
+    # query_string = request.getQueryString()
+    # queryList = query_string.split("=")
+    queryList = parse_qs(urlparse(request.url).query)
+    print("QUERY LIST OF PARAMS: " + queryList)
     
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(int(queryList[1])))
+    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(int(queryList[0])))
     data = cursor.fetchall()
 
     response = {}
