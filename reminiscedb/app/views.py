@@ -34,15 +34,15 @@ def adduser(request):
     
     return JsonResponse({'lifetime': 0})
 
-def getuser(request):
+def getuser(request, user_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    json_data = json.loads(request.body)
-    user_id_request = json_data['user_id']
+    # json_data = json.loads(request.body)
+    # user_id_request = json_data['user_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT username FROM users WHERE id = {};'.format(user_id_request))
+    cursor.execute('SELECT username FROM users WHERE id = {};'.format(user_id))
     data = cursor.fetchall()
 
     response = {}
@@ -92,12 +92,12 @@ def getalltrips(request, user_id):
     response['trips'] = data
     return JsonResponse(response)
 
-def gettripdata(request):
+def gettripdata(request, trip_id_request):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
-    json_data = json.loads(request.body)
-    trip_id_request = json_data['trip_id']
+    # json_data = json.loads(request.body)
+    # trip_id_request = json_data['trip_id']
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id_request))
@@ -131,12 +131,12 @@ def postimage(request):
 
     return JsonResponse(response)
 
-def getimage(request):
+def getimage(request, image_id_request):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    json_data = json.loads(request.body)
-    image_id_request = json_data['image_id']
+    # json_data = json.loads(request.body)
+    # image_id_request = json_data['image_id']
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM images WHERE image_id = {};'.format(image_id_request))
