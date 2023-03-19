@@ -9,6 +9,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.text.TextUtils.split
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,6 +41,8 @@ import org.json.JSONObject
 
 @Composable
 fun TripPageContent(context: Context, navController: NavHostController){
+    val queue = Volley.newRequestQueue(context)
+
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         FloatingActionButton(
             backgroundColor = Color(0xFF808080),
@@ -85,7 +88,8 @@ fun TripPageContent(context: Context, navController: NavHostController){
         Button(
             onClick = {
                 Log.e("TripPageView", "button clicked")
-                var tripId = queryForMostRecentTripID(context, 3) // TODO: change to actual user rn is dan2
+                var tripId = queryForMostRecentTripID(context,3).toInt() // TODO: change to actual user rn is dan2
+
                 Log.e("TripPageView", "trip id is $tripId")
                 navController.navigate("CompletedTripView/$tripId")
             }
@@ -111,24 +115,29 @@ fun TripPageContent(context: Context, navController: NavHostController){
                         ImageDecoder.decodeBitmap(source)
                     }
                     bitmaps.add(newBitmap)
-                    val id = ContentUris.parseId(imageUris[index])
+                    Log.d("image uris", "$imageUris")
+                    val full_uri = imageUris[index].toString().split("A")
+                    Log.d("full uri", "$full_uri")
+                    val id = full_uri[1]
+                    Log.d("get id", "ID IS: $id")
                     val location = imageUris[index].toString()
+                    Log.d("get location", "location IS: $location")
                     val jsonObj = mapOf(
-                        "trip_id" to "dandong", // TODO: get trip id
-                        "image_id" to id,
-                        "image_location" to location,
-                        "image_uri" to imageUris[index],
+                        "trip_id" to queryForMostRecentTripID(context,3).toInt(), // TODO: change to actual user
+                        "image_location" to location.toString(),
+                        "image_uri" to imageUris[index].toString(),
                     )
-                    var serverUrl = "34.75.243.151" // not sure ab this
+                    var serverUrl = "https://34.75.243.151" // not sure ab this
                     val postRequest = JsonObjectRequest(
                         Request.Method.POST,
-                        serverUrl+"postImages/", JSONObject(jsonObj),
+                        serverUrl+"/postimage/", JSONObject(jsonObj),
                         {
                             Log.d("postImage", "image data posted!")
                         },
                         { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
                     )
-                    imageInfo.add(Pair(id, location))
+                    queue.add(postRequest)
+                    imageInfo.add(Pair(id.toLong(), location))
                     newBitmap
                 }
 
