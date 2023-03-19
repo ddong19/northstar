@@ -9,6 +9,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -30,7 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
+import org.json.JSONObject
 
 
 @Composable
@@ -105,6 +109,21 @@ fun TripPageContent(context: Context, navController: NavHostController){
                     bitmaps.add(newBitmap)
                     val id = ContentUris.parseId(imageUris[index])
                     val location = imageUris[index].toString()
+                    val jsonObj = mapOf(
+                        "trip_id" to "dandong", // TODO: get trip id
+                        "image_id" to id,
+                        "image_location" to location,
+                        "image_uri" to imageUris[index],
+                    )
+                    var serverUrl = "34.75.243.151" // not sure ab this
+                    val postRequest = JsonObjectRequest(
+                        Request.Method.POST,
+                        serverUrl+"postImages/", JSONObject(jsonObj),
+                        {
+                            Log.d("postImage", "image data posted!")
+                        },
+                        { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
+                    )
                     imageInfo.add(Pair(id, location))
                     newBitmap
                 }
