@@ -72,7 +72,7 @@ def getalltrips(request):
     user_id_request = json_data['user_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT trip_id, trip_name, trip_start, trip_description FROM trips WHERE user_id = {};'.format(user_id_request))
+    cursor.execute('SELECT trip_id, trip_destination, trip_start, trip_description FROM trips WHERE user_id = {};'.format(user_id_request))
     data = cursor.fetchall()
 
     response = {}
