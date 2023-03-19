@@ -8,32 +8,23 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 
 
@@ -61,13 +52,16 @@ fun TripPageContent(context: Context, navController: NavHostController){
             textAlign = TextAlign.Right
         )
     }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    val bitmaps = remember { mutableStateListOf<Bitmap>() }
 
     val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            imageUri = uri
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
+        { uris: List<Uri>? ->
+            if (uris != null) {
+                imageUris = uris
+            }
         }
 
     Column(
@@ -76,18 +70,21 @@ fun TripPageContent(context: Context, navController: NavHostController){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        imageUri?.let {
+        imageUris.forEachIndexed { index, uri ->
             if (Build.VERSION.SDK_INT < 28) {
-                bitmap.value = MediaStore.Images
-                    .Media.getBitmap(context.contentResolver, it)
+                bitmaps.getOrNull(index) ?: run {
+                    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                    bitmaps.add(bitmap)
+                }
             } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                bitmap.value = ImageDecoder.decodeBitmap(source)
+                val source = ImageDecoder.createSource(context.contentResolver, uri)
+                val bitmap = ImageDecoder.decodeBitmap(source)
+                bitmaps.add(bitmap)
             }
 
-            bitmap.value?.let { btm ->
+            bitmaps.getOrNull(index)?.let { bitmap ->
                 Image(
-                    bitmap = btm.asImageBitmap(),
+                    bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(400.dp)
@@ -96,7 +93,17 @@ fun TripPageContent(context: Context, navController: NavHostController){
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Button(
+            onClick = {
+                launcher.launch("image/*")
+            }
+        ) {
+            Text("Select Images")
+        }
+    }
+
+
+    Spacer(modifier = Modifier.height(12.dp))
 
         Button(onClick = { launcher.launch("image/*") }) {
             Text(text = "Pick Image")
@@ -110,7 +117,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
             Text(text = "Finish Trip")
         }
     }
-}
+
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
