@@ -36,6 +36,21 @@ def adduser(request):
 
     return JsonResponse({'lifetime': 0})
 
+def getuser(request):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+    
+    json_data = json.loads(request.body)
+    user_id_request = json_data['user_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT username FROM users WHERE user_id = {};'.format(user_id_request))
+    data = cursor.fetchall()
+
+    response = {}
+    response['username'] = data
+    return JsonResponse(response)
+
 @csrf_exempt
 def posttrip(request):
     if request.method != 'POST':
