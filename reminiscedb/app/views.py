@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 # from google.oauth2 import id_token
 # from google.auth.transport import requests
-import json, os, time, hashlib
+import urllib.request, json, os, time, hashlib
 
 # TEMPORARY FRAMEWORK W/O EXPIRATION
 @csrf_exempt
@@ -77,8 +77,9 @@ def getalltrips(request):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    json_data = request.GET.get('user_id')
-    user_id_request = json_data
+    with urllib.request.urlopen(request.body) as url:
+        data = json.load(url)
+    user_id_request = data["user_id"]
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id_request))
