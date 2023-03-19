@@ -12,6 +12,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -63,36 +65,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
                 imageUris = uris
             }
         }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        imageUris.forEachIndexed { index, uri ->
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmaps.getOrNull(index) ?: run {
-                    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                    bitmaps.add(bitmap)
-                }
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, uri)
-                val bitmap = ImageDecoder.decodeBitmap(source)
-                bitmaps.add(bitmap)
-            }
-
-            bitmaps.getOrNull(index)?.let { bitmap ->
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(400.dp)
-                        .padding(20.dp)
-                )
-            }
-        }
-
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Button(
             onClick = {
                 launcher.launch("image/*")
@@ -100,15 +73,6 @@ fun TripPageContent(context: Context, navController: NavHostController){
         ) {
             Text("Select Images")
         }
-    }
-
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-        Button(onClick = { launcher.launch("image/*") }) {
-            Text(text = "Pick Image")
-        }
-        Spacer(modifier = Modifier.width(12.dp))
         Button(
             onClick = {
                 navController.navigate("CompletedTripView")
@@ -116,6 +80,40 @@ fun TripPageContent(context: Context, navController: NavHostController){
         ) {
             Text(text = "Finish Trip")
         }
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(128.dp), // 3 images per row
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(imageUris.size) { index ->
+                val bitmap = bitmaps.getOrNull(index) ?: run {
+                    val newBitmap = if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[index])
+                    } else {
+                        val source = ImageDecoder.createSource(context.contentResolver, imageUris[index])
+                        ImageDecoder.decodeBitmap(source)
+                    }
+                    bitmaps.add(newBitmap)
+                    newBitmap
+                }
+
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f) // maintain aspect ratio of image
+                        .padding(4.dp) // add padding between images
+                )
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
     }
 
 
