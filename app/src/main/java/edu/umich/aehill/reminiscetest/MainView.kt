@@ -57,14 +57,6 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
                                 .align(Alignment.CenterHorizontally) // Center the text horizontally
                         )
 
-                        Text(
-                            text = "This is the Home Screen",
-                            fontSize = 30.sp,
-                            color = Color.White,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .align(Alignment.CenterHorizontally) // Center the text horizontally
-                        )
                     }
                 }
 
