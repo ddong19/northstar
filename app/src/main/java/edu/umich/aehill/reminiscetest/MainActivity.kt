@@ -90,6 +90,9 @@ class MainActivity : ComponentActivity() {
                 composable("SlideshowView"){
                     SlideshowView(this@MainActivity, navController, reusableModifier)
                 }
+                composable("LoginPage"){
+                    LoginPage(this@MainActivity, navController, reusableModifier)
+                }
             }
         }
     }
