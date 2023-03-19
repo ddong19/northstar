@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
             val colorEnd = Color(87, 67, 174)
 
             // Creating a Horizontal Gradient Color
-            val mainGradient = Brush.verticalGradient(0f to colorStart, 1000f to colorEnd)
+            val mainGradient = Brush.verticalGradient(0f to colorStart, 500f to colorEnd)
 
             val reusableModifier = Modifier
                 .background(mainGradient)

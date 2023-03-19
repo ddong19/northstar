@@ -24,25 +24,27 @@ import androidx.navigation.NavHostController
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldBack(context: Context, navController: NavHostController, customModifier: Modifier, content: @Composable() () -> Unit) {
+
+
     Scaffold(
         topBar = {
             TopAppBar(
-                backgroundColor = Color.Transparent,
-                contentColor = Color.Transparent,
+                backgroundColor = Color(255, 131, 95),
                 elevation = 0.dp,
                 title = {
                     Text(
                         text = "Reminisce",
                         fontSize = 20.sp,
+                        color = Color.White
                     )
                 },
                 actions = {
                     Text(
                         text = "Daniel Dong", // Replace with the desired text
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold // Add this property to make the text bold
+                        fontWeight = FontWeight.Bold, // Add this property to make the text bold
+                        color = Color.White
                     )
-
 
                     IconButton(
                         onClick = {
@@ -52,7 +54,7 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Profile",
-                            tint = MaterialTheme.colors.onBackground
+                            tint = Color.White
                         )
                     }
                 }
