@@ -161,7 +161,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     ) {
         IconButton(onClick = {
             postTripDetails(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription)
-            navController.navigate("TripPageView")
+            navController.navigate("TripPageView/$tripLocation")
         }) {
             Image(
                 painter = painterResource(R.drawable.forwardbutton),

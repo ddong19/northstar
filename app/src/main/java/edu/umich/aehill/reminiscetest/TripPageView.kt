@@ -9,6 +9,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.text.TextUtils.split
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
@@ -39,7 +41,9 @@ import org.json.JSONObject
 
 
 @Composable
-fun TripPageContent(context: Context, navController: NavHostController){
+fun TripPageContent(context: Context, navController: NavHostController, destination: String?){
+    val queue = Volley.newRequestQueue(context)
+
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         FloatingActionButton(
             backgroundColor = Color(0xFF808080),
@@ -54,7 +58,8 @@ fun TripPageContent(context: Context, navController: NavHostController){
         }
         Text(
             //need to get tripLocation from input from the user
-            text = "Cancun",
+
+            text = if (destination == null) "Cancun" else "$destination",
             modifier = Modifier
                 .padding(8.dp, 75.dp, 25.dp, 0.dp)
                 .fillMaxWidth(1f),
@@ -85,7 +90,8 @@ fun TripPageContent(context: Context, navController: NavHostController){
         Button(
             onClick = {
                 Log.e("TripPageView", "button clicked")
-                var tripId = queryForMostRecentTripID(context, 3) // TODO: change to actual user rn is dan2
+                var tripId = queryForMostRecentTripID(context,3).toInt() // TODO: change to actual user rn is dan2
+
                 Log.e("TripPageView", "trip id is $tripId")
                 navController.navigate("CompletedTripView/$tripId")
             }
@@ -111,24 +117,29 @@ fun TripPageContent(context: Context, navController: NavHostController){
                         ImageDecoder.decodeBitmap(source)
                     }
                     bitmaps.add(newBitmap)
-                    val id = ContentUris.parseId(imageUris[index])
+                    Log.d("image uris", "$imageUris")
+                    val full_uri = imageUris[index].toString().split("A")
+                    Log.d("full uri", "$full_uri")
+                    val id = full_uri[1]
+                    Log.d("get id", "ID IS: $id")
                     val location = imageUris[index].toString()
+                    Log.d("get location", "location IS: $location")
                     val jsonObj = mapOf(
-                        "trip_id" to "dandong", // TODO: get trip id
-                        "image_id" to id,
-                        "image_location" to location,
-                        "image_uri" to imageUris[index],
+                        "trip_id" to queryForMostRecentTripID(context,3).toInt(), // TODO: change to actual user
+                        "image_location" to location.toString(),
+                        "image_uri" to imageUris[index].toString(),
                     )
-                    var serverUrl = "34.75.243.151" // not sure ab this
+                    var serverUrl = "https://34.75.243.151" // not sure ab this
                     val postRequest = JsonObjectRequest(
                         Request.Method.POST,
-                        serverUrl+"postImages/", JSONObject(jsonObj),
+                        serverUrl+"/postimage/", JSONObject(jsonObj),
                         {
                             Log.d("postImage", "image data posted!")
                         },
                         { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
                     )
-                    imageInfo.add(Pair(id, location))
+                    queue.add(postRequest)
+                    imageInfo.add(Pair(id.toLong(), location))
                     newBitmap
                 }
 
@@ -147,55 +158,12 @@ fun TripPageContent(context: Context, navController: NavHostController){
     }
 
 
-fun queryForMostRecentTripID(context: Context, user_id: Int): String {
-    /*
-        SELECT `id`
-        FROM `table`
-        ORDER BY `date added` DESC
-        LIMIT 1
-     */
-
-    Log.e("TripPageView", "querying is happening")
-
-    var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
-    var nFields = 7 // number of fields that each trip should have returned
-    var returnTripId = "2" // TODO: change?
-
-    Log.e("TripPageView", "User id is $user_id")
-    val queue = Volley.newRequestQueue(context)
-
-    val getRequest = JsonObjectRequest(serverUrl,
-        { response ->
-            val tripsReceived = try { response.getJSONArray("trips") } catch (e: JSONException) { JSONArray() }
-            Log.e("TripPageView", "trips received length is $tripsReceived.length()")
-            // get the first trip in the array
-            if(tripsReceived.length() > 0){
-               val tripEntry = tripsReceived[0] as JSONArray
-                if(tripEntry.length() == nFields){
-                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
-                    Log.e("TripPageView", "most recent completed trip query $returnTripId")
-                }
-                else{
-                    Log.e("TripPageView", "error with calling the most recently completed trip query")
-                }
-            }
-        }, {  }
-
-    )
-
-    queue.add(getRequest)
-
-    Log.e("TripPageView", "return trip id is $returnTripId")
-    return returnTripId
-}
-
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
+fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier, destination: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
-        content = { TripPageContent(context = context, navController = navController) })
+        content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
 
 

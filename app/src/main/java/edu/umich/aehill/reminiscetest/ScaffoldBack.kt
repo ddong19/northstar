@@ -3,6 +3,7 @@ package edu.umich.aehill.reminiscetest.ui.theme
 import edu.umich.aehill.reminiscetest.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import edu.umich.aehill.reminiscetest.queryForMostRecentTripID
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -90,7 +92,13 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                     },
                     label = { Text("Current Trip") }, // Change the label to "Airplane"
                     selected = false,
-                    onClick = { navController.navigate("CompletedTripView") }
+                    onClick = {
+                        var tripId = queryForMostRecentTripID(context,3).toInt() // TODO: change to actual user rn is dan2
+
+                        Log.e("TripPageView", "trip id is $tripId")
+                        navController.navigate("CompletedTripView/$tripId")
+
+                    }
                 )
                 BottomNavigationItem(
                     icon = {
