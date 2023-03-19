@@ -28,18 +28,6 @@ import androidx.compose.ui.graphics.Brush
 fun MainView(context: Context, navController: NavHostController, customModifier: Modifier) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = {
-            FloatingActionButton(
-                backgroundColor = Color(0xFFFFC107),
-                contentColor = Color(0xFF00FF00),
-                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
-
-                onClick = {
-                    navController.navigate("TripDetailsView")
-                }
-            ) {
-                Icon(Icons.Default.ArrowForward, "fwd")
-            }
-
             val backgroundBrush = Brush.linearGradient(
                 colors = listOf(Color.Transparent, Color.Transparent),
                 start = Offset.Zero,
@@ -113,7 +101,7 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Button(
-                        onClick = { /* Add your onClick action here */ },
+                        onClick = {navController.navigate("TripDetailsView")},
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
                         modifier = Modifier
