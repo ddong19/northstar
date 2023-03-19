@@ -30,7 +30,7 @@ fun TravelMapView(context: Context, navController: NavHostController, customModi
             modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
 
             onClick = {
-                navController.navigate("CompletedTripView")
+                navController.navigate("MainView")
             }
         ) {
             Icon(Icons.Default.ArrowForward, "fwd")

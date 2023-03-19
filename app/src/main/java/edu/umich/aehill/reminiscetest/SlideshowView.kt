@@ -130,7 +130,7 @@ fun SlideshowView(context: Context, navController: NavHostController, customModi
 
 
             onClick = {
-                navController.navigate("CompletedTripView")
+                navController.navigate("MainView")
             }
         ) {
             Icon(Icons.Default.ArrowForward, "fwd")
