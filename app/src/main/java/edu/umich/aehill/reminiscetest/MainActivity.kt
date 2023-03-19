@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 .background(mainGradient)
                 .fillMaxSize()
 
-            NavHost(navController, startDestination = "MainView") {
+            NavHost(navController, startDestination = "LoginView") {
                 composable("MainView") {
                     MainView(this@MainActivity, navController, reusableModifier)
                 }
@@ -90,8 +90,8 @@ class MainActivity : ComponentActivity() {
                 composable("SlideshowView"){
                     SlideshowView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("LoginPage"){
-                    LoginPage(this@MainActivity, navController, reusableModifier)
+                composable("LoginView"){
+                    LoginView(this@MainActivity, navController, reusableModifier)
                 }
             }
         }

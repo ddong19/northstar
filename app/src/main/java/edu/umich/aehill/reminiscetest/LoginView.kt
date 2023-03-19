@@ -27,12 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.FancyLoginScreenTheme
 import android.net.Uri
-import android.media.MediaPlayer
 import androidx.compose.ui.viewinterop.AndroidView
 import android.widget.VideoView
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.foundation.layout.Box
-import android.widget.MediaController
 import androidx.compose.ui.draw.alpha
 import android.util.Log
 import androidx.compose.ui.text.font.FontWeight
@@ -45,7 +42,7 @@ import android.graphics.Color as AndroidColor
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LoginPage(context: Context, navController: NavHostController, customModifier: Modifier) {
+fun LoginView(context: Context, navController: NavHostController, customModifier: Modifier) {
     val passwordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
