@@ -157,7 +157,7 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
 
     Log.e("TripPageView", "querying is happening")
 
-    var serverUrl = "https://34.75.243.151/getalltrips/$user_id/" // not sure ab this
+    var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
     var nFields = 7 // number of fields that each trip should have returned
     var returnTripId = "2" // TODO: change?
 
