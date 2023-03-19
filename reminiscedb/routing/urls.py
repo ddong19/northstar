@@ -20,10 +20,10 @@ from app import views
 urlpatterns = [
    path('admin/', admin.site.urls),
    path('adduser/', views.adduser, name='adduser'),
-   path('getuser/', views.getuser, name='getuser'),
+   path('getuser/<int:user_id>', views.getuser, name='getuser'),
    path('posttrip/', views.posttrip, name='posttrip'),
    path('getalltrips/<int:user_id>', views.getalltrips, name='getalltrips'),
-   path('gettripdata/', views.gettripdata, name='gettripdata'),
+   path('gettripdata/<int:trip_id>', views.gettripdata, name='gettripdata'),
    path('postimage/', views.postimage, name='postimage'),
-   path('getimage/', views.getimage, name='getimage'),
+   path('getimage/<int:image_id>', views.getimage, name='getimage'),
 ]
