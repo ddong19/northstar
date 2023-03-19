@@ -21,10 +21,10 @@ def adduser(request):
     now = time.time()                  # secs since epoch (1/1/70, 00:00:00 UTC)
 
     cursor = connection.cursor()
-    cursor.execute('DELETE FROM users WHERE %s > expiration;', (now, ))
+    # cursor.execute('DELETE FROM users WHERE %s > expiration;', (now, ))
 
     cursor.execute('INSERT INTO users (username, expiration) VALUES '
-                   '({}, {});'.format(username, now))
+                   '(?, ?);', (username, now))
 
     return JsonResponse({'lifetime': 0})
 
