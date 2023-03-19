@@ -33,21 +33,6 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
         ) {
             Text("This is the completed trip view", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
 
-            FloatingActionButton(
-                backgroundColor = Color(0xFFFFC107),
-                contentColor = Color(0xFF00FF00),
-                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
-                onClick = {
-                    //navController.navigate("TravelMapView")
-                    val intent = Intent(context, MapsActivity::class.java)
-//                    intent.putExtra("lat", lat)
-//                    intent.putExtra("long", long)
-                    context.startActivity(intent)
-                }
-            ) {
-                Icon(Icons.Default.ArrowForward, "fwd")
-            }
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom
@@ -77,12 +62,17 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
                         Text("Spotify", color = Color.White)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.map),
-                            contentDescription = "Map",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
+                        IconButton(onClick = {
+                            val intent = Intent(context, MapsActivity::class.java)
+                            context.startActivity(intent)
+                        }) {
+                            Image(
+                                painter = painterResource(id = R.drawable.map),
+                                contentDescription = "Map",
+                                modifier = Modifier.size(48.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
                         Text("Map", color = Color.White)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
