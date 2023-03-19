@@ -84,7 +84,10 @@ def getalltrips(request):
     # user_id_request = data["user_id"]
     # query_string = request.getQueryString()
     # queryList = query_string.split("=")
-    queryList = parse_qs(urlparse(request.url).query)
+    url = request.url
+    url_decoded = urllib.request.urlopen(url.decode('ASCII')).read()
+    
+    queryList = parse_qs(urlparse(url_decoded).query)
     print("QUERY LIST OF PARAMS: " + queryList)
     
 
