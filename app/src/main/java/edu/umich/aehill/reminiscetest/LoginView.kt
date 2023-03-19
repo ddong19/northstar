@@ -34,6 +34,8 @@ import androidx.compose.ui.draw.alpha
 import android.util.Log
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import android.graphics.Color as AndroidColor
 
 
@@ -119,45 +121,48 @@ fun LoginColumn(context: Context, navController: NavHostController, customModifi
     val passwordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
-    Column(
-        modifier = customModifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .alpha(0.65f),
-        verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Add your app logo here, if you don't have a logo, comment or remove this section
-        /*
-        Icon(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = Color.White
-        )
-        */
-        TextInput(InputType.Name, keyboardActions = KeyboardActions(onNext = {
-            passwordFocusRequester.requestFocus()
-        }))
-        TextInput(InputType.Password, keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
-            context.doLogin()
-        }), focusRequester = passwordFocusRequester)
-        Button(onClick = {
-            //context.doLogin()
-            navController.navigate("MainView")
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text("SIGN IN", Modifier.padding(vertical = 8.dp))
-        }
-        Divider(
-            color = Color.White.copy(alpha = 0.3f),
-            thickness = 1.dp,
-            modifier = Modifier.padding(top = 48.dp)
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Don't have an account?", color = Color.White)
-            TextButton(onClick = {}) {
-                Text("SIGN UP", color = Color.White)
+    ProvideWindowInsets {
+        Column(
+            modifier = customModifier
+                .navigationBarsWithImePadding()
+                .fillMaxSize()
+                .padding(24.dp)
+                .alpha(0.65f),
+            verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Add your app logo here, if you don't have a logo, comment or remove this section
+            /*
+            Icon(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = Color.White
+            )
+            */
+            TextInput(InputType.Name, keyboardActions = KeyboardActions(onNext = {
+                passwordFocusRequester.requestFocus()
+            }))
+            TextInput(InputType.Password, keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()
+                context.doLogin()
+            }), focusRequester = passwordFocusRequester)
+            Button(onClick = {
+                //context.doLogin()
+                navController.navigate("MainView")
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text("SIGN IN", Modifier.padding(vertical = 8.dp))
+            }
+            Divider(
+                color = Color.White.copy(alpha = 0.3f),
+                thickness = 1.dp,
+                modifier = Modifier.padding(top = 48.dp)
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Don't have an account?", color = Color.White)
+                TextButton(onClick = {}) {
+                    Text("SIGN UP", color = Color.White)
+                }
             }
         }
     }
