@@ -64,6 +64,8 @@ class MainActivity : ComponentActivity() {
             val reusableModifier = Modifier
                 .background(mainGradient)
                 .fillMaxSize()
+            val loginViewModifier = Modifier
+                .fillMaxSize()
 
             NavHost(navController, startDestination = "LoginView") {
                 composable("MainView") {
@@ -91,7 +93,7 @@ class MainActivity : ComponentActivity() {
                     SlideshowView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("LoginView"){
-                    LoginView(this@MainActivity, navController, reusableModifier)
+                    LoginView(this@MainActivity, navController, loginViewModifier)
                 }
             }
         }
