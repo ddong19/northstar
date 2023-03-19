@@ -30,10 +30,6 @@ def adduser(request):
     data = (username, now)
     cursor.execute(insert_stmt, data)
     
-
-    # cursor.execute('INSERT INTO users (username, expiration) VALUES '
-    #                '(?, ?);', (username, now))
-
     return JsonResponse({'lifetime': 0})
 
 def getuser(request):
@@ -74,8 +70,6 @@ def posttrip(request):
     )
     data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description)
     cursor.execute(insert_stmt, data)
-    # cursor.execute('INSERT INTO chatts (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
-    #                '(%s, %s, %s, %s, %s, %s);', (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description))
 
     return JsonResponse({})
 
@@ -108,3 +102,43 @@ def gettripdata(request):
     response = {}
     response['trip_data'] = data
     return JsonResponse(response)
+
+@csrf_exempt
+def postimage(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id = json_data['trip_id']
+    image_locations = json_data['image_location']
+    image_uri = json_data['image_uri']
+
+    cursor = connection.cursor()
+    insert_stmt = (
+    "INSERT INTO images (trip_id, image_location, image_uri) "
+    "VALUES (%s, %s, %s)"
+    )
+    data = (trip_id, image_locations, image_uri)
+    cursor.execute(insert_stmt, data)
+
+    cursor.execute('SELECT SCOPE_IDENTITY()')
+    data = cursor.fetchall()
+    response = {}
+    response['image_id'] = data
+
+    return JsonResponse(response)
+
+def getimage(request):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+    
+    json_data = json.loads(request.body)
+    image_id_request = json_data['image_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM images WHERE image_id = {};'.format(image_id_request))
+    data = cursor.fetchall()
+
+    response = {}
+    response['image_data'] = data
+    return JsonResponse(data)
