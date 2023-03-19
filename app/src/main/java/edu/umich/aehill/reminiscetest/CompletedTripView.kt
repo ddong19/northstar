@@ -81,12 +81,16 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
                         Text("Map", color = Color.White)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.slideshow),
-                            contentDescription = "Slideshow",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
+                        IconButton(onClick = {
+                            navController.navigate("SlideshowView")
+                        }) {
+                            Image(
+                                painter = painterResource(id = R.drawable.slideshow),
+                                contentDescription = "Slideshow",
+                                modifier = Modifier.size(48.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
                         Text("Slideshow", color = Color.White)
                     }
                 }

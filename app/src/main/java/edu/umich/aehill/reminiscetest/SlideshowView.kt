@@ -35,14 +35,14 @@ import kotlin.concurrent.fixedRateTimer
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SlideshowViewContent(context: Context) {
+
     // replace with logic for obtaining list of users photos from database
     val images = listOf(
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
+        "content://com.android.providers.media.documents/document/image%3A1000000023",
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/13/18/09/red-tulips-7850506_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/11/57/flowers-7852176_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/12/41/ornamental-cherry-7852285_1280.jpg",
-        "https://cdn.pixabay.com/photo/2023/03/08/10/11/crocuses-7837426_1280.jpg",
     )
 
     Card(
