@@ -107,9 +107,6 @@ class MainActivity : ComponentActivity() {
                 composable("MainView") {
                     MainView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("TestView"){
-                    TestView(this@MainActivity, navController, reusableModifier)
-                }
                 composable("Settings"){
                     Settings(this@MainActivity, navController, reusableModifier)
                 }

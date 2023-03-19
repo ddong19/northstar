@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +19,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +59,14 @@ fun TripPageContent(context: Context, navController: NavHostController){
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
     val bitmaps = remember { mutableStateListOf<Bitmap>() }
+    var buttonClicked by rememberSaveable {mutableStateOf(false)}
+    val customMod = Modifier
+        .fillMaxWidth(1f)
+        .background(
+            color = if (buttonClicked) Color.Transparent else MaterialTheme.colors.primary
+        )
+
+
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
@@ -65,17 +75,25 @@ fun TripPageContent(context: Context, navController: NavHostController){
                 imageUris = uris
             }
         }
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=customMod) {
         Button(
             onClick = {
                 launcher.launch("image/*")
+                buttonClicked = true
             }
+
+
+
         ) {
-            Text("Select Images")
+            Text(
+                "Select Images",
+                color = if(buttonClicked) MaterialTheme.colors.onBackground else Color.White
+            )
         }
         Button(
             onClick = {
                 navController.navigate("CompletedTripView")
+                buttonClicked = true
             }
         ) {
             Text(text = "Finish Trip")
