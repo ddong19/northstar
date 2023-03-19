@@ -92,7 +92,7 @@ def getalltrips(request, user_id):
     response['trips'] = data
     return JsonResponse(response)
 
-def gettripdata(request, trip_id_request):
+def gettripdata(request, trip_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
@@ -100,7 +100,7 @@ def gettripdata(request, trip_id_request):
     # trip_id_request = json_data['trip_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id_request))
+    cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id))
     data = cursor.fetchall()
 
     response = {}
@@ -131,7 +131,7 @@ def postimage(request):
 
     return JsonResponse(response)
 
-def getimage(request, image_id_request):
+def getimage(request, image_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
@@ -139,7 +139,7 @@ def getimage(request, image_id_request):
     # image_id_request = json_data['image_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM images WHERE image_id = {};'.format(image_id_request))
+    cursor.execute('SELECT * FROM images WHERE image_id = {};'.format(image_id))
     data = cursor.fetchall()
 
     response = {}
