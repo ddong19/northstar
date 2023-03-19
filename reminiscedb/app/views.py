@@ -44,7 +44,7 @@ def posttrip(request):
     json_data = json.loads(request.body)
     # trip_id = json_data['trip_id'] auto increment
     user_id = json_data['user_id']
-    trip_name = json_data['trip_name']
+    trip_destination = json_data['trip_destination']
     trip_start = json_data['trip_start']
     trip_end = json_data['trip_end']
     trip_spotify = json_data['trip_spotify']
@@ -54,13 +54,13 @@ def posttrip(request):
     cursor = connection.cursor()
     
     insert_stmt = (
-    "INSERT INTO trips (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_description) "
+    "INSERT INTO trips (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description) "
     "VALUES (%s, %s, %s, %s, %s, %s)"
     )
-    data = (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_description)
+    data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description)
     cursor.execute(insert_stmt, data)
-    # cursor.execute('INSERT INTO chatts (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
-    #                '(%s, %s, %s, %s, %s, %s);', (user_id, trip_name, trip_start, trip_end, trip_spotify, trip_description))
+    # cursor.execute('INSERT INTO chatts (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
+    #                '(%s, %s, %s, %s, %s, %s);', (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description))
 
     return JsonResponse({})
 
