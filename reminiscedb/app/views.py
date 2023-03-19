@@ -79,20 +79,13 @@ def getalltrips(request):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    # with urllib.request.urlopen(request.body) as url:
-    #     data = json.load(url)
-    # user_id_request = data["user_id"]
-    # query_string = request.getQueryString()
-    # queryList = query_string.split("=")
-    url = request.url
-    url_decoded = urllib.request.urlopen(url.decode('ASCII')).read()
+    json_data = json.loads(request.body)
+    user_id_request = json_data['user_id']
     
-    queryList = parse_qs(urlparse(url_decoded).query)
-    print("QUERY LIST OF PARAMS: " + queryList)
     
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(int(queryList[0])))
+    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id_request))
     data = cursor.fetchall()
 
     response = {}
