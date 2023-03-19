@@ -6,7 +6,9 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 # from google.oauth2 import id_token
 # from google.auth.transport import requests
-import json, os, time, hashlib
+import urllib.request, json, os, time, hashlib
+from urllib import parse
+from urllib.parse import parse_qs, urlparse
 
 # TEMPORARY FRAMEWORK W/O EXPIRATION
 @csrf_exempt
@@ -30,11 +32,22 @@ def adduser(request):
     data = (username, now)
     cursor.execute(insert_stmt, data)
     
-
-    # cursor.execute('INSERT INTO users (username, expiration) VALUES '
-    #                '(?, ?);', (username, now))
-
     return JsonResponse({'lifetime': 0})
+
+def getuser(request, user_id):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+    
+    # json_data = json.loads(request.body)
+    # user_id_request = json_data['user_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT username FROM users WHERE id = {};'.format(user_id))
+    data = cursor.fetchall()
+
+    response = {}
+    response['username'] = data
+    return JsonResponse(response)
 
 @csrf_exempt
 def posttrip(request):
@@ -59,37 +72,76 @@ def posttrip(request):
     )
     data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description)
     cursor.execute(insert_stmt, data)
-    # cursor.execute('INSERT INTO chatts (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) VALUES '
-    #                '(%s, %s, %s, %s, %s, %s);', (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description))
 
     return JsonResponse({})
 
-def getalltrips(request):
+def getalltrips(request, user_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    json_data = json.loads(request.body)
-    user_id_request = json_data['user_id']
+    # json_data = json.loads(request.body)
+    # user_id_request = json_data['user_id']
+    
+    
 
     cursor = connection.cursor()
-    cursor.execute('SELECT trip_id, trip_destination, trip_start, trip_description FROM trips WHERE user_id = {};'.format(user_id_request))
+    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id))
     data = cursor.fetchall()
 
     response = {}
     response['trips'] = data
     return JsonResponse(response)
 
-def gettripdata(request):
+def gettripdata(request, trip_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
-    json_data = json.loads(request.body)
-    trip_id_request = json_data['trip_id']
+    # json_data = json.loads(request.body)
+    # trip_id_request = json_data['trip_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id_request))
+    cursor.execute('SELECT * FROM trips WHERE trip_id = {};'.format(trip_id))
     data = cursor.fetchall()
 
     response = {}
     response['trip_data'] = data
     return JsonResponse(response)
+
+@csrf_exempt
+def postimage(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id = json_data['trip_id']
+    image_locations = json_data['image_location']
+    image_uri = json_data['image_uri']
+
+    cursor = connection.cursor()
+    insert_stmt = (
+    "INSERT INTO images (trip_id, image_location, image_uri) "
+    "VALUES (%s, %s, %s)"
+    )
+    data = (trip_id, image_locations, image_uri)
+    cursor.execute(insert_stmt, data)
+
+    data = cursor.lastrowid
+    response = {}
+    response['image_id'] = data
+
+    return JsonResponse(response)
+
+def getimage(request, image_id):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+    
+    # json_data = json.loads(request.body)
+    # image_id_request = json_data['image_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM images WHERE image_id = {};'.format(image_id))
+    data = cursor.fetchall()
+
+    response = {}
+    response['image_data'] = data
+    return JsonResponse(data, safe=False)

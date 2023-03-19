@@ -34,60 +34,22 @@ import kotlin.properties.Delegates
 
 
 class MainActivity : ComponentActivity() {
-//    private var lat = 40.0
-//    private var long = 40.0
-//    public fun getLat(): Double {
-//        return lat
-//    }
-//    public fun getLong(): Double {
-//        return long
-//    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-//            results.forEach {
-//                if (!it.value) {
-//                    Log.e("Mainview", "permission denied")
-//                    finish()
-//                }
-//            }
-//        }.launch(arrayOf(Manifest.permission.CAMERA,
-//            //Manifest.permission.RECORD_AUDIO,
-//            Manifest.permission.READ_MEDIA_IMAGES,
-//            Manifest.permission.READ_MEDIA_VIDEO,
-//            Manifest.permission.ACCESS_FINE_LOCATION
-//        ))
-//
-//        // GETTING LOCATION
-//        if (ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return
-//        }
-//        LocationServices.getFusedLocationProviderClient(applicationContext)
-//            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
-//            .addOnCompleteListener {
-//                if (it.isSuccessful) {
-//                    lat = it.result.latitude
-//                    Log.e("Latitude", lat.toString())
-//                    long = it.result.longitude
-//                    Log.e("Longitude", long.toString())
-//                } else {
-//                    Log.e("PostActivity getFusedLocation", it.exception.toString())
-//                }
-//            }
-//        // END GETTING LOCATION
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            results.forEach {
+                if (!it.value) {
+                    Log.e("Mainview", "permission denied")
+                    finish()
+                }
+            }
+        }.launch(arrayOf(Manifest.permission.CAMERA,
+            //Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ))
+
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
@@ -97,7 +59,7 @@ class MainActivity : ComponentActivity() {
             val colorEnd = Color(87, 67, 174)
 
             // Creating a Horizontal Gradient Color
-            val mainGradient = Brush.verticalGradient(0f to colorStart, 1000f to colorEnd)
+            val mainGradient = Brush.verticalGradient(0f to colorStart, 500f to colorEnd)
 
             val reusableModifier = Modifier
                 .background(mainGradient)
@@ -116,8 +78,11 @@ class MainActivity : ComponentActivity() {
                composable("TripPageView"){
                     TripPageView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("CompletedTripView"){
-                    CompletedTripView(this@MainActivity, navController, reusableModifier)
+                composable("CompletedTripView/{tripId}",
+                    arguments = listOf(navArgument("tripId") { type = NavType.StringType })
+                ){ navBackStackEntry ->
+                    /* Extracting the id from the route */
+                    CompletedTripView(this@MainActivity, navController, reusableModifier, navBackStackEntry.arguments?.getString("tripId"))
                 }
                 composable("TravelMapView"){
                     TravelMapView(this@MainActivity, navController, reusableModifier)

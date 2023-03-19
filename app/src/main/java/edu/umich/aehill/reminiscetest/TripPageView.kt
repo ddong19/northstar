@@ -13,7 +13,6 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,7 +20,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -83,7 +84,10 @@ fun TripPageContent(context: Context, navController: NavHostController){
         }
         Button(
             onClick = {
-                navController.navigate("CompletedTripView")
+                Log.e("TripPageView", "button clicked")
+                var tripId = queryForMostRecentTripID(context, 3) // TODO: change to actual user rn is dan2
+                Log.e("TripPageView", "trip id is $tripId")
+                navController.navigate("CompletedTripView/$tripId")
             }
         ) {
             Text(text = "Finish Trip")
@@ -141,6 +145,49 @@ fun TripPageContent(context: Context, navController: NavHostController){
     }
     Spacer(modifier = Modifier.height(12.dp))
     }
+
+
+fun queryForMostRecentTripID(context: Context, user_id: Int): String {
+    /*
+        SELECT `id`
+        FROM `table`
+        ORDER BY `date added` DESC
+        LIMIT 1
+     */
+
+    Log.e("TripPageView", "querying is happening")
+
+    var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
+    var nFields = 7 // number of fields that each trip should have returned
+    var returnTripId = "2" // TODO: change?
+
+    Log.e("TripPageView", "User id is $user_id")
+    val queue = Volley.newRequestQueue(context)
+
+    val getRequest = JsonObjectRequest(serverUrl,
+        { response ->
+            val tripsReceived = try { response.getJSONArray("trips") } catch (e: JSONException) { JSONArray() }
+            Log.e("TripPageView", "trips received length is $tripsReceived.length()")
+            // get the first trip in the array
+            if(tripsReceived.length() > 0){
+               val tripEntry = tripsReceived[0] as JSONArray
+                if(tripEntry.length() == nFields){
+                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
+                    Log.e("TripPageView", "most recent completed trip query $returnTripId")
+                }
+                else{
+                    Log.e("TripPageView", "error with calling the most recently completed trip query")
+                }
+            }
+        }, {  }
+
+    )
+
+    queue.add(getRequest)
+
+    Log.e("TripPageView", "return trip id is $returnTripId")
+    return returnTripId
+}
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
