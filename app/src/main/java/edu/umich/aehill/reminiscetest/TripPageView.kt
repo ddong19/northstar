@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
@@ -40,7 +41,7 @@ import org.json.JSONObject
 
 
 @Composable
-fun TripPageContent(context: Context, navController: NavHostController){
+fun TripPageContent(context: Context, navController: NavHostController, destination: String?){
     val queue = Volley.newRequestQueue(context)
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
@@ -57,7 +58,8 @@ fun TripPageContent(context: Context, navController: NavHostController){
         }
         Text(
             //need to get tripLocation from input from the user
-            text = "Cancun",
+
+            text = if (destination == null) "Cancun" else "$destination",
             modifier = Modifier
                 .padding(8.dp, 75.dp, 25.dp, 0.dp)
                 .fillMaxWidth(1f),
@@ -202,9 +204,9 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier) {
+fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier, destination: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
-        content = { TripPageContent(context = context, navController = navController) })
+        content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
 
 
