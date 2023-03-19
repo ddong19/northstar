@@ -121,7 +121,7 @@ def postimage(request):
     data = (trip_id, image_locations, image_uri)
     cursor.execute(insert_stmt, data)
 
-    data = cursor.lastrowid()
+    data = cursor.lastrowid
     response = {}
     response['image_id'] = data
 
