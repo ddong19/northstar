@@ -59,11 +59,14 @@ fun TripPageContent(context: Context, navController: NavHostController){
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
     val bitmaps = remember { mutableStateListOf<Bitmap>() }
-    var buttonClicked by rememberSaveable {mutableStateOf(false)}
+    var uploadedImages by rememberSaveable {mutableStateOf(false)}
+    var finishedTrip by rememberSaveable {mutableStateOf(false)}
     val customMod = Modifier
-        .fillMaxWidth(1f)
+        .fillMaxWidth(
+            fraction = if (uploadedImages) 0f else 1f
+        )
         .background(
-            color = if (buttonClicked) Color.Transparent else MaterialTheme.colors.primary
+            color = if (uploadedImages) Color.Transparent else MaterialTheme.colors.primary
         )
 
 
@@ -79,24 +82,26 @@ fun TripPageContent(context: Context, navController: NavHostController){
         Button(
             onClick = {
                 launcher.launch("image/*")
-                buttonClicked = true
+                uploadedImages = true
             }
 
 
 
         ) {
             Text(
-                "Select Images",
-                color = if(buttonClicked) MaterialTheme.colors.onBackground else Color.White
+                text = if(uploadedImages) "" else "Select Images",
+                color = if(uploadedImages) MaterialTheme.colors.onBackground else Color.White
             )
         }
         Button(
             onClick = {
                 navController.navigate("CompletedTripView")
-                buttonClicked = true
             }
         ) {
-            Text(text = "Finish Trip")
+            Text(
+                text = if(finishedTrip) "" else "Finish Trip",
+                color = if(finishedTrip) MaterialTheme.colors.onBackground else Color.White
+            )
         }
     }
     Column(
