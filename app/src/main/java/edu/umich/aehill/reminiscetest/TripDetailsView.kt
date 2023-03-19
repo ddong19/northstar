@@ -24,11 +24,15 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.ColorFilter
+import com.android.volley.toolbox.Volley
 
 
 // add to onclick for navigation button
 fun postTripDetails(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
 description: String) {
+
+    val queue = Volley.newRequestQueue(context)
+
     val jsonObj = mapOf(
         "user_id" to 3, // TODO: change this to the actual user
         "trip_destination" to destination,
@@ -38,14 +42,19 @@ description: String) {
         "trip_description" to description
         //TODO: add other columns here
     )
-    var serverUrl = "34.75.243.151" // not sure ab this
+
+    Log.e("TripDetailsView", "Posting trip now!")
+
+    var serverUrl = "https://34.75.243.151" // not sure ab this
     val postRequest = JsonObjectRequest(Request.Method.POST,
-        serverUrl+"posttrip/", JSONObject(jsonObj),
+        serverUrl+"/posttrip/", JSONObject(jsonObj),
         {
             Log.d("postTrip", "trip posted!")
         },
         { error -> Log.e("postTrip", error.localizedMessage ?: "JsonObjectRequest error") }
     )
+
+    queue.add(postRequest)
 }
 
 @Composable

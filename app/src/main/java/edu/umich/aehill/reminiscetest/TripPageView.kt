@@ -13,7 +13,6 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,7 +20,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import org.json.JSONArray
 import org.json.JSONException
@@ -87,7 +85,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
         Button(
             onClick = {
                 Log.e("TripPageView", "button clicked")
-                var tripId = queryForMostRecentTripID(3) // TODO: change to actual user rn is dan2
+                var tripId = queryForMostRecentTripID(context, 3) // TODO: change to actual user rn is dan2
                 Log.e("TripPageView", "trip id is $tripId")
                 navController.navigate("CompletedTripView/$tripId")
             }
@@ -149,7 +147,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
     }
 
 
-fun queryForMostRecentTripID(user_id: Int): String {
+fun queryForMostRecentTripID(context: Context, user_id: Int): String {
     /*
         SELECT `id`
         FROM `table`
@@ -159,11 +157,12 @@ fun queryForMostRecentTripID(user_id: Int): String {
 
     Log.e("TripPageView", "querying is happening")
 
-    var serverUrl = "34.75.243.151/getalltrips/$user_id/" // not sure ab this
+    var serverUrl = "https://34.75.243.151/getalltrips/$user_id/" // not sure ab this
     var nFields = 7 // number of fields that each trip should have returned
-    var returnTripId = "3" // TODO: change?
+    var returnTripId = "2" // TODO: change?
 
     Log.e("TripPageView", "User id is $user_id")
+    val queue = Volley.newRequestQueue(context)
 
     val getRequest = JsonObjectRequest(serverUrl,
         { response ->
@@ -183,6 +182,8 @@ fun queryForMostRecentTripID(user_id: Int): String {
         }, {  }
 
     )
+
+    queue.add(getRequest)
 
     Log.e("TripPageView", "return trip id is $returnTripId")
     return returnTripId
