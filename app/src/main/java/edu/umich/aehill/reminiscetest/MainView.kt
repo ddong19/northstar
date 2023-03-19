@@ -60,7 +60,7 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+               // Spacer(modifier = Modifier.weight(1f))
 
                 Box(
                     modifier = Modifier
@@ -85,7 +85,7 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
 //                    }
                 }
 
-                Spacer(modifier = Modifier.height(302.dp))
+                Spacer(modifier = Modifier.height(100.dp))
 
                 Box(
                     modifier = Modifier
