@@ -31,6 +31,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlin.properties.Delegates
+import android.view.View
+
 
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +53,8 @@ class MainActivity : ComponentActivity() {
         ))
 
         super.onCreate(savedInstanceState)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
         setContent {
             val navController = rememberNavController()
 
