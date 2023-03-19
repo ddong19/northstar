@@ -79,6 +79,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                 imageUris = uris
             }
         }
+    Log.d("get Uri", "Uri IS: $imageUris")
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Button(
             onClick = {
@@ -108,6 +109,8 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
             contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
+            Log.d("get Uri", "Uri IS: $imageUris")
+            Log.d("get size Uri", "Uri size is: $imageUris.size" )
             items(imageUris.size) { index ->
                 val bitmap = bitmaps.getOrNull(index) ?: run {
                     val newBitmap = if (Build.VERSION.SDK_INT < 28) {
@@ -118,9 +121,9 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                     }
                     bitmaps.add(newBitmap)
                     Log.d("image uris", "$imageUris")
-                    val full_uri = imageUris[index].toString().split("A")
+                    val full_uri = imageUris[index].toString().split("/")
                     Log.d("full uri", "$full_uri")
-                    val id = full_uri[1]
+                    val id = full_uri[full_uri.size - 1]
                     Log.d("get id", "ID IS: $id")
                     val location = imageUris[index].toString()
                     Log.d("get location", "location IS: $location")
