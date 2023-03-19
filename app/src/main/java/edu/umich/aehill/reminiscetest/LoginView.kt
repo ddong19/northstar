@@ -32,6 +32,7 @@ import android.widget.VideoView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.draw.alpha
 import android.util.Log
+import android.view.ViewGroup
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -96,6 +97,16 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier) {
                 setVideoURI(videoUri)
                 setOnPreparedListener { mp ->
                     mp.isLooping = true
+                    val videoAspectRatio = mp.videoWidth.toFloat() / mp.videoHeight.toFloat()
+                    val screenWidth = context.resources.displayMetrics.widthPixels
+                    val screenHeight = context.resources.displayMetrics.heightPixels
+                    val screenAspectRatio = screenWidth.toFloat() / screenHeight.toFloat()
+
+                    layoutParams = if (videoAspectRatio > screenAspectRatio) {
+                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (screenWidth / videoAspectRatio).toInt())
+                    } else {
+                        ViewGroup.LayoutParams((screenHeight * videoAspectRatio).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
+                    }
                     Log.d("VideoPlayer", "Video prepared and starting")
                     start()
                 }
@@ -106,10 +117,12 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier) {
             }
         },
         modifier = modifier
+            .aspectRatio(1f, true) // This line helps maintain the aspect ratio while filling the screen
     ) { view ->
-        view.setMediaController(null) // This line hides the media controller, add this import: import android.widget.MediaController
+        view.setMediaController(null)
     }
 }
+
 
 
 
@@ -131,7 +144,7 @@ fun LoginColumn(context: Context, navController: NavHostController, customModifi
             verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Add your app logo here, if you don't have a logo, comment or remove this section
+            // LOGO
             /*
             Icon(
                 painter = painterResource(id = R.drawable.logo),

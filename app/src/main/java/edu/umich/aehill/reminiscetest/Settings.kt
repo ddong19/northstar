@@ -66,7 +66,7 @@ fun Settings(context: Context, navController: NavHostController, customModifier:
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Button(
-                        onClick = { /* Add your onClick action here for logout */ },
+                        onClick = { navController.navigate("LoginView") },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
                         modifier = Modifier
