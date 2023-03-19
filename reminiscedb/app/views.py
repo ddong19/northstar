@@ -145,3 +145,15 @@ def getimage(request, image_id):
     response = {}
     response['image_data'] = data
     return JsonResponse(data, safe=False)
+
+def gettripimages(request, trip_id):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM images WHERE trip_id = {};'.format(trip_id))
+    data = cursor.fetchall()
+
+    response = {}
+    response['images'] = data
+    return JsonResponse(data, safe=False)
