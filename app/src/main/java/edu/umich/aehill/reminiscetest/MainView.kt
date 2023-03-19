@@ -67,22 +67,22 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    Button(
-                        onClick = { navController.navigate("LoginPage") },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(48.dp)
-                            .align(Alignment.Center)
-                    ) {
-                        Text(
-                            text = "Your Past Trips",
-                            fontSize = 24.sp,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+//                    Button(
+//                        onClick = { navController.navigate("LoginPage") },
+//                        shape = RoundedCornerShape(24.dp),
+//                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
+//                        modifier = Modifier
+//                            .fillMaxWidth(0.8f)
+//                            .height(48.dp)
+//                            .align(Alignment.Center)
+//                    ) {
+////                        Text(
+////                            text = "Your Past Trips",
+////                            fontSize = 24.sp,
+////                            color = Color.White,
+////                            textAlign = TextAlign.Center
+////                        )
+//                    }
                 }
 
                 Spacer(modifier = Modifier.height(302.dp))
