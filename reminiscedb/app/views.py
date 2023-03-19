@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 # from google.oauth2 import id_token
 # from google.auth.transport import requests
 import urllib.request, json, os, time, hashlib
+from urllib import parse
 
 # TEMPORARY FRAMEWORK W/O EXPIRATION
 @csrf_exempt
@@ -77,12 +78,15 @@ def getalltrips(request):
     if request.method != 'GET':
         return HttpResponse(status=404)
     
-    with urllib.request.urlopen(request.body) as url:
-        data = json.load(url)
-    user_id_request = data["user_id"]
+    # with urllib.request.urlopen(request.body) as url:
+    #     data = json.load(url)
+    # user_id_request = data["user_id"]
+    query_string = request.getQueryString()
+    queryList = query_string.split("=")
+    
 
     cursor = connection.cursor()
-    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id_request))
+    cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(int(queryList[1])))
     data = cursor.fetchall()
 
     response = {}
