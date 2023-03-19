@@ -121,8 +121,7 @@ def postimage(request):
     data = (trip_id, image_locations, image_uri)
     cursor.execute(insert_stmt, data)
 
-    cursor.execute('SELECT SCOPE_IDENTITY()')
-    data = cursor.fetchall()
+    data = connection.insert_id()
     response = {}
     response['image_id'] = data
 
