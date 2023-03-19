@@ -2,6 +2,7 @@ package edu.umich.aehill.reminiscetest
 
 
 import android.annotation.SuppressLint
+import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -59,17 +60,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
     val bitmaps = remember { mutableStateListOf<Bitmap>() }
-    var uploadedImages by rememberSaveable {mutableStateOf(false)}
-    var finishedTrip by rememberSaveable {mutableStateOf(false)}
-    val customMod = Modifier
-        .fillMaxWidth(
-            fraction = if (uploadedImages) 0f else 1f
-        )
-        .background(
-            color = if (uploadedImages) Color.Transparent else MaterialTheme.colors.primary
-        )
-
-
+    val imageInfo = mutableListOf<Pair<Long, String>>()
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
@@ -78,30 +69,20 @@ fun TripPageContent(context: Context, navController: NavHostController){
                 imageUris = uris
             }
         }
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=customMod) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Button(
             onClick = {
                 launcher.launch("image/*")
-                uploadedImages = true
             }
-
-
-
         ) {
-            Text(
-                text = if(uploadedImages) "" else "Select Images",
-                color = if(uploadedImages) MaterialTheme.colors.onBackground else Color.White
-            )
+            Text("Select Images")
         }
         Button(
             onClick = {
                 navController.navigate("CompletedTripView")
             }
         ) {
-            Text(
-                text = if(finishedTrip) "" else "Finish Trip",
-                color = if(finishedTrip) MaterialTheme.colors.onBackground else Color.White
-            )
+            Text(text = "Finish Trip")
         }
     }
     Column(
@@ -110,7 +91,7 @@ fun TripPageContent(context: Context, navController: NavHostController){
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(128.dp), // 3 images per row
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(imageUris.size) { index ->
@@ -122,6 +103,9 @@ fun TripPageContent(context: Context, navController: NavHostController){
                         ImageDecoder.decodeBitmap(source)
                     }
                     bitmaps.add(newBitmap)
+                    val id = ContentUris.parseId(imageUris[index])
+                    val location = imageUris[index].toString()
+                    imageInfo.add(Pair(id, location))
                     newBitmap
                 }
 
