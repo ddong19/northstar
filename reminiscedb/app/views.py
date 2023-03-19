@@ -23,8 +23,8 @@ def adduser(request):
     cursor = connection.cursor()
     cursor.execute('DELETE FROM users WHERE %s > expiration;', (now, ))
 
-    cursor.execute('INSERT INTO users (id, username, expiration) VALUES '
-                   '(%s, %s);', (username, now))
+    cursor.execute('INSERT INTO users (username, expiration) VALUES '
+                   '({}, {});'.format(username, now))
 
     return JsonResponse({'lifetime': 0})
 
