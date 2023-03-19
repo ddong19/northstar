@@ -24,6 +24,4 @@ urlpatterns = [
    path('posttrip/', views.posttrip, name='posttrip'),
    path('getalltrips/', views.getalltrips, name='getalltrips'),
    path('gettripdata/', views.gettripdata, name='gettripdata'),
-   path('postimages/', views.postimages, name='postimages'),
-   path('getimages/', views.getimages, name='getimages'),
 ]
