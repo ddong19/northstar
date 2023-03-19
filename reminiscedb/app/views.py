@@ -140,4 +140,4 @@ def getimage(request):
 
     response = {}
     response['image_data'] = data
-    return JsonResponse(data)
+    return JsonResponse(data, safe=False)
