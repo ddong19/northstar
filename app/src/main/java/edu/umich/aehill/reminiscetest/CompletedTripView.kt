@@ -36,7 +36,7 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("This is the completed trip view", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
+            Text("This is the completed trip view", fontSize = 24.sp, modifier = Modifier.padding(16.dp), color = Color.White)
 
             Column(
                 modifier = Modifier.fillMaxSize(),
