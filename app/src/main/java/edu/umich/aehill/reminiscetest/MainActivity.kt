@@ -116,8 +116,11 @@ class MainActivity : ComponentActivity() {
                composable("TripPageView"){
                     TripPageView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("CompletedTripView"){
-                    CompletedTripView(this@MainActivity, navController, reusableModifier)
+                composable("CompletedTripView/{tripId}",
+                    arguments = listOf(navArgument("tripId") { type = NavType.StringType })
+                ){ navBackStackEntry ->
+                    /* Extracting the id from the route */
+                    CompletedTripView(this@MainActivity, navController, reusableModifier, navBackStackEntry.arguments?.getString("tripId"))
                 }
                 composable("TravelMapView"){
                     TravelMapView(this@MainActivity, navController, reusableModifier)

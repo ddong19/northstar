@@ -32,8 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.volley.Request
+import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -83,7 +86,9 @@ fun TripPageContent(context: Context, navController: NavHostController){
         }
         Button(
             onClick = {
-                navController.navigate("CompletedTripView")
+                Log.e("TripPageView", "button clicked")
+                //var tripId = queryForMostRecentTripID(3) // TODO: change to actual user
+                navController.navigate("CompletedTripView/3")
             }
         ) {
             Text(text = "Finish Trip")
@@ -141,6 +146,63 @@ fun TripPageContent(context: Context, navController: NavHostController){
     }
     Spacer(modifier = Modifier.height(12.dp))
     }
+
+
+fun queryForMostRecentTripID(user_id: Int): String {
+    /*
+        SELECT `id`
+        FROM `table`
+        ORDER BY `date added` DESC
+        LIMIT 1
+     */
+
+    Log.e("TripPageView", "querying is happening")
+
+    var serverUrl = "34.75.243.151/getalltrips/" // not sure ab this
+    var nFields = 7 // number of fields that each trip should have returned
+    var returnTripId = "" // TODO: change?
+
+    Log.e("TripPageView", "User id is $user_id")
+    val jsonObj = mapOf(
+        "user_id" to user_id
+    )
+
+    val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, serverUrl, JSONObject(jsonObj),
+        Response.Listener { response ->
+            Log.e("TripPageView", "Success!")
+        },
+        Response.ErrorListener { error ->
+            // TODO: Handle error
+            Log.e("TripPageView", "Error!")
+        }
+    )
+
+
+    /*
+    val getRequest = JsonObjectRequest(Request.Method.GET,serverUrl+"getalltrips/?user_id=3'
+        { response ->
+            val tripsReceived = try { response.getJSONArray("trips") } catch (e: JSONException) { JSONArray() }
+            Log.e("TripPageView", "trips received length is $tripsReceived.length()")
+            // get the first trip in the array
+            if(tripsReceived.length() > 0){
+               val tripEntry = tripsReceived[0] as JSONArray
+                if(tripEntry.length() == nFields){
+                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
+                    Log.e("TripPageView", "most recent completed trip query $returnTripId")
+                }
+                else{
+                    Log.e("TripPageView", "error with calling the most recently completed trip query")
+                }
+            }
+        }, {  }
+
+    )
+    */
+
+
+    Log.e("TripPageView", "return trip id is $returnTripId")
+    return returnTripId
+}
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
