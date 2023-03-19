@@ -14,6 +14,7 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -21,6 +22,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import org.json.JSONObject
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.ColorFilter
 
 
 // add to onclick for navigation button
@@ -52,7 +55,7 @@ description: String) {
 }
 
 @Composable
-fun TripDetailsViewContent(context: Context){
+fun TripDetailsViewContent(context: Context, navController: NavHostController){
 
     var spotifyUsername by remember { mutableStateOf("") }
     var tripDescription by remember { mutableStateOf("") }
@@ -115,25 +118,28 @@ fun TripDetailsViewContent(context: Context){
             }
         )
     }
+    // This would be where the right arrow button will be.
+    Row(
+        horizontalArrangement = Arrangement.End, // Align to the far right side of the screen
+        modifier = Modifier.fillMaxWidth().padding(8.dp) // Add padding to make sure it doesn't touch the edge of the screen
+    ) {
+        IconButton(onClick = { navController.navigate("TripPageView") }) {
+            Image(
+                painter = painterResource(R.drawable.forwardbutton),
+                contentDescription = "Right Arrow",
+                colorFilter = ColorFilter.tint(Color.White), // Make the arrow gray
+                modifier = Modifier.size(48.dp)
+            )
+        }
+    }
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripDetailView(context: Context, navController: NavHostController, customModifier: Modifier) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
-        content = { TripDetailsViewContent(context = context)
-            FloatingActionButton(
-                backgroundColor = Color(0xFFFFC107),
-                contentColor = Color(0xFF00FF00),
-                modifier = Modifier.padding(0.dp, 0.dp, 8.dp, 8.dp),
+        content = { TripDetailsViewContent(context = context, navController = navController)
 
-                onClick = {
-                    // TODO: add post request here 
-                    navController.navigate("TripPageView")
-                }
-            ) {
-                Icon(Icons.Default.ArrowForward, "fwd")
-            }
         }
     )
 }
