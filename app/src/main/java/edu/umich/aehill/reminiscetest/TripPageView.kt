@@ -40,6 +40,7 @@ import kotlinx.coroutines.delay
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.logging.Logger.global
 
 
 @Composable
@@ -133,7 +134,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
             onClick = {
                 Log.e("TripPageView", "button clicked")
 //                var tripId = queryForMostRecentTripID(context,3).toInt() // TODO: change to actual user rn is dan2
-                var tripId = returnTripId.toInt()
+                var tripId = Global.currentTripID
                 Log.e("query for most recent trip id", "query just happened and it returned $tripId")
                 Log.e("TripPageView", "trip id is $tripId")
                 navController.navigate("CompletedTripView/$tripId")
@@ -171,7 +172,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                     Log.d("get location", "location IS: $location")
                     val jsonObj = mapOf(
 //                        "trip_id" to queryForMostRecentTripID(context,3).toInt(), // TODO: change to actual user
-                        "trip_id" to returnTripId.toInt(),
+                        "trip_id" to Global.currentTripID,
                         "image_location" to location.toString(),
                         "image_uri" to imageUris[index].toString(),
                     )
@@ -180,7 +181,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                         Request.Method.POST,
                         serverUrl+"/postimage/", JSONObject(jsonObj),
                         {
-                            Log.d("postImage", "image data posted!")
+                            Log.d("postImage", "image data posted to $returnTripId!")
                         },
                         { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
                     )
@@ -216,12 +217,13 @@ fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
             return Pair(latLong[0].toDouble(), latLong[1].toDouble())
         }
     }
-    return null
+    return Pair(-50.0, -50.0)
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier, destination: String?) {
+    queryForMostRecentTripID(context, 3)
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
