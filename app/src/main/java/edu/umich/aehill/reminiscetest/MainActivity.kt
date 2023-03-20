@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,18 +17,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.rememberNavController
 import edu.umich.aehill.reminiscetest.ui.theme.ReminisceTestTheme
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import android.Manifest
-import android.content.pm.PackageManager
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
-import kotlin.properties.Delegates
 import android.view.View
 
 

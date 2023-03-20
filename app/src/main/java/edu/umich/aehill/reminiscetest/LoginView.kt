@@ -14,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -46,8 +45,6 @@ import android.graphics.Color as AndroidColor
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginView(context: Context, navController: NavHostController, customModifier: Modifier) {
-    val passwordFocusRequester = FocusRequester()
-    val focusManager = LocalFocusManager.current
 
     val videoUri = getVideoUri(context)
 
@@ -232,8 +229,7 @@ fun TextInput(
         value = value,
         onValueChange = { value = it },
         modifier = Modifier
-            .fillMaxWidth()
-            .focusOrder(focusRequester ?: FocusRequester()),
+            .fillMaxWidth(),
         leadingIcon = { Icon(imageVector = inputType.icon, contentDescription = null) },
         label = { Text(text = inputType.label) },
         shape = MaterialTheme.shapes.small,

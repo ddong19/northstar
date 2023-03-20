@@ -2,7 +2,6 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +11,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.*
@@ -20,9 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap.Companion.Square
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -98,7 +94,7 @@ fun AutoSlidingCarousel(
         }
 
         // you can remove the surface in case you don't want
-        // the transparant bacground
+        // the transparent background
         Surface(
             modifier = Modifier
                 .padding(bottom = 8.dp)
@@ -119,7 +115,6 @@ fun AutoSlidingCarousel(
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SlideshowView(context: Context, navController: NavHostController, customModifier: Modifier) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = {

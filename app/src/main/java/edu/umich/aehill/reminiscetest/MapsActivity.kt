@@ -3,22 +3,16 @@ package edu.umich.aehill.reminiscetest
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import edu.umich.aehill.reminiscetest.databinding.ActivityMapsBinding
-import java.util.*
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var mainBinding: ActivityMapsBinding
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private val permissionId = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
