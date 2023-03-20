@@ -6,6 +6,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -70,7 +71,6 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
     val bitmaps = remember { mutableStateListOf<Bitmap>() }
-    val imageInfo = mutableListOf<Pair<Long, String>>()
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
@@ -121,11 +121,11 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                     }
                     bitmaps.add(newBitmap)
                     Log.d("image uris", "$imageUris")
+                    val location = getLatLong(context, imageUris[index])
                     val full_uri = imageUris[index].toString().split("/")
                     Log.d("full uri", "$full_uri")
                     val id = full_uri[full_uri.size - 1]
                     Log.d("get id", "ID IS: $id")
-                    val location = imageUris[index].toString()
                     Log.d("get location", "location IS: $location")
                     val jsonObj = mapOf(
                         "trip_id" to queryForMostRecentTripID(context,3).toInt(), // TODO: change to actual user
@@ -142,7 +142,6 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                         { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
                     )
                     queue.add(postRequest)
-                    imageInfo.add(Pair(id.toLong(), location))
                     newBitmap
                 }
 
@@ -160,7 +159,22 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
     Spacer(modifier = Modifier.height(12.dp))
     }
 
-
+@Composable
+fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
+    val projection = arrayOf(MediaStore.Images.Media.DATA)
+    val cursor = context.contentResolver.query(uri, projection, null, null, null)
+    cursor?.use {
+        val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor.moveToFirst()
+        val filePath = cursor.getString(columnIndex)
+        val exifInterface = ExifInterface(filePath)
+        val latLong = FloatArray(2)
+        if (exifInterface.getLatLong(latLong)) {
+            return Pair(latLong[0].toDouble(), latLong[1].toDouble())
+        }
+    }
+    return null
+}
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
