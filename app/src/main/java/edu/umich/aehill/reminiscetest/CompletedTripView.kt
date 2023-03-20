@@ -38,26 +38,6 @@ import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
 @Composable
 fun CompletedTripContent(context: Context, tripId: String?) {
 
-    var serverUrl = "https://34.75.243.151/gettripdata/$tripId"
-    Log.e("utilities", "server url is $serverUrl")
-
-    val queue = Volley.newRequestQueue(context)
-
-    var destination = ""
-
-    val getRequest = JsonObjectRequest(serverUrl,
-        { response ->
-            val tripReceived = try { response.getJSONArray("trip_data") } catch (e: JSONException) { JSONArray() }
-            Log.d("trip received", "$tripReceived")
-            val tripDetails = tripReceived[0] as JSONArray
-            Log.d("trip details", "$tripDetails")
-
-            destination = tripDetails[2].toString()
-            Log.d("trip location", "$destination")
-        }, {  }
-
-    )
-    queue.add(getRequest)
     // UI for trip name and thumbnail
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         FloatingActionButton(
@@ -71,10 +51,10 @@ fun CompletedTripContent(context: Context, tripId: String?) {
         ) {
             Icon(Icons.Default.AddCircle, "add")
         }
-        Log.d("destination", "$destination")
+        Log.d("destination", "${Global.currentTripLocation}")
         Text(
             //need to get tripLocation from input from the user
-            text = destination,
+            text = Global.currentTripLocation,
             modifier = Modifier
                 .padding(8.dp, 75.dp, 25.dp, 0.dp)
                 .fillMaxWidth(1f),

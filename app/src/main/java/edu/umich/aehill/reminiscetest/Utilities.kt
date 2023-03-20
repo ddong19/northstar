@@ -48,6 +48,27 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
                 }
             }
 
+            // get current trip location
+            var serverUrl = "https://34.75.243.151/gettripdata/${Global.currentTripID}"
+            Log.e("utilities", "server url is $serverUrl")
+
+            val queue = Volley.newRequestQueue(context)
+
+
+            val getRequest = JsonObjectRequest(serverUrl,
+                { response ->
+                    val tripReceived = try { response.getJSONArray("trip_data") } catch (e: JSONException) { JSONArray() }
+                    Log.d("trip received", "$tripReceived")
+                    val tripDetails = tripReceived[0] as JSONArray
+                    Log.d("trip details", "$tripDetails")
+
+                    Global.currentTripLocation = tripDetails[2].toString()
+                    Log.d("trip location", "${Global.currentTripLocation}")
+                }, {  }
+
+            )
+            queue.add(getRequest)
+
         }, {  }
 
     )
