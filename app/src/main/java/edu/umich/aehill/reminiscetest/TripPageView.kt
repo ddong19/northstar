@@ -216,7 +216,7 @@ fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
             return Pair(latLong[0].toDouble(), latLong[1].toDouble())
         }
     }
-    return null
+    return Pair(-50.0, -50.0)
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
