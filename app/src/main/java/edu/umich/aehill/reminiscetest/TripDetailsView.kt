@@ -12,8 +12,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping

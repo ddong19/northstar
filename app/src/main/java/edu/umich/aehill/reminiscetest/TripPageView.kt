@@ -2,7 +2,6 @@ package edu.umich.aehill.reminiscetest
 
 
 import android.annotation.SuppressLint
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -10,7 +9,6 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.text.TextUtils.split
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,17 +28,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
-import kotlinx.coroutines.delay
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.logging.Logger.global
 
 
 @Composable

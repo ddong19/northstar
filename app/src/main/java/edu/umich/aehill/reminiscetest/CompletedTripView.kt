@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,22 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
-import org.json.JSONArray
-import org.json.JSONException
-import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
-import edu.umich.aehill.reminiscetest.Global.Companion.currentTripID
-import edu.umich.aehill.reminiscetest.Global.Companion.currentTripImages
-import edu.umich.aehill.reminiscetest.Global.Companion.currentTripLocation
-import org.json.JSONObject
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
