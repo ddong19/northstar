@@ -144,7 +144,7 @@ def getimage(request, image_id):
 
     response = {}
     response['image_data'] = data
-    return JsonResponse(data, safe=False)
+    return JsonResponse(response)
 
 def gettripimages(request, trip_id):
     if request.method != 'GET':
@@ -156,4 +156,4 @@ def gettripimages(request, trip_id):
 
     response = {}
     response['images'] = data
-    return JsonResponse(response, safe=False)
+    return JsonResponse(response)
