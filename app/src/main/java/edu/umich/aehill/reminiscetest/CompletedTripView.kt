@@ -3,10 +3,16 @@ package edu.umich.aehill.reminiscetest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -23,15 +30,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import org.json.JSONArray
 import org.json.JSONException
 import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
+import edu.umich.aehill.reminiscetest.Global.Companion.currentTripID
+import edu.umich.aehill.reminiscetest.Global.Companion.currentTripImages
+import edu.umich.aehill.reminiscetest.Global.Companion.currentTripLocation
+import org.json.JSONObject
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
@@ -129,8 +142,53 @@ fun CompletedTripContent(context: Context) {
                     }
 
 
+                } else {
+                    // photo grid appears
+                    val imageUris = Global.currentTripImages
+                    val bitmaps = remember { mutableStateListOf<Bitmap>() }
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(128.dp), // 3 images per row
+                            contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+//                    Log.d("get Uri", "Uri IS: $imageUris")
+//                    Log.d("get size Uri", "Uri size is: $imageUris.size" )
+                            items(imageUris.size) { index ->
+                                val bitmap = bitmaps.getOrNull(index) ?: run {
+                                    val newBitmap = if (Build.VERSION.SDK_INT < 28) {
+                                        MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[index].toUri())
+                                    } else {
+                                        val source = ImageDecoder.createSource(context.contentResolver, imageUris[index].toUri())
+                                        ImageDecoder.decodeBitmap(source)
+                                    }
+                                    bitmaps.add(newBitmap)
+                                    newBitmap
+                                }
+
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(1f) // maintain aspect ratio of image
+                                        .padding(4.dp) // add padding between images
+                                )
+                            }
+                        }
+                    }
                 }
             }
+
+
+
+
+
+
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

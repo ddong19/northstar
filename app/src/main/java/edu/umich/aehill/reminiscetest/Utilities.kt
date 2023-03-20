@@ -1,5 +1,6 @@
 package edu.umich.aehill.reminiscetest
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.android.volley.toolbox.JsonObjectRequest
@@ -7,7 +8,16 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
 
-fun queryForMostRecentTripID(context: Context, user_id: Int): String {
+public class Global : Application() {
+    companion object {
+        @JvmField
+        var currentTripID: String = ""
+        var currentTripLocation: String = ""
+        var currentTripImages = listOf<String>()
+    }
+}
+
+fun queryForMostRecentTripID(context: Context, user_id: Int) {
     /*
         SELECT `id`
         FROM `table`
@@ -15,7 +25,6 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
         LIMIT 1
      */
 
-    Log.e("TripPageView", "querying is happening")
 
     var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
     var nFields = 7 // number of fields that each trip should have returned
@@ -32,19 +41,78 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
             if(tripsReceived.length() > 0){
                 val tripEntry = tripsReceived[0] as JSONArray
                 if(tripEntry.length() == nFields){
-                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
+                    returnTripId = tripEntry[0].toString()
+                    Global.currentTripID = returnTripId
                     Log.e("TripPageView", "most recent completed trip query $returnTripId")
                 }
                 else{
                     Log.e("TripPageView", "error with calling the most recently completed trip query")
                 }
             }
+
+            // get current trip location
+            var serverUrl = "https://34.75.243.151/gettripdata/${Global.currentTripID}"
+            Log.e("utilities", "server url is $serverUrl")
+
+            val queue = Volley.newRequestQueue(context)
+
+            val getRequest = JsonObjectRequest(serverUrl,
+                { response ->
+                    val tripReceived = try { response.getJSONArray("trip_data") } catch (e: JSONException) { JSONArray() }
+                    Log.d("trip received", "$tripReceived")
+                    val tripDetails = tripReceived[0] as JSONArray
+                    Log.d("trip details", "$tripDetails")
+
+                    Global.currentTripLocation = tripDetails[2].toString()
+                    Log.d("trip location", "${Global.currentTripLocation}")
+                }, {  }
+
+            )
+            queue.add(getRequest)
+
+            Global.currentTripImages = listOf<String>()
+            getAllImagesForTrip(context, Global.currentTripID)
+
+        }, {  }
+
+    )
+
+    queue.add(getRequest)
+}
+
+fun getAllImagesForTrip(context: Context, tripId: String?){
+
+    var serverUrl = "https://34.75.243.151/gettripimages/$tripId"
+
+    val queue = Volley.newRequestQueue(context)
+
+    Log.e("Utilities", "sending get request to gettripimages")
+
+    val getRequest = JsonObjectRequest(serverUrl,
+        { response ->
+            val imagesReceived = try { response.getJSONArray("images") } catch (e: JSONException) { JSONArray() }
+            if (imagesReceived.length() > 0){
+                for (i in 0 until imagesReceived.length()) {
+                    val image = imagesReceived[i] as JSONArray
+                    if (image.length() == 3 || image.length() == 4) {
+                        Log.e("utilities", "$image")
+                        Global.currentTripImages = (Global.currentTripImages + image[3].toString()) as ArrayList<String>
+                        Log.e("utilities", "updating size of global trip images")
+                        // Log.e("utilities", imageURIs.toString())
+                    } else {
+                        Log.e("getAllImagesForTrip", "Received unexpected number of fields: " + image.length().toString() + " instead of 3")
+                    }
+                }
+
+            }
+
+            Log.e("Utilities", "Size of global trip images is ${Global.currentTripImages.size}")
+
         }, {  }
 
     )
 
     queue.add(getRequest)
 
-    Log.e("TripPageView", "return trip id is $returnTripId")
-    return returnTripId
 }
+
