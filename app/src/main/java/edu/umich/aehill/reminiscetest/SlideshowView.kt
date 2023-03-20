@@ -2,6 +2,7 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -34,11 +35,11 @@ import kotlin.concurrent.fixedRateTimer
 /* source code built on top of https://blog.protein.tech/jetpack-compose-auto-image-slider-with-dots-indicator-45dfeba37712 */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SlideshowViewContent(context: Context) {
+fun SlideshowViewContent(context: Context, tripId: String) {
 
     // replace with logic for obtaining list of users photos from database
+
     val images = listOf(
-        "content://com.android.providers.media.documents/document/image%3A1000000023",
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/13/18/09/red-tulips-7850506_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/11/57/flowers-7852176_1280.jpg",
@@ -122,7 +123,7 @@ fun AutoSlidingCarousel(
 @Composable
 fun SlideshowView(context: Context, navController: NavHostController, customModifier: Modifier) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = {
-        SlideshowViewContent(context = context)
+        //SlideshowViewContent(context = context)
         FloatingActionButton(
             backgroundColor = Color(0xFFFFC107),
             contentColor = Color(0xFF00FF00),

@@ -15,8 +15,6 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
         LIMIT 1
      */
 
-    Log.e("TripPageView", "querying is happening")
-
     var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
     var nFields = 7 // number of fields that each trip should have returned
     var returnTripId = "2" // TODO: change?
@@ -32,7 +30,7 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
             if(tripsReceived.length() > 0){
                 val tripEntry = tripsReceived[0] as JSONArray
                 if(tripEntry.length() == nFields){
-                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
+                    returnTripId = tripEntry[0].toString()
                     Log.e("TripPageView", "most recent completed trip query $returnTripId")
                 }
                 else{
@@ -44,7 +42,44 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
     )
 
     queue.add(getRequest)
-
-    Log.e("TripPageView", "return trip id is $returnTripId")
     return returnTripId
 }
+
+fun getAllImagesForTrip(context: Context, tripId: String?): ArrayList<String> {
+
+    var serverUrl = "https://34.75.243.151/gettripimages/$tripId"
+    Log.e("utilities", "server url is $serverUrl")
+
+    val queue = Volley.newRequestQueue(context)
+
+    var imageURIs = arrayListOf<String>()
+    Log.e("Utilities", "sending get request to gettripimages")
+
+    val getRequest = JsonObjectRequest(serverUrl,
+        { response ->
+            val imagesReceived = try { response.getJSONArray("images") } catch (e: JSONException) { JSONArray() }
+            if (imagesReceived.length() > 0){
+                for (i in 0 until imagesReceived.length()) {
+                    val image = imagesReceived[i] as JSONArray
+                    if (image.length() == 3 || image.length() == 4) {
+                        imageURIs = (imageURIs + image[2].toString()) as ArrayList<String>
+                        Log.e("utilities", imageURIs.toString())
+                    } else {
+                        Log.e("getAllImagesForTrip", "Received unexpected number of fields: " + image.length().toString() + " instead of 3")
+                    }
+                }
+
+            }
+
+        }, {  }
+
+    )
+
+    queue.add(getRequest)
+
+    Log.e("utilities", imageURIs.toString())
+    return imageURIs
+
+
+}
+
