@@ -42,11 +42,11 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         val points = listOf(
-            LatLng(37.7749, -122.4194),
-            LatLng(40.7128, -74.0060),
-            LatLng(51.5074, -0.1278),
-            LatLng(-33.8688, 151.2093),
-            LatLng(35.6895, 139.6917)
+            LatLng(42.2808, 83.7430),
+            LatLng(43.6532, 79.3832),
+            LatLng(51.1215, 114.0076),
+            LatLng(51.0899, 115.3441),
+            LatLng(51.1784, 115.5708)
         )
 
         // Create an empty list to hold the marker objects
