@@ -156,4 +156,4 @@ def gettripimages(request, trip_id):
 
     response = {}
     response['images'] = data
-    return JsonResponse(data, safe=False)
+    return JsonResponse(response, safe=False)
