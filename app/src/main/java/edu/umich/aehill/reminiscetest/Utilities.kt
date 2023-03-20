@@ -1,11 +1,19 @@
 package edu.umich.aehill.reminiscetest
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
+
+public class Global : Application() {
+    companion object {
+        @JvmField
+        var currentTripID: String = ""
+    }
+}
 
 fun queryForMostRecentTripID(context: Context, user_id: Int): String {
     /*
@@ -31,6 +39,7 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
                 val tripEntry = tripsReceived[0] as JSONArray
                 if(tripEntry.length() == nFields){
                     returnTripId = tripEntry[0].toString()
+                    Global.currentTripID = returnTripId
                     Log.e("TripPageView", "most recent completed trip query $returnTripId")
                 }
                 else{
