@@ -18,3 +18,4 @@ build.gradle
 .idea/deploymentTargetDropDown.xml
 build.gradle
 selfsigned.crt
+build.gradle
