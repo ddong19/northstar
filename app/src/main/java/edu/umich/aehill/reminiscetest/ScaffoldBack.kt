@@ -28,7 +28,7 @@ import edu.umich.aehill.reminiscetest.queryForMostRecentTripID
 @Composable
 fun ScaffoldBack(context: Context, navController: NavHostController, customModifier: Modifier, content: @Composable() () -> Unit) {
 
-    queryForMostRecentTripID(context, 3)
+    //queryForMostRecentTripID(context, 3)
 
     Scaffold(
         topBar = {
