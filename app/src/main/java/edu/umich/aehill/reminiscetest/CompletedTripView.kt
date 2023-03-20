@@ -37,7 +37,6 @@ import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
 fun CompletedTripContent(context: Context){
     var showSlideshow by remember { mutableStateOf(false) }
 
-
     val images = listOf(
         "content://com.android.providers.media.documents/document/image%3A1000000023",
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
