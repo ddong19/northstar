@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -34,7 +36,55 @@ import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CompletedTripContent(context: Context){
+fun CompletedTripContent(context: Context, tripId: String?) {
+
+    var serverUrl = "https://34.75.243.151/gettripdata/$tripId"
+    Log.e("utilities", "server url is $serverUrl")
+
+    val queue = Volley.newRequestQueue(context)
+
+    var destination = ""
+
+    val getRequest = JsonObjectRequest(serverUrl,
+        { response ->
+            val tripReceived = try { response.getJSONArray("trip_data") } catch (e: JSONException) { JSONArray() }
+            Log.d("trip received", "$tripReceived")
+            val tripDetails = tripReceived[0] as JSONArray
+            Log.d("trip details", "$tripDetails")
+
+            destination = tripDetails[2].toString()
+            Log.d("trip location", "$destination")
+        }, {  }
+
+    )
+    queue.add(getRequest)
+    // UI for trip name and thumbnail
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        FloatingActionButton(
+            backgroundColor = Color(0xFF808080),
+            contentColor = Color(0xFF000000),
+            modifier = Modifier.padding(35.dp, 90.dp, 0.dp, 0.dp),
+
+            onClick = {
+                //implement in MVP
+            }
+        ) {
+            Icon(Icons.Default.AddCircle, "add")
+        }
+        Log.d("destination", "$destination")
+        Text(
+            //need to get tripLocation from input from the user
+            text = destination,
+            modifier = Modifier
+                .padding(8.dp, 75.dp, 25.dp, 0.dp)
+                .fillMaxWidth(1f),
+            fontSize = 55.sp,
+            textAlign = TextAlign.Right
+        )
+    }
+
+
+
     var showSlideshow by remember { mutableStateOf(false) }
 
     val images = listOf(
@@ -144,5 +194,5 @@ fun CompletedTripView(context: Context, navController: NavHostController, custom
 //    var lat = MainActivity().lat
 //    var long = MainActivity().long
 
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context) })
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, tripId) })
 }

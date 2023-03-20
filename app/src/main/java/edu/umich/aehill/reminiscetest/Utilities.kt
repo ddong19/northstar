@@ -12,6 +12,7 @@ public class Global : Application() {
     companion object {
         @JvmField
         var currentTripID: String = ""
+        var currentTripLocation: String = " "
     }
 }
 
@@ -46,6 +47,7 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
                     Log.e("TripPageView", "error with calling the most recently completed trip query")
                 }
             }
+
         }, {  }
 
     )
