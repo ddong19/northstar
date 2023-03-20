@@ -36,6 +36,14 @@ import android.view.View
 
 
 class MainActivity : ComponentActivity() {
+    //    override fun onAttachedToWindow() {
+//        super.onAttachedToWindow()
+//        val controller = window.insetsController
+//        controller?.apply {
+//            hide(WindowInsets.Type.statusBars())
+//            systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//        }
+//    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
