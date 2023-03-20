@@ -12,17 +12,19 @@ public class Global : Application() {
     companion object {
         @JvmField
         var currentTripID: String = ""
-        var currentTripLocation: String = " "
+        var currentTripLocation: String = ""
+        var currentTripImages = listOf<String>()
     }
 }
 
-fun queryForMostRecentTripID(context: Context, user_id: Int): String {
+fun queryForMostRecentTripID(context: Context, user_id: Int) {
     /*
         SELECT `id`
         FROM `table`
         ORDER BY `date added` DESC
         LIMIT 1
      */
+
 
     var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
     var nFields = 7 // number of fields that each trip should have returned
@@ -54,7 +56,6 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
 
             val queue = Volley.newRequestQueue(context)
 
-
             val getRequest = JsonObjectRequest(serverUrl,
                 { response ->
                     val tripReceived = try { response.getJSONArray("trip_data") } catch (e: JSONException) { JSONArray() }
@@ -69,22 +70,22 @@ fun queryForMostRecentTripID(context: Context, user_id: Int): String {
             )
             queue.add(getRequest)
 
+            Global.currentTripImages = listOf<String>()
+            getAllImagesForTrip(context, Global.currentTripID)
+
         }, {  }
 
     )
 
     queue.add(getRequest)
-    return returnTripId
 }
 
-fun getAllImagesForTrip(context: Context, tripId: String?): ArrayList<String> {
+fun getAllImagesForTrip(context: Context, tripId: String?){
 
     var serverUrl = "https://34.75.243.151/gettripimages/$tripId"
-    Log.e("utilities", "server url is $serverUrl")
 
     val queue = Volley.newRequestQueue(context)
 
-    var imageURIs = arrayListOf<String>()
     Log.e("Utilities", "sending get request to gettripimages")
 
     val getRequest = JsonObjectRequest(serverUrl,
@@ -94,8 +95,10 @@ fun getAllImagesForTrip(context: Context, tripId: String?): ArrayList<String> {
                 for (i in 0 until imagesReceived.length()) {
                     val image = imagesReceived[i] as JSONArray
                     if (image.length() == 3 || image.length() == 4) {
-                        imageURIs = (imageURIs + image[2].toString()) as ArrayList<String>
-                        Log.e("utilities", imageURIs.toString())
+                        Log.e("utilities", "$image")
+                        Global.currentTripImages = (Global.currentTripImages + image[3].toString()) as ArrayList<String>
+                        Log.e("utilities", "updating size of global trip images")
+                        // Log.e("utilities", imageURIs.toString())
                     } else {
                         Log.e("getAllImagesForTrip", "Received unexpected number of fields: " + image.length().toString() + " instead of 3")
                     }
@@ -103,15 +106,13 @@ fun getAllImagesForTrip(context: Context, tripId: String?): ArrayList<String> {
 
             }
 
+            Log.e("Utilities", "Size of global trip images is ${Global.currentTripImages.size}")
+
         }, {  }
 
     )
 
     queue.add(getRequest)
-
-    Log.e("utilities", imageURIs.toString())
-    return imageURIs
-
 
 }
 

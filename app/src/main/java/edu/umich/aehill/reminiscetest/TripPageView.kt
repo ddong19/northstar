@@ -223,6 +223,7 @@ fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier, destination: String?) {
+    queryForMostRecentTripID(context, 3)
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }

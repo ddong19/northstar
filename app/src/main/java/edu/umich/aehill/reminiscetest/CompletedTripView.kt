@@ -36,7 +36,7 @@ import edu.umich.aehill.reminiscetest.AutoSlidingCarousel
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CompletedTripContent(context: Context, tripId: String?) {
+fun CompletedTripContent(context: Context) {
 
     // UI for trip name and thumbnail
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
@@ -68,43 +68,66 @@ fun CompletedTripContent(context: Context, tripId: String?) {
     var showSlideshow by remember { mutableStateOf(false) }
 
     val images = listOf(
-        "content://com.android.providers.media.documents/document/image%3A1000000023",
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/13/18/09/red-tulips-7850506_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/11/57/flowers-7852176_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/12/41/ornamental-cherry-7852285_1280.jpg",
     )
 
+    Log.e("Completed Trip View", "size of global.images is ${Global.currentTripImages.size}")
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Your Trip Summary", fontSize = 24.sp, modifier = Modifier.padding(16.dp), color = Color.White)
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
         ) {
             Row(){
                 if(showSlideshow) {
-                    Card(
-                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        AutoSlidingCarousel(
-                            itemsCount = images.size,
-                            itemContent = { index ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(images[index])
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.height(250.dp)
-                                )
-                            }
-                        )
+                    if(Global.currentTripImages.size > 0){
+                        Card(
+                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = Global.currentTripImages.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(Global.currentTripImages[index])
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
                     }
+                    else {
+                        Card(
+                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = images.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(images[index])
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
+                    }
+
 
                 }
             }
@@ -173,6 +196,6 @@ fun CompletedTripContent(context: Context, tripId: String?) {
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
 //    var lat = MainActivity().lat
 //    var long = MainActivity().long
-
-    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, tripId) })
+    getAllImagesForTrip(context, Global.currentTripID)
+    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context) })
 }
