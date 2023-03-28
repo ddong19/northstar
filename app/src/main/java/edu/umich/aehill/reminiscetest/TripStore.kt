@@ -2,6 +2,7 @@ package edu.umich.aehill.reminiscetest
 
 import android.content.Context
 import android.util.Log
+import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -9,6 +10,7 @@ import com.android.volley.toolbox.Volley.newRequestQueue
 import org.json.JSONArray
 import org.json.JSONException
 import edu.umich.aehill.reminiscetest.Trip
+import org.json.JSONObject
 
 object TripStore {
     var currentTrip = Trip()
@@ -112,6 +114,37 @@ object TripStore {
         }
         queue.add(getRequest)
     }
+
+    fun postNewTrip(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
+                        description: String) {
+
+        val jsonObj = mapOf(
+            "user_id" to 3, // dummy user
+            "trip_destination" to destination,
+            "trip_start" to startDate,
+            "trip_end" to endDate,
+            "trip_spotify" to spotifyUsername,
+            "trip_description" to description
+            //TODO: add other columns here (?)
+        )
+
+        Log.e("TripStore/PostTripDetails", "Posting trip now!")
+
+        val postRequest = JsonObjectRequest(
+            Request.Method.POST,
+            serverUrl+"/posttrip/", JSONObject(jsonObj),
+            {
+                Log.d("postTrip", "trip posted!")
+            },
+            { error -> Log.e("postTrip", error.localizedMessage ?: "JsonObjectRequest error") }
+        )
+
+        if (!this::queue.isInitialized) {
+            queue = newRequestQueue(context)
+        }
+        queue.add(postRequest)    }
+
+
 }
 
 

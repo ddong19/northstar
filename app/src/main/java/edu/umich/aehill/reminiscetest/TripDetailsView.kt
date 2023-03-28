@@ -17,43 +17,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import org.json.JSONObject
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.ColorFilter
-import com.android.volley.toolbox.Volley
-
-
-// TODO: move this to trip store
-fun postTripDetails(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
-description: String) {
-
-    val queue = Volley.newRequestQueue(context)
-
-    val jsonObj = mapOf(
-        "user_id" to 3, // TODO: change this to the actual user
-        "trip_destination" to destination,
-        "trip_start" to startDate,
-        "trip_end" to endDate,
-        "trip_spotify" to spotifyUsername,
-        "trip_description" to description
-        //TODO: add other columns here
-    )
-
-    Log.e("TripDetailsView", "Posting trip now!")
-
-    var serverUrl = "https://34.75.243.151" // not sure ab this
-    val postRequest = JsonObjectRequest(Request.Method.POST,
-        serverUrl+"/posttrip/", JSONObject(jsonObj),
-        {
-            Log.d("postTrip", "trip posted!")
-        },
-        { error -> Log.e("postTrip", error.localizedMessage ?: "JsonObjectRequest error") }
-    )
-
-    queue.add(postRequest)
-}
+import edu.umich.aehill.reminiscetest.TripStore.postNewTrip
 
 @Composable
 fun TripDetailsViewContent(context: Context, navController: NavHostController){
@@ -158,7 +124,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
         modifier = Modifier.fillMaxWidth().padding(8.dp) // Add padding to make sure it doesn't touch the edge of the screen
     ) {
         IconButton(onClick = {
-            postTripDetails(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription)
+            postNewTrip(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription)
             navController.navigate("TripPageView/$tripLocation")
         }) {
             Image(
