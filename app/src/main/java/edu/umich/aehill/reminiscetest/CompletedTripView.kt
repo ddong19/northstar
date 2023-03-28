@@ -8,6 +8,7 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,15 @@ import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 @Composable
 fun CompletedTripContent(context: Context) {
 
+    var isLaunching by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (isLaunching) {
+            isLaunching = false
+            TripStore.updateCurrentTrip(context, 3) // user id is 3
+        }
+    }
+
     // UI for trip name and thumbnail
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         FloatingActionButton(
@@ -52,10 +63,10 @@ fun CompletedTripContent(context: Context) {
         ) {
             Icon(Icons.Default.AddCircle, "add")
         }
-        Log.d("destination", "${Global.currentTripLocation}")
+        Log.d("destination", "${currentTrip.destination}")
         Text(
             //need to get tripLocation from input from the user
-            text = Global.currentTripLocation,
+            text = currentTrip.destination.toString(),
             modifier = Modifier
                 .padding(8.dp, 5.dp, 25.dp, 0.dp)
                 .fillMaxWidth(1f),
@@ -74,9 +85,6 @@ fun CompletedTripContent(context: Context) {
         "https://cdn.pixabay.com/photo/2023/03/14/11/57/flowers-7852176_1280.jpg",
         "https://cdn.pixabay.com/photo/2023/03/14/12/41/ornamental-cherry-7852285_1280.jpg",
     )
-
-    Log.e("Completed Trip View", "size of global.images is ${Global.currentTripImages.size}")
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -125,7 +133,6 @@ fun CompletedTripContent(context: Context) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(onClick = {
                     showSlideshow = !showSlideshow
-                    Log.e("CompletedTripView", "showSlideshow is now $showSlideshow")
                 }) {
                     Image(
                         painter = painterResource(id = R.drawable.slideshow),
@@ -141,22 +148,23 @@ fun CompletedTripContent(context: Context) {
 
         Row(){
             if(showSlideshow) {
-                if(Global.currentTripImages.size > 0){
+                if(currentTrip.imageURIs?.size!! > 0){  // i have no idea what this line means
                     Card(
                         modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
                         shape = RoundedCornerShape(16.dp),
                     ) {
                         AutoSlidingCarousel(
-                            itemsCount = Global.currentTripImages.size,
+                            itemsCount = currentTrip.imageURIs!!.size,
                             itemContent = { index ->
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
-                                        .data(Global.currentTripImages[index])
+                                        .data(currentTrip.imageURIs!![index].URI)
                                         .build(),
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.height(250.dp)
                                 )
+                                Log.d("completed trip view", currentTrip.imageURIs!![index].URI)
                             }
                         )
                     }
@@ -185,7 +193,7 @@ fun CompletedTripContent(context: Context) {
 
             } else {
                 // photo grid appears
-                val imageUris = Global.currentTripImages
+                val imageUris = currentTrip.imageURIs
                 val bitmaps = remember { mutableStateListOf<Bitmap>() }
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -198,26 +206,28 @@ fun CompletedTripContent(context: Context) {
                     ) {
 //                    Log.d("get Uri", "Uri IS: $imageUris")
 //                    Log.d("get size Uri", "Uri size is: $imageUris.size" )
-                        items(imageUris.size) { index ->
-                            val bitmap = bitmaps.getOrNull(index) ?: run {
-                                val newBitmap = if (Build.VERSION.SDK_INT < 28) {
-                                    MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[index].toUri())
-                                } else {
-                                    val source = ImageDecoder.createSource(context.contentResolver, imageUris[index].toUri())
-                                    ImageDecoder.decodeBitmap(source)
+                        if (imageUris != null) {
+                            items(imageUris.size) { index ->
+                                val bitmap = bitmaps.getOrNull(index) ?: run {
+                                    val newBitmap = if (Build.VERSION.SDK_INT < 28) {
+                                        MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris.get(index).URI.toUri())
+                                    } else {
+                                        val source = ImageDecoder.createSource(context.contentResolver, imageUris[index].URI.toUri())
+                                        ImageDecoder.decodeBitmap(source)
+                                    }
+                                    bitmaps.add(newBitmap)
+                                    newBitmap
                                 }
-                                bitmaps.add(newBitmap)
-                                newBitmap
-                            }
 
-                            Image(
-                                bitmap = bitmap.asImageBitmap(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f) // maintain aspect ratio of image
-                                    .padding(4.dp) // add padding between images
-                            )
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(1f) // maintain aspect ratio of image
+                                        .padding(4.dp) // add padding between images
+                                )
+                            }
                         }
                     }
                 }
@@ -232,9 +242,6 @@ fun CompletedTripContent(context: Context) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
-//    var lat = MainActivity().lat
-//    var long = MainActivity().long
-   // getAllImagesForTrip(context, Global.currentTripID)
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context) })
 }
 

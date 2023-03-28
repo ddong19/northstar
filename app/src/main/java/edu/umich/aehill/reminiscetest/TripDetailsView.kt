@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import com.android.volley.toolbox.Volley
 
 
-// add to onclick for navigation button
+// TODO: move this to trip store
 fun postTripDetails(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
 description: String) {
 
