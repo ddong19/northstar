@@ -35,48 +35,59 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val points = listOf(
-            LatLng(42.2808, 83.7430),
-            LatLng(43.6532, 79.3832),
-            LatLng(51.1215, 114.0076),
-            LatLng(51.0899, 115.3441),
-            LatLng(51.1784, 115.5708)
+        val pointsList = listOf(
+            listOf(
+                LatLng(42.2808, 83.7430),
+                LatLng(43.6532, 79.3832),
+                LatLng(51.1215, 114.0076),
+                LatLng(51.0899, 115.3441),
+                LatLng(51.1784, 115.5708)
+            ),
+            listOf(
+                LatLng(54.2808, 100.7430),
+                LatLng(69.6532, 65.3832),
+                LatLng(53.1215, 140.0076),
+                LatLng(40.0899, 100.3441),
+                LatLng(70.1784, 125.5708)
+            )
         )
+        for (points in pointsList) {
+            // Create an empty list to hold the marker objects
+            val markers = mutableListOf<Marker>()
 
-        // Create an empty list to hold the marker objects
-        val markers = mutableListOf<Marker>()
-
-        // Add a marker for each LatLng point and add it to the markers list
-        for (point in points) {
-            val marker = googleMap.addMarker(MarkerOptions().position(point))
-            if (marker != null) {
-                markers.add(marker)
+            // Add a marker for each LatLng point and add it to the markers list
+            for (point in points) {
+                val marker = googleMap.addMarker(MarkerOptions().position(point))
+                if (marker != null) {
+                    markers.add(marker)
+                }
             }
+
+            // Create a polylineOptions object to customize the appearance of the polyline
+            val polylineOptions = PolylineOptions()
+                .color(Color.BLUE)
+                .width(5f)
+                .geodesic(true)
+
+            // Add each point to the polylineOptions object
+            for (point in points) {
+                polylineOptions.add(point)
+            }
+
+            // Add the polyline to the map using the polylineOptions object
+            val polyline = googleMap.addPolyline(polylineOptions)
+
+
+            // Set the bounds of the map to include all the markers and the polyline
+            val builder = LatLngBounds.Builder()
+            for (marker in markers) {
+                builder.include(marker.position)
+            }
+            builder.include(polyline.points[0])
+            builder.include(polyline.points[polyline.points.size - 1])
+            val bounds = builder.build()
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
         }
-
-        // Create a polylineOptions object to customize the appearance of the polyline
-        val polylineOptions = PolylineOptions()
-            .color(Color.BLUE)
-            .width(5f)
-            .geodesic(true)
-
-        // Add each point to the polylineOptions object
-        for (point in points) {
-            polylineOptions.add(point)
-        }
-
-        // Add the polyline to the map using the polylineOptions object
-        val polyline = googleMap.addPolyline(polylineOptions)
-
-        // Set the bounds of the map to include all the markers and the polyline
-        val builder = LatLngBounds.Builder()
-        for (marker in markers) {
-            builder.include(marker.position)
-        }
-        builder.include(polyline.points[0])
-        builder.include(polyline.points[polyline.points.size - 1])
-        val bounds = builder.build()
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
     }
     }
 //    fun ok(){
