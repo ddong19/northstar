@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -21,6 +22,16 @@ import androidx.compose.ui.graphics.Brush
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainView(context: Context, navController: NavHostController, customModifier: Modifier) {
+
+    var isLaunching by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (isLaunching) {
+            isLaunching = false
+            TripStore.updateCurrentTrip(context, 3) // user id is 3
+        }
+    }
+
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = {
             val backgroundBrush = Brush.linearGradient(

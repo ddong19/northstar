@@ -20,6 +20,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,55 +33,27 @@ import androidx.navigation.NavHostController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import edu.umich.aehill.reminiscetest.TripStore.currentTrip
+import edu.umich.aehill.reminiscetest.TripStore.updateCurrentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
-import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 
 
 @Composable
 fun TripPageContent(context: Context, navController: NavHostController, destination: String?){
-    // getting latest tripID
-    /*
-    SELECT `id`
-    FROM `table`
-    ORDER BY `date added` DESC
-    LIMIT 1
- */
+
+    var isLaunching by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (isLaunching) {
+            isLaunching = false
+            updateCurrentTrip(context, 3) // user id is 3
+        }
+    }
+
+
     val user_id = 3
-    Log.e("TripPageView", "querying for curr trip id is happening")
-
-    var serverUrl = "https://34.75.243.151/getalltrips/$user_id"
-    var nFields = 7 // number of fields that each trip should have returned
-    var returnTripId = "2" // TODO: change?
-
-    Log.e("TripPageView", "User id is $user_id")
     val queue = Volley.newRequestQueue(context)
-
-    val getRequest = JsonObjectRequest(serverUrl,
-        { response ->
-            val tripsReceived = try { response.getJSONArray("trips") } catch (e: JSONException) { JSONArray() }
-            Log.e("TripPageView", "trips received length is $tripsReceived.length()")
-            // get the first trip in the array
-            if(tripsReceived.length() > 0){
-                val tripEntry = tripsReceived[0] as JSONArray
-                if(tripEntry.length() == nFields){
-                    returnTripId = tripEntry[0].toString()  // TODO: is this the trip id? should be i think
-                    Log.e("TripPageView", "most recent completed trip query $returnTripId")
-                }
-                else{
-                    Log.e("TripPageView", "error with calling the most recently completed trip query")
-                }
-            }
-        }, {  }
-
-    )
-
-    queue.add(getRequest)
-
-    Log.e("TripPageView", "return trip id is $returnTripId")
-
-
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         FloatingActionButton(
@@ -127,12 +100,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
         }
         Button(
             onClick = {
-                Log.e("TripPageView", "button clicked")
-//                var tripId = queryForMostRecentTripID(context,3).toInt() // TODO: change to actual user rn is dan2
-                var tripId = Global.currentTripID
-                Log.e("query for most recent trip id", "query just happened and it returned $tripId")
-                Log.e("TripPageView", "trip id is $tripId")
-                navController.navigate("CompletedTripView/$tripId")
+                navController.navigate("CompletedTripView/$currentTrip.tripId")
             }
         ) {
             Text(text = "Finish Trip")
@@ -166,17 +134,16 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
                     Log.d("get id", "ID IS: $id")
                     Log.d("get location", "location IS: $location")
                     val jsonObj = mapOf(
-//                        "trip_id" to queryForMostRecentTripID(context,3).toInt(), // TODO: change to actual user
-                        "trip_id" to Global.currentTripID,
+                        "trip_id" to currentTrip.tripId,
                         "image_location" to location.toString(),
                         "image_uri" to imageUris[index].toString(),
                     )
-                    var serverUrl = "https://34.75.243.151" // not sure ab this
+                    var serverUrl = "https://34.75.243.151"
                     val postRequest = JsonObjectRequest(
                         Request.Method.POST,
                         serverUrl+"/postimage/", JSONObject(jsonObj),
                         {
-                            Log.d("postImage", "image data posted to $returnTripId!")
+                            Log.d("postImage", "image data posted to ${currentTrip.tripId}!")
                         },
                         { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
                     )
@@ -218,7 +185,6 @@ fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripPageView(context: Context, navController: NavHostController, customModifier: Modifier, destination: String?) {
-    queryForMostRecentTripID(context, 3)
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
