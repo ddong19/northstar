@@ -17,6 +17,17 @@ object TripStore {
     private lateinit var queue: RequestQueue
     private const val serverUrl = "https://34.75.243.151"
 
+    // TODO: update here with canned tripid for each user
+    private fun getCorrespondingFriendTripID(friendUsername: String): Int {
+        return when (friendUsername) {
+            "alannaemmrie" -> 272
+            "jhuber" -> 279
+            else -> { // ritikas
+                280
+            }
+        }
+    }
+
     // for updating the current trip page
     fun updateCurrentTrip(context: Context, userId: Int) {
 
@@ -39,12 +50,12 @@ object TripStore {
 
                         currentTrip = Trip(tripId = tripEntry[0].toString(), userId = tripEntry[1].toString(),
                         destination = tripEntry[2].toString(), startDate = tripEntry[3].toString(), endDate = tripEntry[4].toString(),
-                        ownerUsername = tripEntry[5].toString(), description = tripEntry[5].toString(), friends = tripEntry[6].toString())
+                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString())
 
                         Log.d("TripStore/updateCurrentTrip", "current trip id has been updated to " + currentTrip.tripId.toString())
+                        Log.d("TripStore/updateCurrentTrip", tripEntry.toString())
 
                         // get the images for this trip also
-
                         getImagesForCurrentTrip(context, currentTrip.tripId)
 
                     }
@@ -63,10 +74,8 @@ object TripStore {
         queue.add(getRequest)
     }
 
-    // TODO: write func for updating the current trip location information
-
     // for updating the images for the current trip page
-    fun getImagesForCurrentTrip(context: Context, tripId: String?){
+    private fun getImagesForCurrentTrip(context: Context, tripId: String?){
 
         Log.d("getImagesForCurrentTrip", "getImagesForCurrentTrip called")
 
@@ -87,7 +96,6 @@ object TripStore {
                             URI = image[3].toString())
                         Log.e("getImagesForCurrentTrip", image.toString())
                         if (image.length() == 3 || image.length() == 4) {
-                            // imageURIs = (imageURIs + image[3].toString()) as MutableList<String>
                             imageURIs = (imageURIs + tripImage) as MutableList<TripImage>
                         } else {
                             Log.e("getImagesForCurrentTrip", "Received unexpected number of fields: " + image.length().toString() + " instead of 3")
@@ -102,6 +110,24 @@ object TripStore {
 
                 }
 
+                // get images for friends
+                if(currentTrip.friends != null && currentTrip.friends != ""){
+                    // split
+                    var friendUsernames = currentTrip.friends!!.split(",")
+
+                    // at least one friend
+                    if(friendUsernames.isNotEmpty()){
+                        getImagesForTripFriend(context, friendUsernames[0], true)
+                    }
+
+                    // has second friend - call friend two
+                    if(friendUsernames.size > 1){
+                        getImagesForTripFriend(context, friendUsernames[1], false)
+                    }
+
+                    // friend two images
+                }
+
             }, {  }
 
         )
@@ -109,6 +135,59 @@ object TripStore {
             queue = newRequestQueue(context)
         }
         queue.add(getRequest)
+    }
+
+    private fun getImagesForTripFriend(context: Context, friendUsername: String, isFriendOne: Boolean){
+
+        var tripId = getCorrespondingFriendTripID(friendUsername)
+        Log.d("getimagesfortripfriends", "trip id is " + tripId)
+
+        val url = serverUrl+"/gettripimages/"+tripId
+
+        Log.d("getImagesForTripFriend", url)
+
+        val getRequest = JsonObjectRequest(
+            url,
+            { response ->
+                val imagesReceived = try { response.getJSONArray("images") } catch (e: JSONException) { JSONArray() }
+                if (imagesReceived.length() > 0){
+                    var imageURIs = mutableListOf<TripImage>()
+
+                    for (i in 0 until imagesReceived.length()) {
+                        val image = imagesReceived[i] as JSONArray
+                        val tripImage = TripImage(imageId = image[0].toString(),
+                            tripId = image[1].toString(), coords = image[2].toString(),
+                            URI = image[3].toString())
+                        Log.e("getImagesForTripFriend", image.toString())
+                        if (image.length() == 3 || image.length() == 4) {
+                            imageURIs = (imageURIs + tripImage) as MutableList<TripImage>
+                        } else {
+                            Log.e("getImagesForTripFriend", "Received unexpected number of fields: " + image.length().toString() + " instead of 3")
+                        }
+
+                        if(isFriendOne){
+                            currentTrip.friendOneImageURIs = imageURIs
+                            Log.d("getImagesForTripFriend", "trip friend one images updated")
+                            Log.d("getImagesForTripFriend", currentTrip.friendOneImageURIs.toString()   )
+                        }
+                        else{
+                            currentTrip.friendTwoImageURIs = imageURIs
+                            Log.d("getImagesForTripFriend", "trip friend two images updated")
+                            Log.d("getImagesForTripFriend", currentTrip.friendTwoImageURIs.toString() )
+                        }
+
+                    }
+
+                }
+
+            }, {  }
+
+        )
+        if (!this::queue.isInitialized) {
+            queue = newRequestQueue(context)
+        }
+        queue.add(getRequest)
+
     }
 
     fun postNewTrip(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,

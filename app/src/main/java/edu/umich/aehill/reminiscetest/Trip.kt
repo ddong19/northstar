@@ -2,16 +2,11 @@ package edu.umich.aehill.reminiscetest
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-
 class TripImage(var imageId: String?,
                 var tripId: String?,
                 var coords: String? ,
                 var URI: String){
 }
-
-
-// trip id, user id, destination, start date, end date, username, description
-// [209, 3, "cancun", "03162023", "03192023", "alannaemmrie", "test trip description"],
 
 class Trip(var tripId: String? = null,
            var userId: String? = null,
@@ -21,12 +16,16 @@ class Trip(var tripId: String? = null,
            var ownerUsername: String? = null,
            var description: String? = null,
            var friends: String? = "",
+           tripFriend1Images: MutableList<TripImage>? = null,
+           tripFriend2Images: MutableList<TripImage>? = null,
            tripImages: MutableList<TripImage>? = null) {
 
     var imageURIs: MutableList<TripImage>? by TripPropDelegate(tripImages)
-}
+    var friendOneImageURIs: MutableList<TripImage>? by TripPropDelegate(tripFriend1Images)
+    var friendTwoImageURIs: MutableList<TripImage>? by TripPropDelegate(tripFriend2Images)
 
-// pretty sure this just lets us change the image URIs - not sure if needed
+
+}
 class TripPropDelegate private constructor ():
     ReadWriteProperty<Any?, MutableList<TripImage>?> {
     private var _value: MutableList<TripImage>? = null
