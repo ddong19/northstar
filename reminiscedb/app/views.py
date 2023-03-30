@@ -61,16 +61,16 @@ def posttrip(request):
     trip_start = json_data['trip_start']
     trip_end = json_data['trip_end']
     trip_spotify = json_data['trip_spotify']
-    # trip_people = json_data['trip_people']
+    trip_people = json_data['trip_people']
     trip_description = json_data['trip_description']
 
     cursor = connection.cursor()
     
     insert_stmt = (
-    "INSERT INTO trips (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description) "
+    "INSERT INTO trips (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) "
     "VALUES (%s, %s, %s, %s, %s, %s)"
     )
-    data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_description)
+    data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description)
     cursor.execute(insert_stmt, data)
 
     return JsonResponse({})
