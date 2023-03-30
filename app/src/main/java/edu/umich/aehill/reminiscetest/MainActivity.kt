@@ -99,6 +99,9 @@ class MainActivity : ComponentActivity() {
                 composable("LoginView"){
                     LoginView(this@MainActivity, navController, loginViewModifier)
                 }
+                composable("TripStatisticsView"){
+                    TripStatisticsView(this@MainActivity, navController, reusableModifier, "3")
+                }
             }
         }
     }
