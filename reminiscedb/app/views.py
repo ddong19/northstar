@@ -68,7 +68,7 @@ def posttrip(request):
     
     insert_stmt = (
     "INSERT INTO trips (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) "
-    "VALUES (%s, %s, %s, %s, %s, %s)"
+    "VALUES (%s, %s, %s, %s, %s, %s, %s)"
     )
     data = (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description)
     cursor.execute(insert_stmt, data)
