@@ -1,6 +1,7 @@
 package edu.umich.aehill.reminiscetest
 
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -34,7 +35,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        val colors = listOf(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLACK, Color.WHITE)
+        var whichColor = 0
         val pointsList = listOf(
             listOf(
                 LatLng(42.2808, 83.7430),
@@ -51,6 +53,24 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 LatLng(70.1784, 125.5708)
             )
         )
+
+        // Calculates distance of user's trip (first item of pointsList[0])
+        var totalDistance = 0.0
+        var pts = pointsList[0]
+        for (i in 0 until pts.size - 1){
+            val startPoint = Location("locationA")
+            startPoint.latitude = pts[i].latitude
+            startPoint.longitude = pts[i].longitude
+
+            val endPoint = Location("locationB")
+            endPoint.latitude = pts[i+1].latitude
+            endPoint.longitude = pts[i+1].longitude
+
+            totalDistance += startPoint.distanceTo(endPoint)
+        }
+
+
+
         for (points in pointsList) {
             // Create an empty list to hold the marker objects
             val markers = mutableListOf<Marker>()
@@ -65,7 +85,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // Create a polylineOptions object to customize the appearance of the polyline
             val polylineOptions = PolylineOptions()
-                .color(Color.BLUE)
+                .color(colors[whichColor % 6])
                 .width(5f)
                 .geodesic(true)
 
@@ -87,36 +107,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             builder.include(polyline.points[polyline.points.size - 1])
             val bounds = builder.build()
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+            whichColor += 1
         }
     }
-    }
-//    fun ok(){
-//        if (ActivityCompat.checkSelfPermission(
-//                this,
-//                ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                this,
-//                ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return
-//        }
-//        LocationServices.getFusedLocationProviderClient(applicationContext)
-//            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
-//            .addOnCompleteListener {
-//                if (it.isSuccessful) {
-//                    lat = it.result.latitude
-//                    long = it.result.longitude
-//                } else {
-//                    Log.e("PostActivity getFusedLocation", it.exception.toString())
-//                }
-//            }
-//    }
+}
 
