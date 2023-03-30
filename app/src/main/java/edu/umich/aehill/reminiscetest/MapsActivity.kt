@@ -3,6 +3,7 @@ package edu.umich.aehill.reminiscetest
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -68,7 +69,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             totalDistance += startPoint.distanceTo(endPoint)
         }
-
+        Log.d("DEBUG", "TOTAL DISTANCE: $totalDistance")
 
 
         for (points in pointsList) {
