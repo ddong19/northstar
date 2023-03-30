@@ -81,8 +81,7 @@ def getalltrips(request, user_id):
     
     # json_data = json.loads(request.body)
     # user_id_request = json_data['user_id']
-    
-    
+
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id))

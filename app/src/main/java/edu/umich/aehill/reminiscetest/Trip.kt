@@ -20,6 +20,7 @@ class Trip(var tripId: String? = null,
            var endDate: String? = null,
            var ownerUsername: String? = null,
            var description: String? = null,
+           var friends: String? = "",
            tripImages: MutableList<TripImage>? = null) {
 
     var imageURIs: MutableList<TripImage>? by TripPropDelegate(tripImages)

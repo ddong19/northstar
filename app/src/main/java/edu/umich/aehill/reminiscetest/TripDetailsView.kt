@@ -29,6 +29,8 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     var tripLocation by remember { mutableStateOf("")}
     var tripStartDate by remember { mutableStateOf("") }
     var tripEndDate by remember { mutableStateOf("") }
+    var tripFriend1 by remember { mutableStateOf("") }
+    var tripFriend2 by remember { mutableStateOf("") }
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
@@ -118,13 +120,55 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             }
         )
     }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        OutlinedTextField(
+            value = tripFriend1,
+            onValueChange = {
+                tripFriend1 = it
+                Log.e("tripdetailsview", "value entered into tripfriend1")
+            },
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Friend Username 1", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+        )
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        OutlinedTextField(
+            value = tripFriend2,
+            onValueChange = {
+                tripFriend2 = it
+                Log.e("tripdetailsview", "value entered into tripfriend2")
+            },
+            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            label = {
+                Text("Friend Username 2", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+            }
+        )
+    }
     // This would be where the right arrow button will be.
     Row(
         horizontalArrangement = Arrangement.End, // Align to the far right side of the screen
         modifier = Modifier.fillMaxWidth().padding(8.dp) // Add padding to make sure it doesn't touch the edge of the screen
     ) {
         IconButton(onClick = {
-            postNewTrip(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription)
+
+            // add people to array
+            var tripFriendsString = tripFriend1
+
+            if(tripFriend2 != ""){
+                tripFriendsString += "," + tripFriend2
+            }
+
+            Log.d("TripDetailsView/PostTripDetails",
+                "friends being added to trip are: $tripFriendsString"
+            )
+            
+            postNewTrip(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription, tripFriendsString)
             navController.navigate("TripPageView/$tripLocation")
         }) {
             Image(
@@ -135,6 +179,8 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             )
         }
     }
+
+
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)

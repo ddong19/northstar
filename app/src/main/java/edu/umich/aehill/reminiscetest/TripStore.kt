@@ -22,7 +22,7 @@ object TripStore {
 
         Log.d("TripStore/updateCurrentTrip", "update current trip called")
 
-        val nFields = 7
+        val nFields = 8
 
         val url = serverUrl+"/getalltrips/"+userId
 
@@ -39,12 +39,9 @@ object TripStore {
 
                         currentTrip = Trip(tripId = tripEntry[0].toString(), userId = tripEntry[1].toString(),
                         destination = tripEntry[2].toString(), startDate = tripEntry[3].toString(), endDate = tripEntry[4].toString(),
-                        ownerUsername = tripEntry[5].toString(), description = tripEntry[5].toString())
+                        ownerUsername = tripEntry[5].toString(), description = tripEntry[5].toString(), friends = tripEntry[6].toString())
 
                         Log.d("TripStore/updateCurrentTrip", "current trip id has been updated to " + currentTrip.tripId.toString())
-
-                        // trip id, user id, destination, start date, end date, username, description
-                        // [209, 3, "cancun", "03162023", "03192023", "alannaemmrie", "test trip description"]
 
                         // get the images for this trip also
 
@@ -53,6 +50,7 @@ object TripStore {
                     }
                     else{
                         Log.e("TripStore/updateCurrentTrip", "error with calling the most recently completed trip query")
+                        Log.e("TripStore/updateCurrentTrip", response.toString())
                     }
                 }
 
@@ -100,8 +98,6 @@ object TripStore {
 
                         Log.d("getImagesForCurrentTrip", "Current trip images have been updated")
                         Log.d("getImagesForCurrentTrip", "size of current trip images is " + currentTrip.imageURIs!!.size)
-
-
                     }
 
                 }
@@ -116,19 +112,19 @@ object TripStore {
     }
 
     fun postNewTrip(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
-                        description: String) {
-
+                        description: String, friends: String) {
         val jsonObj = mapOf(
             "user_id" to 3, // dummy user
             "trip_destination" to destination,
             "trip_start" to startDate,
             "trip_end" to endDate,
             "trip_spotify" to spotifyUsername,
+            "trip_people" to friends,
             "trip_description" to description
-            //TODO: add other columns here (?)
         )
 
         Log.e("TripStore/PostTripDetails", "Posting trip now!")
+        Log.e("TripStore/PostTripDetails", "friends is " + friends)
 
         val postRequest = JsonObjectRequest(
             Request.Method.POST,
