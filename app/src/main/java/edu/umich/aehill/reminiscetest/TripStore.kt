@@ -17,7 +17,6 @@ object TripStore {
     private lateinit var queue: RequestQueue
     private const val serverUrl = "https://34.75.243.151"
 
-    // TODO: update here with canned tripid for each user
     private fun getCorrespondingFriendTripID(friendUsername: String): Int {
         return when (friendUsername) {
             "alannaemmrie" -> 272
@@ -190,6 +189,8 @@ object TripStore {
 
     }
 
+
+    // post new trip to db
     fun postNewTrip(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
                         description: String, friends: String) {
         val jsonObj = mapOf(

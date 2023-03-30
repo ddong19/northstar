@@ -2,12 +2,15 @@ package edu.umich.aehill.reminiscetest
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
+
+// trip image class for current trip image arr
 class TripImage(var imageId: String?,
                 var tripId: String?,
                 var coords: String? ,
                 var URI: String){
 }
 
+// trip class, represents the trips stored in the DB
 class Trip(var tripId: String? = null,
            var userId: String? = null,
            var destination: String? = null,
@@ -26,6 +29,8 @@ class Trip(var tripId: String? = null,
 
 
 }
+
+// for updating trip images & friend trip images arrs
 class TripPropDelegate private constructor ():
     ReadWriteProperty<Any?, MutableList<TripImage>?> {
     private var _value: MutableList<TripImage>? = null
