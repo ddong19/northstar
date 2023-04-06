@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
                     LoginView(this@MainActivity, navController, loginViewModifier)
                 }
                 composable("TripStatisticsView"){
-                    TripStatisticsView(this@MainActivity, navController, reusableModifier, "3")
+                    TripStatisticsView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("SpotifyVIew"){
                     SpotifyView(this@MainActivity, navController, reusableModifier)
