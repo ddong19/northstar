@@ -102,6 +102,9 @@ class MainActivity : ComponentActivity() {
                 composable("TripStatisticsView"){
                     TripStatisticsView(this@MainActivity, navController, reusableModifier, "3")
                 }
+                composable("SpotifyVIew"){
+                    SpotifyView(this@MainActivity, navController, reusableModifier)
+                }
             }
         }
     }
