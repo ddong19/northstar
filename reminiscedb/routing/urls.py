@@ -27,4 +27,5 @@ urlpatterns = [
    path('postimage/', views.postimage, name='postimage'),
    path('getimage/<int:image_id>', views.getimage, name='getimage'),
    path('gettripimages/<int:trip_id>', views.gettripimages, name='gettripimages'),
+   path('getspotifyplaylist/<str:playlistID>', views.getspotifyplaylist, name='getspotifyplaylist'),
 ]

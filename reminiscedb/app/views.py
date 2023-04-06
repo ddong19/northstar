@@ -4,11 +4,13 @@ from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-# from google.oauth2 import id_token
-# from google.auth.transport import requests
-import urllib.request, json, os, time, hashlib
 from urllib import parse
 from urllib.parse import parse_qs, urlparse
+from requests import post, get
+import urllib.request, json, os, time, hashlib, base64
+
+# from google.oauth2 import id_token
+# from google.auth.transport import requests
 
 # TEMPORARY FRAMEWORK W/O EXPIRATION
 @csrf_exempt
@@ -156,3 +158,35 @@ def gettripimages(request, trip_id):
     response = {}
     response['images'] = data
     return JsonResponse(response)
+
+CLIENT_ID = '7cd5299abbef4b70b440ed43951faa81'
+CLIENT_SECRET = '96406df5ce204e29a64b3544c2492dbd'
+def get_token():
+    auth_string = CLIENT_ID + ":" + CLIENT_SECRET
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
+
+    url = "https://accounts.spotify.com/api/token"
+    headers = {
+        "Authorization": "Basic " + auth_base64,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    data = {"grant_type": "client_credentials"}
+    result = post(url, headers=headers, data=data)
+    json_result = json.loads(result.content)
+    token = json_result["access_token"]
+    return token
+
+def getspotifyplaylist(request, playlist_id):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+
+    # https://developer.spotify.com/documentation/web-api/reference/get-playlist
+    url = "https://api.spotify.com/v1/playlists/{}".format(playlist_id)
+    headers = {"Authorization": "Bearer " + get_token()}
+
+    result = get(url, headers=headers)
+    json_result = json.loads(result.content)
+
+    return json_result
+
