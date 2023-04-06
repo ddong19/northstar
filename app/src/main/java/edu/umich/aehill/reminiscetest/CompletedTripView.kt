@@ -108,6 +108,21 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
         "https://cdn.pixabay.com/photo/2023/03/14/12/41/ornamental-cherry-7852285_1280.jpg",
     )
 
+    val tripImagesAndFriendImages = mutableListOf<TripImage>()
+
+    currentTrip.imageURIs?.let { tripImagesAndFriendImages.addAll(it) }
+    currentTrip.friendOneImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
+    currentTrip.friendTwoImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
+
+    /*
+    Log.d("CompletedTripView", "appended trip images with friend images")
+    Log.d("CompletedTripView", "size of currenttrip.images is ${currentTrip.imageURIs?.size} " +
+            "and the size of tripImagesAndFriendImages is ${tripImagesAndFriendImages.size}")
+    Log.d("CompletedTripView", tripImagesAndFriendImages.toString())
+    */
+
+
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom
@@ -190,23 +205,22 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 
             Row() {
                 if (showSlideshow) {
-                    if (currentTrip.imageURIs?.size!! > 0) {  // i have no idea what this line means
+                    if (tripImagesAndFriendImages.size > 0) {  // i have no idea what this line means
                         Card(
                             modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
                             shape = RoundedCornerShape(16.dp),
                         ) {
                             AutoSlidingCarousel(
-                                itemsCount = currentTrip.imageURIs!!.size,
+                                itemsCount = tripImagesAndFriendImages.size,
                                 itemContent = { index ->
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalContext.current)
-                                            .data(currentTrip.imageURIs!![index].URI)
+                                            .data(tripImagesAndFriendImages[index].URI)
                                             .build(),
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.height(250.dp)
                                     )
-                                    Log.d("completed trip view", currentTrip.imageURIs!![index].URI)
                                 }
                             )
                         }
@@ -245,8 +259,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                             contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-//                    Log.d("get Uri", "Uri IS: $imageUris")
-//                    Log.d("get size Uri", "Uri size is: $imageUris.size" )
                             if (imageUris != null) {
                                 items(imageUris.size) { index ->
                                     val bitmap = bitmaps.getOrNull(index) ?: run {
