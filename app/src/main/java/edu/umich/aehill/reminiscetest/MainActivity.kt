@@ -102,13 +102,21 @@ class MainActivity : ComponentActivity() {
                 composable("TripStatisticsView"){
                     TripStatisticsView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("SpotifyVIew"){
+                composable("SpotifyView"){
                     SpotifyView(this@MainActivity, navController, reusableModifier)
                 }
+                composable("WeatherView/{destination}/{startDate}/{endDate}",
+                    arguments = listOf(navArgument("destination") { type = NavType.StringType }, navArgument("startDate") { type = NavType.StringType }, navArgument("endDate") { type = NavType.StringType })
+                )
+                { navBackStackEntry ->
+                    WeatherView(this@MainActivity, navController, reusableModifier, "3", navBackStackEntry.arguments?.getString("destination"),navBackStackEntry.arguments?.getString("startDate"),navBackStackEntry.arguments?.getString("endDate"))
+                }
+
+            }
             }
         }
     }
-}
+
 
 @Composable
 fun Greeting(str: String) {

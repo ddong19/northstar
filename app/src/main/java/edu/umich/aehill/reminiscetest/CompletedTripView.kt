@@ -99,6 +99,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 
 
     var showSlideshow by remember { mutableStateOf(false) }
+    var showWeather by remember { mutableStateOf(false) }
 
     val images = listOf(
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
@@ -126,13 +127,38 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painter = painterResource(id = R.drawable.weather),
-                        contentDescription = "Weather",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
+                    //TO DO: Add function call to new composable function that defines weather button
+//                WeatherButton(
+//                    context = context,
+//                    navController = navController,
+//                    customModifier = Modifier,
+//                    tripId = "3",
+//                    destination = "${currentTrip.destination}"
+//                )
+                    IconButton(onClick = {
+                        showWeather = !showWeather
+                    }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.weather),
+                            contentDescription = "Weather",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+
                     Text("Weather", color = Color.White)
+                }
+                if (showWeather){
+                    WeatherView(
+                        context = context,
+                        navController = navController,
+                        customModifier = Modifier,
+                        tripID = "3",
+                        destination = "${currentTrip.destination}",
+                        startDate = "${currentTrip.startDate}",
+                        endDate = "${currentTrip.endDate}"
+                    )
+                    Log.e("Weather", "SHOWING WEATHER")
                 }
                 IconButton(onClick = {
                     navController.navigate("SpotifyView")
