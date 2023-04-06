@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.ColorFilter
 import edu.umich.aehill.reminiscetest.TripStore.postNewTrip
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TripDetailsViewContent(context: Context, navController: NavHostController){
 
@@ -31,6 +32,10 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     var tripEndDate by remember { mutableStateOf("") }
     var tripFriend1 by remember { mutableStateOf("") }
     var tripFriend2 by remember { mutableStateOf("") }
+    val friendMenuOptions = listOf("alannaemmrie", "ritikas", "jonhuber")
+    var menu1Expanded by remember { mutableStateOf(false) }
+    var menu2Expanded by remember { mutableStateOf(false) }
+
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
@@ -51,7 +56,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
             colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
             label = {
-                Text("Destination", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+                Text("City", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
             }
         )
     }
@@ -101,7 +106,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
             colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
             label = {
-                Text("Spotify", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+                Text("Playlist Link", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
             }
         )
     }
@@ -121,6 +126,52 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
         )
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        /*
+        src:
+        https://stackoverflow.com/questions/67111020/exposed-drop-down-menu-for-jetpack-compose
+         */
+
+        ExposedDropdownMenuBox(
+            expanded = menu1Expanded,
+            onExpandedChange = {
+                menu1Expanded = !menu1Expanded
+            }
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = tripFriend1,
+                onValueChange = { },
+                label = {Text("Friend Username 1", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = menu1Expanded
+                    )
+                },
+                modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            )
+            ExposedDropdownMenu(
+                expanded = menu1Expanded,
+                onDismissRequest = {
+                    menu1Expanded = false
+                }
+            ) {
+                friendMenuOptions.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            tripFriend1 = selectionOption
+                            menu1Expanded = false
+                        }
+                    ){
+                        Text(text = selectionOption)
+                    }
+                }
+            }
+        }
+
+        /*
+
         OutlinedTextField(
             value = tripFriend1,
             onValueChange = {
@@ -134,9 +185,59 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 Text("Friend Username 1", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
             }
         )
+
+         */
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
-        OutlinedTextField(
+        /*
+        src:
+        https://stackoverflow.com/questions/67111020/exposed-drop-down-menu-for-jetpack-compose
+         */
+
+        ExposedDropdownMenuBox(
+            expanded = menu2Expanded,
+            onExpandedChange = {
+                menu2Expanded = !menu2Expanded
+            }
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = tripFriend2,
+                onValueChange = { },
+                label = {Text("Friend Username 2", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = menu1Expanded
+                    )
+                },
+                modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
+            )
+            ExposedDropdownMenu(
+                expanded = menu2Expanded,
+                onDismissRequest = {
+                    menu2Expanded = false
+                }
+            ) {
+                friendMenuOptions.forEach { selectionOption ->
+                    if(selectionOption != tripFriend1){
+
+                        DropdownMenuItem(
+                            onClick = {
+                                tripFriend2 = selectionOption
+                                menu2Expanded = false
+                            }
+                        ){
+                            Text(text = selectionOption)
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+            OutlinedTextField(
             value = tripFriend2,
             onValueChange = {
                 tripFriend2 = it
@@ -149,6 +250,8 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 Text("Friend Username 2", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
             }
         )
+         */
+
     }
     // This would be where the right arrow button will be.
     Row(
@@ -160,7 +263,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             // add people to array
             var tripFriendsString = tripFriend1
 
-            if(tripFriend2 != ""){
+            if(tripFriend2 != "" && tripFriend2 != tripFriend1){ // account for empty & duplicates
                 tripFriendsString += "," + tripFriend2
             }
 
