@@ -114,6 +114,8 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     currentTrip.friendOneImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
     currentTrip.friendTwoImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
 
+    tripImagesAndFriendImages.shuffle()
+
     /*
     Log.d("CompletedTripView", "appended trip images with friend images")
     Log.d("CompletedTripView", "size of currenttrip.images is ${currentTrip.imageURIs?.size} " +
