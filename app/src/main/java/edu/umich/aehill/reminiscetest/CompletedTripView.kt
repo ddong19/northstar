@@ -145,7 +145,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                         Text("Spotify", color = Color.White)
                     }
                 }
-
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     IconButton(onClick = {
                         val intent = Intent(context, MapsActivity::class.java)
@@ -172,6 +171,19 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                         )
                     }
                     Text("Slideshow", color = Color.White)
+                }
+                IconButton(onClick = {
+                    Log.d("CompletedTripView", "this will eventually navigate to stats page")
+                }) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(id = R.drawable.statistics),
+                            contentDescription = "Statistics",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Text("Stats", color = Color.White)
+                    }
                 }
             }
 
