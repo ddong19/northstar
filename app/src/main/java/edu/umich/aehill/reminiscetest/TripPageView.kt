@@ -1,3 +1,6 @@
+
+
+
 package edu.umich.aehill.reminiscetest
 
 
@@ -10,12 +13,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,13 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -42,11 +40,10 @@ import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import edu.umich.aehill.reminiscetest.TripStore.updateCurrentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import org.json.JSONObject
-import coil.request.ImageRequest
 
 
 @Composable
-fun TripPageContent(context: Context, navController: NavHostController, destination: String?) {
+fun TripPageContent(context: Context, navController: NavHostController, destination: String?){
 
     var isLaunching by rememberSaveable { mutableStateOf(true) }
 
@@ -61,19 +58,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
     val user_id = 3
     val queue = Volley.newRequestQueue(context)
 
-    //photo picker for tumbnail
-    var thumbnailUri: Any? by remember { mutableStateOf(R.drawable.baseline_add_circle_outline_24) }
-    val photoPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) {
-        if (it != null) {
-            Log.d("PhotoPicker", "Selected URI: $it")
-            thumbnailUri = it
-        } else {
-            Log.d("PhotoPicker", "No media selected")
-        }
-    }
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
             //need to get tripLocation from input from the user
 
@@ -85,109 +70,92 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
             textAlign = TextAlign.Right
         )
     }
-        var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
-        val context = LocalContext.current
-        val bitmaps = remember { mutableStateListOf<Bitmap>() }
+    var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
+    val context = LocalContext.current
+    val bitmaps = remember { mutableStateListOf<Bitmap>() }
 
-        val launcher =
-            rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
-            { uris: List<Uri>? ->
-                if (uris != null) {
-                    imageUris = uris
-                }
-            }
-        Log.d("get Uri", "Uri IS: $imageUris")
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth(1f)
-        ) {
-            Button(
-                onClick = {
-                    launcher.launch("image/*")
-                }
-            ) {
-                Text("Select Images")
-            }
-            Button(
-                onClick = {
-                    navController.navigate("CompletedTripView/$currentTrip.tripId")
-                }
-            ) {
-                Text(text = "Finish Trip")
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents())
+        { uris: List<Uri>? ->
+            if (uris != null) {
+                imageUris = uris
             }
         }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(128.dp), // 3 images per row
-                contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Log.d("get Uri", "Uri IS: $imageUris")
-                Log.d("get size Uri", "Uri size is: $imageUris.size")
-                items(imageUris.size) { index ->
-                    val bitmap = bitmaps.getOrNull(index) ?: run {
-                        val newBitmap = if (Build.VERSION.SDK_INT < 28) {
-                            MediaStore.Images.Media.getBitmap(
-                                context.contentResolver,
-                                imageUris[index]
-                            )
-                        } else {
-                            val source =
-                                ImageDecoder.createSource(context.contentResolver, imageUris[index])
-                            ImageDecoder.decodeBitmap(source)
-                        }
-                        bitmaps.add(newBitmap)
-                        Log.d("image uris", "$imageUris")
-                        val exif = ExifInterface(imageUris[index].path!!)
-                        val latLong = FloatArray(2)
-                        val hasLatLong = exif.getLatLong(latLong)
-                        val latitude = latLong[0]
-                        val longitude = latLong[1]
-                        val location = Pair(latitude,longitude)
-                        val full_uri = imageUris[index].toString().split("/")
-                        Log.d("full uri", "$full_uri")
-                        val id = full_uri[full_uri.size - 1]
-                        Log.d("get id", "ID IS: $id")
-                        Log.d("get location", "location IS: $location")
-                        val jsonObj = mapOf(
-                            "trip_id" to currentTrip.tripId,
-                            "image_location" to location.toString(),
-                            "image_uri" to imageUris[index].toString(),
-                        )
-                        var serverUrl = "https://34.75.243.151"
-                        val postRequest = JsonObjectRequest(
-                            Request.Method.POST,
-                            serverUrl + "/postimage/", JSONObject(jsonObj),
-                            {
-                                Log.d("postImage", "image data posted to ${currentTrip.tripId}!")
-                            },
-                            { error ->
-                                Log.e(
-                                    "postImage",
-                                    error.localizedMessage ?: "JsonObjectRequest error"
-                                )
-                            }
-                        )
-                        queue.add(postRequest)
-                        newBitmap
-                    }
-
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f) // maintain aspect ratio of image
-                            .padding(4.dp) // add padding between images
-                    )
-                }
+    Log.d("get Uri", "Uri IS: $imageUris")
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        Button(
+            onClick = {
+                launcher.launch("image/*")
             }
+        ) {
+            Text("Select Images")
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Button(
+            onClick = {
+                navController.navigate("CompletedTripView/$currentTrip.tripId")
+            }
+        ) {
+            Text(text = "Finish Trip")
+        }
     }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(128.dp), // 3 images per row
+            contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Log.d("get Uri", "Uri IS: $imageUris")
+            Log.d("get size Uri", "Uri size is: $imageUris.size" )
+            items(imageUris.size) { index ->
+                val bitmap = bitmaps.getOrNull(index) ?: run {
+                    val newBitmap = if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[index])
+                    } else {
+                        val source = ImageDecoder.createSource(context.contentResolver, imageUris[index])
+                        ImageDecoder.decodeBitmap(source)
+                    }
+                    bitmaps.add(newBitmap)
+                    Log.d("image uris", "$imageUris")
+                    val location = getLatLong(context, imageUris[index])
+                    val full_uri = imageUris[index].toString().split("/")
+                    Log.d("full uri", "$full_uri")
+                    val id = full_uri[full_uri.size - 1]
+                    Log.d("get id", "ID IS: $id")
+                    Log.d("get location", "location IS: $location")
+                    val jsonObj = mapOf(
+                        "trip_id" to currentTrip.tripId,
+                        "image_location" to location.toString(),
+                        "image_uri" to imageUris[index].toString(),
+                    )
+                    var serverUrl = "https://34.75.243.151"
+                    val postRequest = JsonObjectRequest(
+                        Request.Method.POST,
+                        serverUrl+"/postimage/", JSONObject(jsonObj),
+                        {
+                            Log.d("postImage", "image data posted to ${currentTrip.tripId}!")
+                        },
+                        { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
+                    )
+                    queue.add(postRequest)
+                    newBitmap
+                }
+
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f) // maintain aspect ratio of image
+                        .padding(4.dp) // add padding between images
+                )
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+}
 
 @Composable
 fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
@@ -212,5 +180,3 @@ fun TripPageView(context: Context, navController: NavHostController, customModif
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
-
-
