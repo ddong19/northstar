@@ -1,3 +1,6 @@
+
+
+
 package edu.umich.aehill.reminiscetest
 
 
@@ -56,17 +59,6 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
     val queue = Volley.newRequestQueue(context)
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
-        FloatingActionButton(
-            backgroundColor = Color(0xFF808080),
-            contentColor = Color(0xFF000000),
-            modifier = Modifier.padding(35.dp, 90.dp, 0.dp, 0.dp),
-
-            onClick = {
-                //
-            }
-        ) {
-            Icon(Icons.Default.AddCircle, "add")
-        }
         Text(
             //need to get tripLocation from input from the user
 
@@ -163,7 +155,7 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
         }
     }
     Spacer(modifier = Modifier.height(12.dp))
-    }
+}
 
 @Composable
 fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
@@ -188,5 +180,3 @@ fun TripPageView(context: Context, navController: NavHostController, customModif
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier,
         content = { TripPageContent(context = context, navController = navController, destination = destination ) })
 }
-
-

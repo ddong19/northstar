@@ -8,9 +8,13 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -51,18 +55,37 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     }
 
     // UI for trip name and thumbnail
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
-        FloatingActionButton(
-            backgroundColor = Color(0xFF808080),
-            contentColor = Color(0xFF000000),
-            modifier = Modifier.padding(35.dp, 25.dp, 0.dp, 30.dp),
-
-            onClick = {
-                //implement in MVP
-            }
-        ) {
-            Icon(Icons.Default.AddCircle, "add")
+    var thumbnailUri: Any? by remember { mutableStateOf(R.drawable.baseline_add_circle_outline_24) }
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        if (it != null) {
+            Log.d("PhotoPicker", "Selected URI: $it")
+            thumbnailUri = it
+        } else {
+            Log.d("PhotoPicker", "No media selected")
         }
+    }
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
+        Spacer(modifier = Modifier.height(24.dp))
+        AsyncImage(
+            modifier = Modifier
+                .padding(start = 50.dp)
+                .size(100.dp)
+                .clickable {
+                    photoPicker.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                },
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(thumbnailUri)
+                .crossfade(enable = true)
+                .build(),
+            contentDescription = "Avatar Image",
+            contentScale = ContentScale.Crop,
+        )
         Log.d("destination", "${currentTrip.destination}")
         Text(
             //need to get tripLocation from input from the user
