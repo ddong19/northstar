@@ -121,141 +121,99 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
         verticalArrangement = Arrangement.Top
     ) {
 
-<<<<<<< HEAD
-        Box(modifier = Modifier.fillMaxHeight()) {
-=======
->>>>>>> bff7d2e431a65faa05925583d4107375c0f2ce08
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = {
-                        showWeather = !showWeather
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.weather),
-                            contentDescription = "Weather",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-
-                    Text("Weather", color = Color.White)
-                }
-                if (showWeather){
-                    WeatherView(
-                        context = context,
-                        navController = navController,
-                        customModifier = Modifier,
-                        tripID = "3",
-                        destination = "${currentTrip.destination}",
-                        startDate = "${currentTrip.startDate}",
-                        endDate = "${currentTrip.endDate}"
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                //TO DO: Add function call to new composable function that defines weather button
+//                WeatherButton(
+//                    context = context,
+//                    navController = navController,
+//                    customModifier = Modifier,
+//                    tripId = "3",
+//                    destination = "${currentTrip.destination}"
+//                )
+                IconButton(onClick = {
+                    showWeather = !showWeather
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.weather),
+                        contentDescription = "Weather",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
                     )
-                    Log.e("Weather", "SHOWING WEATHER")
                 }
-                IconButton(onClick = {
-                    navController.navigate("SpotifyView")
-                }) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.spotify),
-                            contentDescription = "Spotify",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                        Text("Spotify", color = Color.White)
-                    }
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = {
-                        val intent = Intent(context, MapsActivity::class.java)
-                        context.startActivity(intent)
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.map),
-                            contentDescription = "Map",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Text("Map", color = Color.White)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = {
-                        showSlideshow = !showSlideshow
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.slideshow),
-                            contentDescription = "Slideshow",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Text("Slideshow", color = Color.White)
-                }
-                IconButton(onClick = {
-                    Log.d("CompletedTripView", "this will eventually navigate to stats page")
-                }) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.statistics),
-                            contentDescription = "Statistics",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                        Text("Stats", color = Color.White)
-                    }
-                }
-<<<<<<< HEAD
-            }
 
-            Row() {
-                if (showSlideshow) {
-                    if (tripImagesAndFriendImages.size > 0) {  // i have no idea what this line means
-                        Card(
-                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                            shape = RoundedCornerShape(16.dp),
-                        ) {
-                            AutoSlidingCarousel(
-                                itemsCount = tripImagesAndFriendImages.size,
-                                itemContent = { index ->
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(tripImagesAndFriendImages[index].URI)
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier.height(250.dp)
-                                    )
-                                }
-                            )
-                        }
-                    } else {
-                        Card(
-                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                            shape = RoundedCornerShape(16.dp),
-                        ) {
-                            AutoSlidingCarousel(
-                                itemsCount = images.size,
-                                itemContent = { index ->
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(images[index])
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier.height(250.dp)
-                                    )
-                                }
-                            )
-                        }
-                    }
-=======
+                Text("Weather", color = Color.White)
+            }
+            if (showWeather){
+                WeatherView(
+                    context = context,
+                    navController = navController,
+                    customModifier = Modifier,
+                    tripID = "3",
+                    destination = "${currentTrip.destination}",
+                    startDate = "${currentTrip.startDate}",
+                    endDate = "${currentTrip.endDate}"
+                )
+                Log.e("Weather", "SHOWING WEATHER")
+            }
+            IconButton(onClick = {
+                navController.navigate("SpotifyView")
+            }) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painter = painterResource(id = R.drawable.spotify),
+                        contentDescription = "Spotify",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text("Spotify", color = Color.White)
+                }
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = {
+                    val intent = Intent(context, MapsActivity::class.java)
+                    context.startActivity(intent)
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.map),
+                        contentDescription = "Map",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Text("Map", color = Color.White)
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = {
+                    showSlideshow = !showSlideshow
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.slideshow),
+                        contentDescription = "Slideshow",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Text("Slideshow", color = Color.White)
+            }
+            IconButton(onClick = {
+                Log.d("CompletedTripView", "this will eventually navigate to stats page")
+            }) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painter = painterResource(id = R.drawable.statistics),
+                        contentDescription = "Statistics",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text("Stats", color = Color.White)
+                }
+            }
         }
->>>>>>> bff7d2e431a65faa05925583d4107375c0f2ce08
 
         Row( modifier = Modifier.weight(1f, false)) {
             if (showSlideshow) {
@@ -356,10 +314,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, navController) })
 }
-
-
-
-
 
 
 
