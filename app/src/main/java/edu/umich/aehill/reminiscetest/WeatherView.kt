@@ -1,6 +1,18 @@
 package edu.umich.aehill.reminiscetest
 
-// import edu.umich.aehill.reminiscetest.TripStore.queue
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.collect
+import java.util.*
+import kotlinx.coroutines.flow.collect
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -13,6 +25,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,10 +35,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.*
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 class WeatherApiViewModel : ViewModel() {
     private val _weatherData = MutableLiveData<Pair<Double, Double>>()
@@ -62,7 +78,6 @@ class WeatherApiViewModel : ViewModel() {
         })
     }
 }
-
 @Composable
 fun DisplayWeatherContent(context: Context, tripID: String?, destination: String?, startDate: String?, endDate: String?) {
     Log.e("GetWeather", "DISPLAYING WEATHER CONTENT")
@@ -78,9 +93,99 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             color = Color.Black
         )
 
+        val startDateDisplay = formatDateForDisplay(startDate)
+        val endDateDisplay = formatDateForDisplay(endDate)
+
+        val formattedStartDateApi = formatDateForApi(startDate)
+        val formattedEndDateApi = formatDateForApi(endDate)
+        val dateRange = generateDates(formattedStartDateApi, formattedEndDateApi)
+        Log.e("DATE RANGE", dateRange.toString())
+
+// Initializes a viewModel for obtaining weatherAPI information
         val weatherApiViewModel = viewModel<WeatherApiViewModel>()
         val weatherLiveData = weatherApiViewModel.weatherData
-        weatherApiViewModel.getWeatherData("London", "2022-08-20")
+
+// Create a list to hold the weather data for all days in the range
+        val weatherDataList = mutableListOf<Pair<Double, Double>>()
+
+//Gets our weather data from the API for each date in the range
+
+        weatherApiViewModel.getWeatherData(destination, formattedStartDateApi)
+
+        // Create a StateFlow to hold the weather data for the current date
+        val weatherState = remember { MutableStateFlow(Pair(0.0, 0.0)) }
+
+        // Collect the data from the LiveData and update the StateFlow for the current date
+        LaunchedEffect(weatherLiveData) {
+            weatherLiveData.observeForever {
+                weatherState.value = it ?: Pair(0.0, 0.0)
+            }
+        }
+
+        // Read the weather data from the StateFlow for the current date
+        val weatherData = weatherState.collectAsState().value
+        Log.e("DisplayWeatherContent", weatherData.toString())
+
+        // Add the weather data for the current date to the list
+        weatherDataList.add(weatherData)
+        Text(
+            text = "Trip Date Range: ",
+            fontSize = 20.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "$startDateDisplay - $endDateDisplay",
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "Temperature: ",
+            fontSize = 20.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "${weatherData.first} °F",
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "Precipitation: ",
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "${weatherData.second} in.",
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+    }
+        val printedStartDate = formatDateForDisplay(startDate)
+        val formattedStartDateApi = formatDateForApi(startDate)
+        val formattedEndDateApi = formatDateForApi(endDate)
+        val dateRange = generateDates(formattedStartDateApi, formattedEndDateApi)
+        Log.e("DATE RANGE", dateRange.toString())
+
+        // Initializes a viewModel for obtaining weatherAPI information
+        val weatherApiViewModel = viewModel<WeatherApiViewModel>()
+        val weatherLiveData = weatherApiViewModel.weatherData
+
+        //Gets our weather data from the API
+        weatherApiViewModel.getWeatherData(destination, dateRange[0].toString())
 
         // Create a StateFlow to hold the weather data
         val weatherState = remember { MutableStateFlow(Pair(0.0, 0.0)) }
@@ -96,29 +201,55 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
         val weatherData = weatherState.collectAsState().value
         Log.e("DisplayWeatherContent", weatherData.toString())
 
-        Text(
-            text = "Date: $startDate",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Text(
-            text = "Temperature: ${weatherData.first} °F",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Text(
-            text = "Precipitation: ${weatherData.second} in.",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(top = 16.dp)
-        )
+//        Text(
+//            text = "Date: $printedStartDate",
+//            fontSize = 20.sp,
+//            color = Color.Black,
+//            modifier = Modifier.padding(top = 16.dp)
+//        )
+//
+//        Text(
+//            text = "Temperature: ${weatherData.first} °F",
+//            fontSize = 20.sp,
+//            color = Color.Black,
+//            modifier = Modifier.padding(top = 16.dp)
+//        )
+//
+//        Text(
+//            text = "Precipitation: ${weatherData.second} in.",
+//            fontSize = 20.sp,
+//            color = Color.Black,
+//            modifier = Modifier.padding(top = 16.dp)
+//        )
     }
+
+fun generateDates(startDate: String?, endDate: String?): List<LocalDate> {
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+    var date = LocalDate.parse(startDate, formatter)
+    val endDateParsed = LocalDate.parse(endDate, formatter)
+    val dates = mutableListOf<LocalDate>()
+
+    while (!date.isAfter(endDateParsed)) {
+        dates.add(date)
+        date = date.plusDays(1)
+    }
+
+    return dates
 }
 
+fun formatDateForDisplay(inputDate: String?): String {
+    val month = inputDate?.substring(0, 2)
+    val day = inputDate?.substring(2, 4)
+    val year = inputDate?.substring(4)
+    return "$month/$day/$year"
+}
+
+fun formatDateForApi(inputDate: String?): String {
+    val month = inputDate?.substring(0, 2)
+    val day = inputDate?.substring(2, 4)
+    val year = inputDate?.substring(4)
+    return "$year-$month-$day"
+}
 
 //@Composable
 //fun DisplayWeatherContent(context: Context, tripID: String?, destination: String?, startDate: String?, endDate: String?) {
@@ -266,8 +397,6 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
 //            }
 //        }
 //    }
-
-    // TODO: Make sure start and end date are in the format YYYY-MM-DD
 
 // }
 
@@ -440,162 +569,6 @@ fun ShowWeatherStats() {
 //        }
 //    })
 //
-//}
-
-
-
-// HOW THE JSON IS FORMATTED:
-
-//{
-//    "location": {
-//        "name": "Yolombo",
-//        "region": "Antioquia",
-//        "country": "Colombia",
-//        "lat": 6.6,
-//        "lon": -75.01,
-//        "tz_id": "America/Bogota",
-//        "localtime_epoch": 1680717633,
-//        "localtime": "2023-04-05 13:00"
-//    },
-//    "forecast": {
-//        "forecastday": [
-//            {
-//                "date": "2022-08-20",
-//                "day": {
-//                    "avgtemp_f": 64.8,
-//                    "totalprecip_in": 0.1,
-//                    "condition": {
-//
-//                    }
-//                },
-//                "astro": {
-//
-//                },
-//                "hour": [
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    },
-//                    {
-//                        "condition": {
-//
-//                        }
-//                    }
-//                ]
-//            }
-//        ]
-//    }
 //}
 
 

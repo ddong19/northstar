@@ -131,8 +131,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
         verticalArrangement = Arrangement.Bottom
     ) {
 
-
-
         Box(modifier = Modifier.fillMaxHeight()) {
             Row(
                 modifier = Modifier
@@ -142,14 +140,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    //TO DO: Add function call to new composable function that defines weather button
-//                WeatherButton(
-//                    context = context,
-//                    navController = navController,
-//                    customModifier = Modifier,
-//                    tripId = "3",
-//                    destination = "${currentTrip.destination}"
-//                )
                     IconButton(onClick = {
                         showWeather = !showWeather
                     }) {
@@ -229,7 +219,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                     }
                 }
             }
-            
+
             Row() {
                 if (showSlideshow) {
                     if (tripImagesAndFriendImages.size > 0) {  // i have no idea what this line means
