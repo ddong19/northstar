@@ -38,21 +38,27 @@ import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import okhttp3.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class WeatherApiViewModel : ViewModel() {
-    private val _weatherData = MutableLiveData<Pair<Double, Double>>()
-    val weatherData: LiveData<Pair<Double, Double>> = _weatherData
+    private val _weatherDataStart = MutableLiveData<Pair<Double, Double>>()
+    val weatherDataStart: LiveData<Pair<Double, Double>> = _weatherDataStart
 
-    fun getWeatherData(destination: String?, date: String?) {
-        val url = "https://api.weatherapi.com/v1/history.json?key=4b255d0791e04160af3200558232803&q=$destination&dt=$date"
-        val request = Request.Builder().url(url).build()
+    private val _weatherDataEnd = MutableLiveData<Pair<Double, Double>>()
+    val weatherDataEnd: LiveData<Pair<Double, Double>> = _weatherDataEnd
+
+    fun getWeatherData(destination: String?, startDate: String?, callback: () -> Unit) {
+        val url = "https://api.weatherapi.com/v1/history.json?key=4b255d0791e04160af3200558232803&q=$destination&dt=$startDate"
+
         val client = OkHttpClient()
 
-        client.newCall(request).enqueue(object : Callback {
+        // get weather data for the start date
+        val requestStart = Request.Builder().url(url).build()
+        client.newCall(requestStart).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val jsonString = response.body?.string()
                 val jsonObject = JSONObject(jsonString)
@@ -68,19 +74,96 @@ class WeatherApiViewModel : ViewModel() {
                     .getJSONObject(0)
                     .getJSONObject("day")
                     .getDouble("totalprecip_in")
-                _weatherData.postValue(Pair(avgTemp, totalPrecip))
+                _weatherDataStart.postValue(Pair(avgTemp, totalPrecip))
+                callback()
             }
 
             override fun onFailure(call: Call, e: java.io.IOException) {
                 Log.e("WeatherApiCall", "API Response Failed")
-                _weatherData.postValue(Pair(0.0, 0.0))
+                _weatherDataStart.postValue(Pair(0.0, 0.0))
+                callback()
             }
         })
     }
+
+    fun getWeatherDataEnd(destination: String?, startDate: String?, callback: () -> Unit) {
+        val url = "https://api.weatherapi.com/v1/history.json?key=4b255d0791e04160af3200558232803&q=$destination&dt=$startDate"
+
+        val client = OkHttpClient()
+
+        // get weather data for the start date
+        val requestStart = Request.Builder().url(url).build()
+        client.newCall(requestStart).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                val jsonString = response.body?.string()
+                val jsonObject = JSONObject(jsonString)
+                val avgTemp = jsonObject
+                    .getJSONObject("forecast")
+                    .getJSONArray("forecastday")
+                    .getJSONObject(0)
+                    .getJSONObject("day")
+                    .getDouble("avgtemp_f")
+                val totalPrecip = jsonObject
+                    .getJSONObject("forecast")
+                    .getJSONArray("forecastday")
+                    .getJSONObject(0)
+                    .getJSONObject("day")
+                    .getDouble("totalprecip_in")
+                _weatherDataEnd.postValue(Pair(avgTemp, totalPrecip))
+                callback()
+            }
+
+            override fun onFailure(call: Call, e: java.io.IOException) {
+                Log.e("WeatherApiCall", "API Response Failed")
+                _weatherDataEnd.postValue(Pair(0.0, 0.0))
+                callback()
+            }
+        })
+    }
+
 }
+
 @Composable
 fun DisplayWeatherContent(context: Context, tripID: String?, destination: String?, startDate: String?, endDate: String?) {
     Log.e("GetWeather", "DISPLAYING WEATHER CONTENT")
+        val startDateDisplay = formatDateForDisplay(startDate)
+        val endDateDisplay = formatDateForDisplay(endDate)
+
+        val formattedStartDateApi = formatDateForApi(startDate)
+        val formattedEndDateApi = formatDateForApi(endDate)
+// Initializes a viewModel for obtaining weatherAPI information
+        val weatherApiViewModel = viewModel<WeatherApiViewModel>()
+        val weatherLiveDataStart = weatherApiViewModel.weatherDataStart
+        val weatherLiveDataEnd = weatherApiViewModel.weatherDataEnd
+
+//Gets our weather data from the API for each date in the range
+
+    weatherApiViewModel.getWeatherData(destination, formattedStartDateApi) {
+        weatherApiViewModel.getWeatherDataEnd(destination, formattedEndDateApi) {}
+    }
+
+        // Create a StateFlow to hold the weather data for the current date
+        val weatherStateStart = remember { MutableStateFlow(Pair(0.0, 0.0)) }
+        val weatherStateEnd = remember { MutableStateFlow(Pair(0.0, 0.0)) }
+        // Collect the data from the LiveData and update the StateFlow for the current date
+        LaunchedEffect(weatherLiveDataStart) {
+            weatherLiveDataStart.observeForever {
+                weatherStateStart.value = it ?: Pair(0.0, 0.0)
+            }
+        }
+        LaunchedEffect(weatherLiveDataEnd) {
+            weatherLiveDataEnd.observeForever {
+                weatherStateEnd.value = it ?: Pair(0.0, 0.0)
+            }
+        }
+
+        // Read the weather data from the StateFlow for the current date
+        val weatherDataStart = weatherStateStart.collectAsState().value
+        val weatherDataEnd = weatherStateEnd.collectAsState().value
+        Log.e("DisplayWeatherContent START", weatherDataStart.toString())
+        Log.e("DisplayWeatherContent END", weatherDataEnd.toString())
+        // Add the weather data for the current date to the list
+//        weatherDataList.add(weatherData)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,42 +175,6 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             textAlign = TextAlign.Center,
             color = Color.Black
         )
-
-        val startDateDisplay = formatDateForDisplay(startDate)
-        val endDateDisplay = formatDateForDisplay(endDate)
-
-        val formattedStartDateApi = formatDateForApi(startDate)
-        val formattedEndDateApi = formatDateForApi(endDate)
-        val dateRange = generateDates(formattedStartDateApi, formattedEndDateApi)
-        Log.e("DATE RANGE", dateRange.toString())
-
-// Initializes a viewModel for obtaining weatherAPI information
-        val weatherApiViewModel = viewModel<WeatherApiViewModel>()
-        val weatherLiveData = weatherApiViewModel.weatherData
-
-// Create a list to hold the weather data for all days in the range
-        val weatherDataList = mutableListOf<Pair<Double, Double>>()
-
-//Gets our weather data from the API for each date in the range
-
-        weatherApiViewModel.getWeatherData(destination, formattedStartDateApi)
-
-        // Create a StateFlow to hold the weather data for the current date
-        val weatherState = remember { MutableStateFlow(Pair(0.0, 0.0)) }
-
-        // Collect the data from the LiveData and update the StateFlow for the current date
-        LaunchedEffect(weatherLiveData) {
-            weatherLiveData.observeForever {
-                weatherState.value = it ?: Pair(0.0, 0.0)
-            }
-        }
-
-        // Read the weather data from the StateFlow for the current date
-        val weatherData = weatherState.collectAsState().value
-        Log.e("DisplayWeatherContent", weatherData.toString())
-
-        // Add the weather data for the current date to the list
-        weatherDataList.add(weatherData)
         Text(
             text = "Trip Date Range: ",
             fontSize = 20.sp,
@@ -144,7 +191,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             modifier = Modifier.padding(top = 16.dp)
         )
         Text(
-            text = "Temperature: ",
+            text = "Start Date Temperature: ",
             fontSize = 20.sp,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -152,14 +199,14 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             modifier = Modifier.padding(top = 16.dp)
         )
         Text(
-            text = "${weatherData.first} °F",
+            text = "${weatherDataStart.first} °F",
             fontSize = 20.sp,
             color = Color.Black,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 16.dp)
         )
         Text(
-            text = "Precipitation: ",
+            text = "Start Date Precipitation: ",
             fontSize = 20.sp,
             color = Color.Black,
             textAlign = TextAlign.Center,
@@ -167,61 +214,46 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             modifier = Modifier.padding(top = 16.dp)
         )
         Text(
-            text = "${weatherData.second} in.",
+            text = "${weatherDataStart.second} in.",
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             color = Color.Black,
             modifier = Modifier.padding(top = 16.dp)
         )
+        Text(
+            text = "End Date Temperature: ",
+            fontSize = 20.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "${weatherDataEnd.first} °F",
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "End Date Precipitation: ",
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = "${weatherDataEnd.second} in.",
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
     }
-        val printedStartDate = formatDateForDisplay(startDate)
-        val formattedStartDateApi = formatDateForApi(startDate)
-        val formattedEndDateApi = formatDateForApi(endDate)
-        val dateRange = generateDates(formattedStartDateApi, formattedEndDateApi)
-        Log.e("DATE RANGE", dateRange.toString())
 
-        // Initializes a viewModel for obtaining weatherAPI information
-        val weatherApiViewModel = viewModel<WeatherApiViewModel>()
-        val weatherLiveData = weatherApiViewModel.weatherData
-
-        //Gets our weather data from the API
-        weatherApiViewModel.getWeatherData(destination, dateRange[0].toString())
-
-        // Create a StateFlow to hold the weather data
-        val weatherState = remember { MutableStateFlow(Pair(0.0, 0.0)) }
-
-        // Collect the data from the LiveData and update the StateFlow
-        LaunchedEffect(weatherLiveData) {
-            weatherLiveData.observeForever {
-                weatherState.value = it ?: Pair(0.0, 0.0)
-            }
-        }
-
-        // Read the weather data from the StateFlow
-        val weatherData = weatherState.collectAsState().value
-        Log.e("DisplayWeatherContent", weatherData.toString())
-
-//        Text(
-//            text = "Date: $printedStartDate",
-//            fontSize = 20.sp,
-//            color = Color.Black,
-//            modifier = Modifier.padding(top = 16.dp)
-//        )
-//
-//        Text(
-//            text = "Temperature: ${weatherData.first} °F",
-//            fontSize = 20.sp,
-//            color = Color.Black,
-//            modifier = Modifier.padding(top = 16.dp)
-//        )
-//
-//        Text(
-//            text = "Precipitation: ${weatherData.second} in.",
-//            fontSize = 20.sp,
-//            color = Color.Black,
-//            modifier = Modifier.padding(top = 16.dp)
-//        )
-    }
+}
 
 fun generateDates(startDate: String?, endDate: String?): List<LocalDate> {
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE
@@ -812,4 +844,42 @@ class WeatherClass(var avg_temp: String? = null,
 //    }
 //    queue.add(getRequest)
 //}
+//}
+
+
+
+//class WeatherApiViewModel : ViewModel() {
+//    private val _weatherData = MutableLiveData<Pair<Double, Double>>()
+//    val weatherData: LiveData<Pair<Double, Double>> = _weatherData
+//
+//    fun getWeatherData(destination: String?, date: String?) {
+//        val url = "https://api.weatherapi.com/v1/history.json?key=4b255d0791e04160af3200558232803&q=$destination&dt=$date"
+//        val request = Request.Builder().url(url).build()
+//        val client = OkHttpClient()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onResponse(call: Call, response: Response) {
+//                val jsonString = response.body?.string()
+//                val jsonObject = JSONObject(jsonString)
+//                val avgTemp = jsonObject
+//                    .getJSONObject("forecast")
+//                    .getJSONArray("forecastday")
+//                    .getJSONObject(0)
+//                    .getJSONObject("day")
+//                    .getDouble("avgtemp_f")
+//                val totalPrecip = jsonObject
+//                    .getJSONObject("forecast")
+//                    .getJSONArray("forecastday")
+//                    .getJSONObject(0)
+//                    .getJSONObject("day")
+//                    .getDouble("totalprecip_in")
+//                _weatherData.postValue(Pair(avgTemp, totalPrecip))
+//            }
+//
+//            override fun onFailure(call: Call, e: java.io.IOException) {
+//                Log.e("WeatherApiCall", "API Response Failed")
+//                _weatherData.postValue(Pair(0.0, 0.0))
+//            }
+//        })
+//    }
 //}
