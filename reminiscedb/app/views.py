@@ -200,7 +200,7 @@ def deleteimage(request):
 
     cursor = connection.cursor()
     insert_stmt = (
-    "DELETE FROM images WHERE image_uri = %s RETURNING *;"
+    "DELETE FROM images WHERE image_uri = {} RETURNING *;"
     )
 
     cursor.execute(insert_stmt, image_uri)
