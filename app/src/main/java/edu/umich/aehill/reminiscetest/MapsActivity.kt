@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,6 +39,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         val colors = listOf(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLACK, Color.WHITE)
         var whichColor = 0
+        val friends = currentTrip.friendOneImageURIs
+
         val pointsList = listOf(
             listOf(
                 LatLng(42.2808, 83.7430),
