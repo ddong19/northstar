@@ -237,7 +237,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             ) {
                 Text(
                     text = "$startDateDisplay - $endDateDisplay",
-                    fontSize = 36.sp,
+                    fontSize = 28.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 4.dp)
@@ -268,7 +268,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                 ) {
                     Text(
                         text = "${weatherDataStart.first} °F",
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f)
@@ -307,7 +307,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                 ) {
                     Text(
                         text = "${weatherDataStart.second} in.",
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f)
@@ -348,7 +348,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                 ) {
                     Text(
                         text = "${weatherDataEnd.first} °F",
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f)
@@ -387,7 +387,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                 ) {
                     Text(
                         text = "${weatherDataEnd.second} in.",
-                        fontSize = 36.sp,
+                        fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f)
