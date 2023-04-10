@@ -40,7 +40,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
             text = "Enter your trip details!",
-            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp).fillMaxWidth(1f),
             fontSize = 25.sp,
             textAlign = TextAlign.Center,
             color = Color.White

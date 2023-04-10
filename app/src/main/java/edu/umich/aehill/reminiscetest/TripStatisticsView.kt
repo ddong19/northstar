@@ -76,24 +76,6 @@ fun TripStatisticsContent(context: Context) {
             color = Color.White
         )
     }
-    Row(horizontalArrangement = Arrangement.Center, modifier=Modifier.fillMaxWidth(1f)) {
-        Text(
-            text = "User that travelled the longest distance",
-            modifier = Modifier.padding(28.dp, 70.dp, 28.dp, 0.dp).fillMaxWidth(1f),
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
-            color = Color.White
-        )
-    }
-    Row(horizontalArrangement = Arrangement.Center, modifier=Modifier.fillMaxWidth(1f)) {
-        Text(
-            text = "TESTER",
-            modifier = Modifier.padding(28.dp, 20.dp, 28.dp, 0.dp).fillMaxWidth(1f),
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
-            color = Color.White
-        )
-    }
 }
 
 fun userMostPhotos(): String {
