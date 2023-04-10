@@ -235,28 +235,12 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 }
             }
         }
-
-        /*
-            OutlinedTextField(
-            value = tripFriend2,
-            onValueChange = {
-                tripFriend2 = it
-                Log.e("tripdetailsview", "value entered into tripfriend2")
-            },
-            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
-            label = {
-                Text("Friend Username 2", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
-            }
-        )
-         */
-
     }
+
     // This would be where the right arrow button will be.
     Row(
         horizontalArrangement = Arrangement.End, // Align to the far right side of the screen
-        modifier = Modifier.fillMaxWidth().padding(8.dp) // Add padding to make sure it doesn't touch the edge of the screen
+        modifier = Modifier.fillMaxWidth().padding(15.dp) // Add padding to make sure it doesn't touch the edge of the screen
     ) {
         IconButton(onClick = {
 

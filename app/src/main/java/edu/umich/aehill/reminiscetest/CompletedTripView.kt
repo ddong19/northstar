@@ -88,7 +88,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
         )
         Log.d("destination", "${currentTrip.destination}")
         Text(
-            //need to get tripLocation from input from the user
             text = currentTrip.destination.toString(),
             modifier = Modifier
                 .padding(8.dp, 5.dp, 25.dp, 0.dp)
@@ -100,6 +99,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 
 
     var showSlideshow by remember { mutableStateOf(false) }
+    var showWeather by remember { mutableStateOf(false) }
 
     val images = listOf(
         "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
@@ -114,181 +114,189 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     currentTrip.friendOneImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
     currentTrip.friendTwoImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
 
-    tripImagesAndFriendImages.shuffle()
-
-    /*
-    Log.d("CompletedTripView", "appended trip images with friend images")
-    Log.d("CompletedTripView", "size of currenttrip.images is ${currentTrip.imageURIs?.size} " +
-            "and the size of tripImagesAndFriendImages is ${tripImagesAndFriendImages.size}")
-    Log.d("CompletedTripView", tripImagesAndFriendImages.toString())
-    */
-
-
+    tripImagesAndFriendImages.shuffle() // interleave
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Top
     ) {
 
-
-
-        Box(modifier = Modifier.fillMaxHeight()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 64.dp)
-                    .align(Alignment.BottomCenter),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                //TO DO: Add function call to new composable function that defines weather button
+//                WeatherButton(
+//                    context = context,
+//                    navController = navController,
+//                    customModifier = Modifier,
+//                    tripId = "3",
+//                    destination = "${currentTrip.destination}"
+//                )
+                IconButton(onClick = {
+                    showWeather = !showWeather
+                }) {
                     Image(
                         painter = painterResource(id = R.drawable.weather),
                         contentDescription = "Weather",
                         modifier = Modifier.size(48.dp),
                         contentScale = ContentScale.Fit
                     )
-                    Text("Weather", color = Color.White)
                 }
-                IconButton(onClick = {
-                    navController.navigate("SpotifyView")
-                }) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.spotify),
-                            contentDescription = "Spotify",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                        Text("Spotify", color = Color.White)
-                    }
-                }
+
+                Text("Weather", color = Color.White)
+            }
+            if (showWeather){
+                WeatherView(
+                    context = context,
+                    navController = navController,
+                    customModifier = Modifier,
+                    tripID = "3",
+                    destination = "${currentTrip.destination}",
+                    startDate = "${currentTrip.startDate}",
+                    endDate = "${currentTrip.endDate}"
+                )
+                Log.e("Weather", "SHOWING WEATHER")
+            }
+            IconButton(onClick = {
+                navController.navigate("SpotifyView")
+            }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = {
-                        val intent = Intent(context, MapsActivity::class.java)
-                        context.startActivity(intent)
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.map),
-                            contentDescription = "Map",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Text("Map", color = Color.White)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    IconButton(onClick = {
-                        showSlideshow = !showSlideshow
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.slideshow),
-                            contentDescription = "Slideshow",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Text("Slideshow", color = Color.White)
-                }
-                IconButton(onClick = {
-                    Log.d("CompletedTripView", "this will eventually navigate to stats page")
-                }) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.statistics),
-                            contentDescription = "Statistics",
-                            modifier = Modifier.size(48.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                        Text("Stats", color = Color.White)
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.spotify),
+                        contentDescription = "Spotify",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text("Spotify", color = Color.White)
                 }
             }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = {
+                    val intent = Intent(context, MapsActivity::class.java)
+                    context.startActivity(intent)
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.map),
+                        contentDescription = "Map",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Text("Map", color = Color.White)
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = {
+                    showSlideshow = !showSlideshow
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.slideshow),
+                        contentDescription = "Slideshow",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Text("Slideshow", color = Color.White)
+            }
+            IconButton(onClick = {
+                Log.d("CompletedTripView", "this will eventually navigate to stats page")
+            }) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painter = painterResource(id = R.drawable.statistics),
+                        contentDescription = "Statistics",
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text("Stats", color = Color.White)
+                }
+            }
+        }
 
-
-            Row() {
-                if (showSlideshow) {
-                    if (tripImagesAndFriendImages.size > 0) {  // i have no idea what this line means
-                        Card(
-                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                            shape = RoundedCornerShape(16.dp),
-                        ) {
-                            AutoSlidingCarousel(
-                                itemsCount = tripImagesAndFriendImages.size,
-                                itemContent = { index ->
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(tripImagesAndFriendImages[index].URI)
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier.height(250.dp)
-                                    )
-                                }
-                            )
-                        }
-                    } else {
-                        Card(
-                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                            shape = RoundedCornerShape(16.dp),
-                        ) {
-                            AutoSlidingCarousel(
-                                itemsCount = images.size,
-                                itemContent = { index ->
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(images[index])
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier.height(250.dp)
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-
-                } else {
-                    // photo grid appears
-                    val imageUris = currentTrip.imageURIs
-                    val bitmaps = remember { mutableStateListOf<Bitmap>() }
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+        Row( modifier = Modifier.weight(1f, false)) {
+            if (showSlideshow) {
+                if (tripImagesAndFriendImages.size > 0) {
+                    Card(
+                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                        shape = RoundedCornerShape(16.dp),
                     ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(128.dp), // 3 images per row
-                            contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            if (imageUris != null) {
-                                items(imageUris.size) { index ->
-                                    val bitmap = bitmaps.getOrNull(index) ?: run {
-                                        val newBitmap = if (Build.VERSION.SDK_INT < 28) {
-                                            MediaStore.Images.Media.getBitmap(
-                                                context.contentResolver,
-                                                imageUris.get(index).URI.toUri()
-                                            )
-                                        } else {
-                                            val source = ImageDecoder.createSource(
-                                                context.contentResolver,
-                                                imageUris[index].URI.toUri()
-                                            )
-                                            ImageDecoder.decodeBitmap(source)
-                                        }
-                                        bitmaps.add(newBitmap)
-                                        newBitmap
-                                    }
+                        AutoSlidingCarousel(
+                            itemsCount = tripImagesAndFriendImages.size,
+                            itemContent = { index ->
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(tripImagesAndFriendImages[index].URI)
+                                        .build(),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.height(250.dp)
+                                )
+                            }
+                        )
+                    }
+                } else {
+                    Card(
+                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                        shape = RoundedCornerShape(16.dp),
+                    ) {
+                        AutoSlidingCarousel(
+                            itemsCount = images.size,
+                            itemContent = { index ->
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(images[index])
+                                        .build(),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.height(250.dp)
+                                )
+                            }
+                        )
+                    }
+                }
+            } else {
+                // photo grid appears
+                val imageUris = currentTrip.imageURIs
+                val bitmaps = remember { mutableStateListOf<Bitmap>() }
 
-                                    Image(
-                                        bitmap = bitmap.asImageBitmap(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .aspectRatio(1f) // maintain aspect ratio of image
-                                            .padding(4.dp) // add padding between images
-                                    )
+                Column(
+                    //modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(128.dp), // 3 images per row
+                        contentPadding = PaddingValues(5.dp, 0.dp, 5.dp, 300.dp),
+                        //modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (imageUris != null) {
+                            items(imageUris.size) { index ->
+                                val bitmap = bitmaps.getOrNull(index) ?: run {
+                                    val newBitmap = if (Build.VERSION.SDK_INT < 28) {
+                                        MediaStore.Images.Media.getBitmap(
+                                            context.contentResolver,
+                                            imageUris.get(index).URI.toUri()
+                                        )
+                                    } else {
+                                        val source = ImageDecoder.createSource(
+                                            context.contentResolver,
+                                            imageUris[index].URI.toUri()
+                                        )
+                                        ImageDecoder.decodeBitmap(source)
+                                    }
+                                    bitmaps.add(newBitmap)
+                                    newBitmap
                                 }
+
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(1f) // maintain aspect ratio of image
+                                        .padding(4.dp) // add padding between images
+                                )
                             }
                         }
                     }
@@ -306,10 +314,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, navController) })
 }
-
-
-
-
 
 
 
