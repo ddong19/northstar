@@ -206,4 +206,6 @@ def deleteimage(request):
     cursor.execute(insert_stmt, image_uri)
     data = cursor.fetchall()
 
-    return JsonResponse(data)
+    response = {}
+    response['deleted_data'] = data
+    return JsonResponse(response)
