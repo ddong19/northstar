@@ -201,7 +201,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                 Text("Slideshow", color = Color.White)
             }
             IconButton(onClick = {
-                Log.d("CompletedTripView", "this will eventually navigate to stats page")
+                navController.navigate("TripStatisticsView")
             }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
@@ -217,45 +217,59 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 
         Row( modifier = Modifier.weight(1f, false)) {
             if (showSlideshow) {
-                if (tripImagesAndFriendImages.size > 0) {
-                    Card(
-                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        AutoSlidingCarousel(
-                            itemsCount = tripImagesAndFriendImages.size,
-                            itemContent = { index ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(tripImagesAndFriendImages[index].URI)
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.height(250.dp)
-                                )
-                            }
-                        )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Button(
+                        modifier = Modifier.padding(0.dp,10.dp,0.dp,0.dp),
+                        onClick = {
+                            navController.navigate("SlideshowEditView")
+                        }) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("Edit Slideshow", color = Color.White)
+                        }
                     }
-                } else {
-                    Card(
-                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        AutoSlidingCarousel(
-                            itemsCount = images.size,
-                            itemContent = { index ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(images[index])
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.height(250.dp)
-                                )
-                            }
-                        )
+                    if (tripImagesAndFriendImages.size > 0) {
+                        Card(
+                            modifier = Modifier.padding(10.dp, 110.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = tripImagesAndFriendImages.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(tripImagesAndFriendImages[index].URI)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
+                    } else {
+                        Log.d("running", "running in wrong one")
+                        Card(
+                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = images.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(images[index])
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
+
+
             } else {
                 // photo grid appears
                 val imageUris = currentTrip.imageURIs
@@ -314,6 +328,11 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, navController) })
 }
+
+
+
+
+
 
 
 

@@ -97,18 +97,6 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
 
                     }
                 )
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings",
-                            tint = Color.White // Apply the white color tint
-                        )
-                    },
-                    label = { Text("Settings") },
-                    selected = false,
-                    onClick = { navController.navigate("settings") }
-                )
             }
         },
     ) {

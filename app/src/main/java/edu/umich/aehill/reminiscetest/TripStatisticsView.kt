@@ -232,7 +232,7 @@ fun TripStatisticsView(context: Context, navController: NavHostController, custo
         FloatingActionButton(
             backgroundColor = Color(0xFFFFC107),
             contentColor = Color(0xFF00FF00),
-            modifier = Modifier.padding(310.dp, 0.dp, 8.dp, 8.dp),
+            modifier = Modifier.padding(280.dp, 0.dp, 8.dp, 8.dp),
 
 
             onClick = {
