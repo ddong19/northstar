@@ -14,8 +14,10 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,11 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -41,7 +46,7 @@ import edu.umich.aehill.reminiscetest.TripStore.updateCurrentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import org.json.JSONObject
 
-
+// adapted photo picker source code from https://gist.github.com/stevdza-san/053b170dbb3176b17c04915abf59a3e4
 @Composable
 fun TripPageContent(context: Context, navController: NavHostController, destination: String?){
 
@@ -57,8 +62,37 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
 
     val user_id = 3
     val queue = Volley.newRequestQueue(context)
-
+    var thumbnailUri: Any? by remember { mutableStateOf(R.drawable.baseline_add_circle_outline_24) }
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        if (it != null) {
+            Log.d("PhotoPicker", "Selected URI: $it")
+            thumbnailUri = it
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
+        Spacer(modifier = Modifier.height(24.dp))
+        AsyncImage(
+            modifier = Modifier
+                .padding(start = 50.dp)
+                .size(100.dp)
+                .clickable {
+                    photoPicker.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                },
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(thumbnailUri)
+                .crossfade(enable = true)
+                .build(),
+            contentDescription = "Avatar Image",
+            contentScale = ContentScale.Crop,
+        )
         Text(
             //need to get tripLocation from input from the user
 
