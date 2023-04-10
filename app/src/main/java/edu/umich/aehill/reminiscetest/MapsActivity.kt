@@ -39,7 +39,18 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         val colors = listOf(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLACK, Color.WHITE)
         var whichColor = 0
-        val friends = currentTrip.friendOneImageURIs
+        val friends = currentTrip.friendOneImageURIs?.get(0)?.coords
+
+        val friendOneCoords = mutableListOf<LatLng>()
+        val friendTwoCoords = mutableListOf<LatLng>()
+        for (pic in currentTrip.friendOneImageURIs!!) {
+            val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+            friendOneCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+        }
+        for (pic in currentTrip.friendTwoImageURIs!!){
+            val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+            friendTwoCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+        }
 
         val pointsList = listOf(
             listOf(
@@ -49,30 +60,25 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 LatLng(51.0899, 115.3441),
                 LatLng(51.1784, 115.5708)
             ),
-            listOf(
-                LatLng(54.2808, 100.7430),
-                LatLng(69.6532, 65.3832),
-                LatLng(53.1215, 140.0076),
-                LatLng(40.0899, 100.3441),
-                LatLng(70.1784, 125.5708)
-            )
+            friendOneCoords,
+            friendTwoCoords,
         )
 
         // Calculates distance of user's trip (first item of pointsList[0])
-        var totalDistance = 0.0
-        var pts = pointsList[0]
-        for (i in 0 until pts.size - 1){
-            val startPoint = Location("locationA")
-            startPoint.latitude = pts[i].latitude
-            startPoint.longitude = pts[i].longitude
-
-            val endPoint = Location("locationB")
-            endPoint.latitude = pts[i+1].latitude
-            endPoint.longitude = pts[i+1].longitude
-
-            totalDistance += startPoint.distanceTo(endPoint)
-        }
-        Log.d("DEBUG", "TOTAL DISTANCE: $totalDistance")
+//        var totalDistance = 0.0
+//        var pts = pointsList[0]
+//        for (i in 0 until pts.size - 1){
+//            val startPoint = Location("locationA")
+//            startPoint.latitude = pts[i].latitude
+//            startPoint.longitude = pts[i].longitude
+//
+//            val endPoint = Location("locationB")
+//            endPoint.latitude = pts[i+1].latitude
+//            endPoint.longitude = pts[i+1].longitude
+//
+//            totalDistance += startPoint.distanceTo(endPoint)
+//        }
+//        Log.d("DEBUG", "TOTAL DISTANCE: $totalDistance")
 
 
         for (points in pointsList) {

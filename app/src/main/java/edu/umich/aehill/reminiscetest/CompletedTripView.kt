@@ -114,6 +114,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     currentTrip.friendOneImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
     currentTrip.friendTwoImageURIs?.let { tripImagesAndFriendImages.addAll(it) }
 
+
     tripImagesAndFriendImages.shuffle() // interleave
 
     Column(
