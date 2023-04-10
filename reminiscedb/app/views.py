@@ -177,12 +177,12 @@ def get_token():
     token = json_result["access_token"]
     return token
 
-def getspotifyplaylist(request, playlist_id):
+def getspotifyplaylist(request, playlistID):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
     # https://developer.spotify.com/documentation/web-api/reference/get-playlist
-    url = "https://api.spotify.com/v1/playlists/{}".format(playlist_id)
+    url = "https://api.spotify.com/v1/playlists/{}".format(playlistID)
     headers = {"Authorization": "Bearer " + get_token()}
 
     result = get(url, headers=headers)
@@ -228,24 +228,35 @@ def deleteimage(request):
 #     cursor = connection.cursor()
 #     insert_stmt = (
 #     "INSERT INTO thumbnail (trip_id, user_id, thumbnail_uri) "
-#     "VALUES (%s, %s, %s)"
+#     "VALUES (%s, %s, %s) RETURNING *;"
 #     )
 #     data = (trip_id, user_id, thumbnail_uri)
 #     cursor.execute(insert_stmt, data)
 
-#     data = cursor.lastrowid
-#     response = {}
-#     response['image_id'] = data
+#     data = cursor.fetchall()
 
+#     response = {}
+#     response['completed_request'] = data
 #     return JsonResponse(response)
 
-# # GET THUMNAIL
 
+# # GET THUMBNAIL
+# def getthumbnail(request, trip_id):
+#     if request.method != 'GET':
+#         return HttpResponse(status=404)
+
+#     cursor = connection.cursor()
+#     cursor.execute('SELECT * FROM thumbnail WHERE trip_id = {};'.format(trip_id))
+#     data = cursor.fetchall()
+
+#     response = {}
+#     response['thumbnail_data'] = data
+#     return JsonResponse(response)
 
 # # EDIT THUMBNAIL
+# # insert_stmt = ("UPDATE courses SET published_date = '2020-08-01' WHERE course_id = 3;")
 
-
-# # DELETE THUMBNAIL -- 
+# # DELETE THUMBNAIL
 # @csrf_exempt
 # def deletethumbnail(request):
 #     if request.method != 'POST':
@@ -265,3 +276,5 @@ def deleteimage(request):
 #     response = {}
 #     response['deleted_data'] = data
 #     return JsonResponse(response)
+
+# https://open.spotify.com/playlist/7ymfS4lhUr5E13AWmQzbuU?si=d99de69e613f41c4
