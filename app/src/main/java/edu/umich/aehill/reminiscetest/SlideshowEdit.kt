@@ -49,14 +49,14 @@ fun deleteImageRow(bitmap: Bitmap, image: TripImage) {
                 .padding(4.dp), // add padding between images,
             contentScale = ContentScale.Fit
         )
-         Button(
-             onClick = {
-                 Log.d("deleting photo", "photo deleted!")
-                 Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
-                 currentTrip.imageURIs?.remove(image)
-                 Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
-                 buttonText = "Deleted!"
-             }
+        Button(
+            onClick = {
+                Log.d("deleting photo", "photo deleted!")
+                Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
+                currentTrip.imageURIs?.remove(image)
+                Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
+                buttonText = "Deleted!"
+            }
         ) {
             Text(text = buttonText)
         }

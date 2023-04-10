@@ -46,7 +46,7 @@ class WeatherApiViewModel : ViewModel() {
         client.newCall(requestStart).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val jsonString = response.body?.string()
-                val jsonObject = JSONObject(jsonString)
+                val jsonObject = JSONObject(jsonString.toString())
                 val avgTemp = jsonObject
                     .getJSONObject("forecast")
                     .getJSONArray("forecastday")
@@ -81,7 +81,7 @@ class WeatherApiViewModel : ViewModel() {
         client.newCall(requestStart).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val jsonString = response.body?.string()
-                val jsonObject = JSONObject(jsonString)
+                val jsonObject = JSONObject(jsonString.toString())
                 val avgTemp = jsonObject
                     .getJSONObject("forecast")
                     .getJSONArray("forecastday")
@@ -161,10 +161,64 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            // Display image based on weather conditions
+            val (startTemp, startPrecip) = weatherDataStart
+            val (endTemp, endPrecip) = weatherDataEnd
+
+            val tempConditionStart = when {
+                startTemp > 70 -> "warm"
+                startTemp < 70 && startTemp > 45 -> "moderate"
+                else -> "cold"
+            }
+
+            val precipConditionStart = when {
+                startPrecip < 0.2 -> "clear"
+                startPrecip > 0.2 && startPrecip < 0.5 -> "moderate_rain"
+                startPrecip > 0.5 -> "rainy"
+                else -> "moderate_rain"
+            }
+
+            val tempConditionEnd = when {
+                endTemp > 70 -> "warm"
+                endTemp < 70 && endTemp > 45 -> "moderate"
+                else -> "cold"
+            }
+
+            val precipConditionEnd = when {
+                endPrecip < 0.2 -> "clear"
+                endPrecip > 0.2 && endPrecip < 0.5 -> "moderate_rain"
+                endPrecip > 0.5 -> "rainy"
+                else -> "moderate_rain"
+            }
+
+            val imageResourceTempStart = when (tempConditionStart) {
+                "warm" -> R.drawable.sunny
+                "moderate" -> R.drawable.moderate_temp
+                "cold" -> R.drawable.cold
+                else -> R.drawable.moderate_temp
+            }
+            val imageResourcePrecipStart = when (precipConditionStart) {
+                "clear" -> R.drawable.no_rain
+                "moderate_rain" -> R.drawable.moderate_rain
+                "rainy" -> R.drawable.rainy
+                else -> R.drawable.moderate_temp
+            }
+            val imageResourceTempEnd = when (tempConditionEnd) {
+                "warm" -> R.drawable.sunny
+                "moderate" -> R.drawable.moderate_temp
+                "cold" -> R.drawable.cold
+                else -> R.drawable.moderate_temp
+            }
+            val imageResourcePrecipEnd= when (precipConditionEnd) {
+                "clear" -> R.drawable.no_rain
+                "moderate_rain" -> R.drawable.moderate_rain
+                "rainy" -> R.drawable.rainy
+                else -> R.drawable.moderate_temp
+            }
 
             Box(
                 modifier = Modifier
-                    .background(Color.Yellow)
+                    .background(Color.White)
                     .padding(2.dp)
             ) {
                 Text(
@@ -191,7 +245,7 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
             }
             Box(
                 modifier = Modifier
-                    .background(Color.Yellow)
+                    .background(Color.White)
                     .padding(2.dp)
             ) {
                 Text(
@@ -207,18 +261,30 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                 modifier = Modifier
                     .background(Color.Yellow)
                     .padding(2.dp)
-            ){
-                Text(
-                    text = "${weatherDataStart.first} °F",
-                    fontSize = 36.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.5F)
+                ) {
+                    Text(
+                        text = "${weatherDataStart.first} °F",
+                        fontSize = 36.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        painter = painterResource(id = imageResourceTempStart),
+                        contentDescription = "Weather image",
+                        modifier = Modifier
+                            .height(36.dp)
+                            .padding(start = 16.dp)
+                    )
+                }
             }
             Box(
                 modifier = Modifier
-                    .background(Color.Yellow)
+                    .background(Color.White)
                     .padding(2.dp)
             ){
                 Text(
@@ -235,18 +301,30 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                     .background(Color.Yellow)
                     .padding(2.dp)
             ){
-                Text(
-                    text = "${weatherDataStart.second} in.",
-                    fontSize = 36.sp,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.5F)
+                ) {
+                    Text(
+                        text = "${weatherDataStart.second} in.",
+                        fontSize = 36.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        painter = painterResource(id = imageResourcePrecipStart),
+                        contentDescription = "Weather image",
+                        modifier = Modifier
+                            .height(36.dp)
+                            .padding(start = 16.dp)
+                    )
+                }
             }
 
             Box(
                 modifier = Modifier
-                    .background(Color.Yellow)
+                    .background(Color.White)
                     .padding(2.dp)
             ){
                 Text(
@@ -264,17 +342,29 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                     .background(Color.Yellow)
                     .padding(2.dp)
             ){
-                Text(
-                    text = "${weatherDataEnd.first} °F",
-                    fontSize = 36.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.5F)
+                ) {
+                    Text(
+                        text = "${weatherDataEnd.first} °F",
+                        fontSize = 36.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        painter = painterResource(id = imageResourceTempEnd),
+                        contentDescription = "Weather image",
+                        modifier = Modifier
+                            .height(36.dp)
+                            .padding(start = 16.dp)
+                    )
+                }
             }
             Box(
                 modifier = Modifier
-                    .background(Color.Yellow)
+                    .background(Color.White)
                     .padding(2.dp)
             ){
                 Text(
@@ -291,13 +381,25 @@ fun DisplayWeatherContent(context: Context, tripID: String?, destination: String
                     .background(Color.Yellow)
                     .padding(2.dp)
             ){
-                Text(
-                    text = "${weatherDataEnd.second} in.",
-                    fontSize = 36.sp,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.5F)
+                ) {
+                    Text(
+                        text = "${weatherDataEnd.second} in.",
+                        fontSize = 36.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        painter = painterResource(id = imageResourcePrecipEnd),
+                        contentDescription = "Weather image",
+                        modifier = Modifier
+                            .height(36.dp)
+                            .padding(start = 16.dp)
+                    )
+                }
             }
         }
 
