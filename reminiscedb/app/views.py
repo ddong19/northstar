@@ -190,3 +190,20 @@ def getspotifyplaylist(request, playlist_id):
 
     return json_result
 
+@csrf_exempt
+def deleteimage(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    image_uri = json_data['image_uri']
+
+    cursor = connection.cursor()
+    insert_stmt = (
+    "DELETE FROM images WHERE image_uri = image_uri RETURNING *;"
+    )
+
+    cursor.execute(insert_stmt, image_uri)
+    data = cursor.fetchall()
+
+    return JsonResponse(data)
