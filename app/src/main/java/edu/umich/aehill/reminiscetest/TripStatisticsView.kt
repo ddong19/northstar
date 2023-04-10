@@ -168,14 +168,26 @@ fun userDistances(): Pair<String, String> {
         LatLng(51.0899, 115.3441),
         LatLng(51.1784, 115.5708)
     )
+
+    val friendOneCoords = mutableListOf<LatLng>()
+    val friendTwoCoords = mutableListOf<LatLng>()
+    for (pic in currentTrip.friendOneImageURIs!!) {
+        val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+        friendOneCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+    }
+    for (pic in currentTrip.friendTwoImageURIs!!){
+        val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+        friendTwoCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+    }
+
     var maxDist = 0.0
     var maxUser = ""
     var minDist = 0.0
     var minUser = ""
     var allPoints = listOf(
         userPoints,
-        //currentTrip.friendOneImageLocation
-        //currentTrip.friendTwoImageLocation
+        friendOneCoords,
+        friendTwoCoords
     )
     for (i in 0 until allPoints.size - 1){
         if (allPoints[i] == null){

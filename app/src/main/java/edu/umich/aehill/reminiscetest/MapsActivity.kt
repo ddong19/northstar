@@ -39,7 +39,18 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         val colors = listOf(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLACK, Color.WHITE)
         var whichColor = 0
-        val friends = currentTrip.friendOneImageURIs
+        val friends = currentTrip.friendOneImageURIs?.get(0)?.coords
+
+        val friendOneCoords = mutableListOf<LatLng>()
+        val friendTwoCoords = mutableListOf<LatLng>()
+        for (pic in currentTrip.friendOneImageURIs!!) {
+            val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+            friendOneCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+        }
+        for (pic in currentTrip.friendTwoImageURIs!!){
+            val latLngParts = pic.coords!!.replace("(", "").replace(")", "").split(", ")
+            friendTwoCoords.add(LatLng(latLngParts[0].toDouble(), latLngParts[1].toDouble()))
+        }
 
         val pointsList = listOf(
             listOf(
@@ -49,8 +60,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 LatLng(51.0899, 115.3441),
                 LatLng(51.1784, 115.5708)
             ),
-            //currentTrip.friendOneImageLocation,
-            //currentTrip.friendTwoImageLocation,
+            friendOneCoords,
+            friendTwoCoords,
         )
 
         // Calculates distance of user's trip (first item of pointsList[0])
