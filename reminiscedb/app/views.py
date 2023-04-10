@@ -209,3 +209,59 @@ def deleteimage(request):
     response = {}
     response['deleted_data'] = data
     return JsonResponse(response)
+
+
+
+
+
+# # POST THUMBNAIL
+# @csrf_exempt
+# def postthumbnail(request):
+#     if request.method != 'POST':
+#         return HttpResponse(status=404)
+
+#     json_data = json.loads(request.body)
+#     trip_id = json_data['trip_id']
+#     user_id = json_data['user_id']
+#     thumbnail_uri = json_data['thumbnail_uri']
+
+#     cursor = connection.cursor()
+#     insert_stmt = (
+#     "INSERT INTO thumbnail (trip_id, user_id, thumbnail_uri) "
+#     "VALUES (%s, %s, %s)"
+#     )
+#     data = (trip_id, user_id, thumbnail_uri)
+#     cursor.execute(insert_stmt, data)
+
+#     data = cursor.lastrowid
+#     response = {}
+#     response['image_id'] = data
+
+#     return JsonResponse(response)
+
+# # GET THUMNAIL
+
+
+# # EDIT THUMBNAIL
+
+
+# # DELETE THUMBNAIL -- 
+# @csrf_exempt
+# def deletethumbnail(request):
+#     if request.method != 'POST':
+#         return HttpResponse(status=404)
+
+#     json_data = json.loads(request.body)
+#     thumbnail_uri = json_data['thumbnail_uri']
+
+#     cursor = connection.cursor()
+#     insert_stmt = (
+#     "DELETE FROM thumbnail WHERE thumbnail_uri = %s RETURNING *;"
+#     )
+
+#     cursor.execute(insert_stmt, (thumbnail_uri,))
+#     data = cursor.fetchall()
+
+#     response = {}
+#     response['deleted_data'] = data
+#     return JsonResponse(response)
