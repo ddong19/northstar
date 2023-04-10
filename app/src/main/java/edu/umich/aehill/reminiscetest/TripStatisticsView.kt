@@ -2,6 +2,8 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
+import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.model.LatLng
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 
@@ -26,10 +29,11 @@ import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 fun TripStatisticsContent(context: Context) {
     var userMostPhotos by remember { mutableStateOf("") }
     var userLeastPhotos by remember { mutableStateOf("") }
-    var userGreatestDistance by remember { mutableStateOf("") }
+    var userAllDistances by remember { mutableStateOf(Pair("", "")) }
 
     userMostPhotos = userMostPhotos()
     userLeastPhotos = userLeastPhotos()
+    userAllDistances = userDistances()
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
             text = "Here are your Trip Statistics!",
@@ -87,7 +91,7 @@ fun TripStatisticsContent(context: Context) {
     }
     Row(horizontalArrangement = Arrangement.Center, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
-            text = "TESTER",
+            text = "${userAllDistances.first}",
             modifier = Modifier.padding(28.dp, 20.dp, 28.dp, 0.dp).fillMaxWidth(1f),
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
@@ -154,6 +158,69 @@ fun userLeastPhotos(): String {
     return userLeastPhotos
 }
 
+fun userDistances(): Pair<String, String> {
+    var userFriends = currentTrip.friends?.split(",")
+    Log.d("userFriends","userFriends are: $userFriends")
+    val userPoints = listOf(
+        LatLng(42.2808, 83.7430),
+        LatLng(43.6532, 79.3832),
+        LatLng(51.1215, 114.0076),
+        LatLng(51.0899, 115.3441),
+        LatLng(51.1784, 115.5708)
+    )
+    var maxDist = 0.0
+    var maxUser = ""
+    var minDist = 0.0
+    var minUser = ""
+    var allPoints = listOf(
+        userPoints,
+        //currentTrip.friendOneImageLocation
+        //currentTrip.friendTwoImageLocation
+    )
+    for (i in 0 until allPoints.size - 1){
+        if (allPoints[i] == null){
+            continue
+        }
+        var dist = calculateDistance(allPoints[i])
+        if (dist > maxDist){
+            maxDist = dist
+            maxUser?.let {
+                maxUser = if (i == 0) {
+                    "dan2"
+                } else ({
+                    maxUser = userFriends?.get(i-1) ?: ""
+                }).toString()
+            }
+        }
+        if (dist < minDist){
+            minDist = dist
+            minUser?.let {
+                minUser = if (i == 0) {
+                    "dan2"
+                } else ({
+                    minUser = userFriends?.get(i-1) ?: ""
+                }).toString()
+            }
+        }
+    }
+    return Pair(maxUser, minUser)
+}
+
+fun calculateDistance(pts: List<LatLng>): Double {
+    var totalDistance = 0.0
+    for (i in 0 until pts.size - 1){
+        val startPoint = Location("locationA")
+        startPoint.latitude = pts[i].latitude
+        startPoint.longitude = pts[i].longitude
+
+        val endPoint = Location("locationB")
+        endPoint.latitude = pts[i+1].latitude
+        endPoint.longitude = pts[i+1].longitude
+
+        totalDistance += startPoint.distanceTo(endPoint)
+    }
+    return totalDistance
+}
 
 
 
