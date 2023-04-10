@@ -121,13 +121,13 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
         verticalArrangement = Arrangement.Top
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                //TO DO: Add function call to new composable function that defines weather button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    //TO DO: Add function call to new composable function that defines weather button
 //                WeatherButton(
 //                    context = context,
 //                    navController = navController,
@@ -135,127 +135,141 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 //                    tripId = "3",
 //                    destination = "${currentTrip.destination}"
 //                )
-                IconButton(onClick = {
-                    showWeather = !showWeather
-                }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.weather),
-                        contentDescription = "Weather",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                }
+                    IconButton(onClick = {
+                        showWeather = !showWeather
+                    }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.weather),
+                            contentDescription = "Weather",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
 
-                Text("Weather", color = Color.White)
-            }
-            if (showWeather){
-                WeatherView(
-                    context = context,
-                    navController = navController,
-                    customModifier = Modifier,
-                    tripID = "3",
-                    destination = "${currentTrip.destination}",
-                    startDate = "${currentTrip.startDate}",
-                    endDate = "${currentTrip.endDate}"
-                )
-                Log.e("Weather", "SHOWING WEATHER")
-            }
-            IconButton(onClick = {
-                navController.navigate("SpotifyView")
-            }) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painter = painterResource(id = R.drawable.spotify),
-                        contentDescription = "Spotify",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text("Spotify", color = Color.White)
+                    Text("Weather", color = Color.White)
                 }
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                if (showWeather){
+                    WeatherView(
+                        context = context,
+                        navController = navController,
+                        customModifier = Modifier,
+                        tripID = "3",
+                        destination = "${currentTrip.destination}",
+                        startDate = "${currentTrip.startDate}",
+                        endDate = "${currentTrip.endDate}"
+                    )
+                    Log.e("Weather", "SHOWING WEATHER")
+                }
                 IconButton(onClick = {
-                    val intent = Intent(context, MapsActivity::class.java)
-                    context.startActivity(intent)
+                    navController.navigate("SpotifyView")
                 }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.map),
-                        contentDescription = "Map",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(id = R.drawable.spotify),
+                            contentDescription = "Spotify",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Text("Spotify", color = Color.White)
+                    }
                 }
-                Text("Map", color = Color.White)
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                IconButton(onClick = {
-                    showSlideshow = !showSlideshow
-                }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.slideshow),
-                        contentDescription = "Slideshow",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                }
-                Text("Slideshow", color = Color.White)
-            }
-            IconButton(onClick = {
-                Log.d("CompletedTripView", "this will eventually navigate to stats page")
-            }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painter = painterResource(id = R.drawable.statistics),
-                        contentDescription = "Statistics",
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text("Stats", color = Color.White)
+                    IconButton(onClick = {
+                        val intent = Intent(context, MapsActivity::class.java)
+                        context.startActivity(intent)
+                    }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.map),
+                            contentDescription = "Map",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    Text("Map", color = Color.White)
                 }
-            }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(onClick = {
+                        showSlideshow = !showSlideshow
+                    }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.slideshow),
+                            contentDescription = "Slideshow",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    Text("Slideshow", color = Color.White)
+                }
+                IconButton(onClick = {
+                    navController.navigate("TripStatisticsView")
+                }) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(id = R.drawable.statistics),
+                            contentDescription = "Statistics",
+                            modifier = Modifier.size(48.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Text("Stats", color = Color.White)
+                    }
+                }
         }
 
         Row( modifier = Modifier.weight(1f, false)) {
             if (showSlideshow) {
-                if (tripImagesAndFriendImages.size > 0) {
-                    Card(
-                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        AutoSlidingCarousel(
-                            itemsCount = tripImagesAndFriendImages.size,
-                            itemContent = { index ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(tripImagesAndFriendImages[index].URI)
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.height(250.dp)
-                                )
-                            }
-                        )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Button(
+                        modifier = Modifier.padding(0.dp,10.dp,0.dp,0.dp),
+                        onClick = {
+                            navController.navigate("SlideshowEditView")
+                        }) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("Edit Slideshow", color = Color.White)
+                        }
                     }
-                } else {
-                    Card(
-                        modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        AutoSlidingCarousel(
-                            itemsCount = images.size,
-                            itemContent = { index ->
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(images[index])
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.height(250.dp)
-                                )
-                            }
-                        )
+                    if (tripImagesAndFriendImages.size > 0) {
+                        Card(
+                            modifier = Modifier.padding(10.dp, 110.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = tripImagesAndFriendImages.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(tripImagesAndFriendImages[index].URI)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
+                    } else {
+                        Log.d("running", "running in wrong one")
+                        Card(
+                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = images.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(images[index])
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
+
+
             } else {
                 // photo grid appears
                 val imageUris = currentTrip.imageURIs
@@ -314,6 +328,10 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 fun CompletedTripView(context: Context, navController: NavHostController, customModifier: Modifier, tripId: String?) {
     ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = { CompletedTripContent(context, navController) })
 }
+
+
+
+
 
 
 

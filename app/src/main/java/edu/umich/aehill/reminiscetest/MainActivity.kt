@@ -111,6 +111,9 @@ class MainActivity : ComponentActivity() {
                 { navBackStackEntry ->
                     WeatherView(this@MainActivity, navController, reusableModifier, "3", navBackStackEntry.arguments?.getString("destination"),navBackStackEntry.arguments?.getString("startDate"),navBackStackEntry.arguments?.getString("endDate"))
                 }
+                composable("SlideshowEditView"){
+                    SlideshowView(this@MainActivity, navController, reusableModifier)
+                }
 
             }
             }
