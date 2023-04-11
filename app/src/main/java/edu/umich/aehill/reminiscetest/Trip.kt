@@ -16,10 +16,13 @@ class Trip(var tripId: String? = null,
            var destination: String? = null,
            var startDate: String? = null,
            var endDate: String? = null,
-           var ownerUsername: String? = null,
            var description: String? = null,
            var friends: String? = "",
+<<<<<<< Updated upstream
            var thumbnailURI: String? = "",
+=======
+           var spotifyPlaylistId: String? = null,
+>>>>>>> Stashed changes
            tripFriend1Images: MutableList<TripImage>? = null,
            tripFriend2Images: MutableList<TripImage>? = null,
            tripImages: MutableList<TripImage>? = null,
