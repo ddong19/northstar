@@ -37,7 +37,8 @@ class WeatherApiViewModel : ViewModel() {
     val weatherDataEnd: LiveData<Pair<Double, Double>> = _weatherDataEnd
 
     fun getWeatherData(destination: String?, startDate: String?, callback: () -> Unit) {
-        val url = "https://api.weatherapi.com/v1/history.json?key=b719ff8edde944efbff13846231104&q=$destination&dt=$startDate"
+        val url = "https://api.weatherapi.com/v1/history.json?key=3452a2a700ef444980c22811231104&q=$destination&dt=$startDate"
+        Log.d("destination Start Date", "$startDate")
 
         val client = OkHttpClient()
 
@@ -72,7 +73,9 @@ class WeatherApiViewModel : ViewModel() {
     }
 
     fun getWeatherDataEnd(destination: String?, startDate: String?, callback: () -> Unit) {
-        val url = "https://api.weatherapi.com/v1/history.json?key=b719ff8edde944efbff13846231104&q=$destination&dt=$startDate"
+        val url = "https://api.weatherapi.com/v1/history.json?key=3452a2a700ef444980c22811231104&q=$destination&dt=$startDate"
+        Log.d("destination Weather", "$destination")
+        Log.d("destination Start Date", "$startDate")
 
         val client = OkHttpClient()
 
@@ -409,21 +412,6 @@ fun DisplayWeatherContent(context: Context, destination: String?, startDate: Str
 }
 
 
-////Helper function that generates a list of localDates between start date and end date
-//fun generateDates(startDate: String?, endDate: String?): List<LocalDate> {
-//    val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-//    var date = LocalDate.parse(startDate, formatter)
-//    val endDateParsed = LocalDate.parse(endDate, formatter)
-//    val dates = mutableListOf<LocalDate>()
-//
-//    while (!date.isAfter(endDateParsed)) {
-//        dates.add(date)
-//        date = date.plusDays(1)
-//    }
-//
-//    return dates
-//}
-
 fun formatDateForDisplay(inputDate: String?): String {
     val month = inputDate?.substring(0, 2)
     val day = inputDate?.substring(2, 4)
@@ -468,20 +456,3 @@ fun WeatherView(
     )
 }
 
-
-//fun WeatherView(context: Context, navController: NavHostController, customModifier: Modifier, tripID: String?, destination: String?, startDate: String?, endDate: String?) {
-////    ScaffoldBack(context = context, navController = navController, customModifier = customModifier, content = {
-//    DisplayWeatherContent(context, tripID, destination, startDate, endDate)
-////        FloatingActionButton(
-////            backgroundColor = Color(0xFFFFC107),
-////            contentColor = Color(0xFF00FF00),
-////            modifier = Modifier.padding(310.dp, 520.dp, 8.dp, 8.dp),
-////
-////            onClick = {
-////                navController.navigate("CompletedTripView/$tripID")
-////            }
-////        ) {
-////            Icon(Icons.Default.ArrowBack, "back")
-////        }
-////    })
-//}

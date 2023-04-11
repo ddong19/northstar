@@ -8,12 +8,14 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -26,12 +28,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
-
+import edu.umich.aehill.reminiscetest.SpotifyStore.currentSpotify
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SpotifyView(context: Context, navController: NavHostController, customModifier: Modifier) {
+
+
     BackHandler {
         navController.popBackStack()
     }
@@ -86,15 +90,21 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            var text = "Spotify!"
+            if(currentSpotify.playlistName != null){
+                text = currentSpotify.playlistName!!
+            }
+
             Text(
-                text = "Spotify!",
+                text = text,
                 fontSize = 30.sp,
                 color = Color.White,
             )
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            val songs = listOf(
+            // this is so dumb why is there no ?? operator
+            var hardcodedSongs = listOf(
                 "Song 1",
                 "Song 2",
                 "Song 3",
@@ -102,35 +112,41 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
                 "Song 5"
             )
 
-            songs.forEach { song ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = song,
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    Button(
-                        onClick = { /* Play song */ },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(end = 8.dp)
+            LazyColumn( modifier = Modifier.fillMaxSize(),
+            ){
+                currentSpotify.songs?.forEach { song ->
+                    item (
                     ) {
-                        Text(
-                            text = "▶",
-                            fontSize = 24.sp,
-                            color = Color.White
-                        )
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically){
+                            Text(
+                                text = song.name,
+                                color = Color.White,
+                                fontSize = 18.sp,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            Button(
+                                onClick = { /* Play song */ },
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray.copy(alpha = 0.5f)),
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .padding(end = 8.dp)
+                            ) {
+                                Text(
+                                    text = "▶",
+                                    fontSize = 24.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
                     }
                 }
+
             }
+
 
             Spacer(modifier = Modifier.height(24.dp))
             Button(
@@ -186,22 +202,10 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
                 label = { Text("Current Trip") }, // Change the label to "Airplane"
                 selected = false,
                 onClick = {
-                    Log.d("ScaffoldBack/Navigate to CompletedTripView", "tripid is ${currentTrip.tripId}")
+                   // Log.d("ScaffoldBack/Navigate to CompletedTripView", "tripid is ${currentTrip.tripId}")
                     navController.navigate("CompletedTripView/$currentTrip.tripId")
 
                 }
-            )
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = "Settings",
-                        tint = Color.White // Apply the white color tint
-                    )
-                },
-                label = { Text("Settings") },
-                selected = false,
-                onClick = { navController.navigate("settings") }
             )
         }
     }
