@@ -74,7 +74,8 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                 .crossfade(enable = true)
                 .build(),
             contentDescription = "Avatar Image",
-            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(158.dp),
+            contentScale = ContentScale.Fit,
         )
         Log.d("destination", "${currentTrip.destination}")
         Text(
