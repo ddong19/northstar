@@ -32,7 +32,7 @@ object TripStore {
 
         Log.d("TripStore/updateCurrentTrip", "update current trip called")
 
-        val nFields = 8
+        val nFields = 9
 
         val url = serverUrl+"/getalltrips/"+userId
 
