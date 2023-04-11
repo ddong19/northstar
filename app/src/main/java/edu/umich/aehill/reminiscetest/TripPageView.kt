@@ -103,6 +103,21 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
             fontSize = 55.sp,
             textAlign = TextAlign.Right
         )
+        val jsonObj = mapOf(
+            "trip_id" to currentTrip.tripId,
+            "thumbnail_uri" to thumbnailUri,
+        )
+        var serverUrl = "https://34.75.243.151"
+        val postRequestThumb = JsonObjectRequest(
+            Request.Method.POST,
+            serverUrl+"/posthumbnail/", JSONObject(jsonObj),
+            {
+                Log.d("posThumbnail", "thumbnail data posted to ${currentTrip.tripId}!")
+            },
+            { error -> Log.e("postImage", error.localizedMessage ?: "JsonObjectRequest error") }
+        )
+        queue.add(postRequestThumb)
+
     }
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val context = LocalContext.current
