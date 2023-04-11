@@ -177,6 +177,8 @@ def get_token():
     token = json_result["access_token"]
     return token
 
+# https://open.spotify.com/playlist/0qber30AnP7EpENFD93KIm?si=9ca0b77ad27c46e5
+# example call for playlist above: https://ubuntu@34.75.243.151/getspotifyplaylist/0qber30AnP7EpENFD93KIm
 def getspotifyplaylist(request, playlistID):
     if request.method != 'GET':
         return HttpResponse(status=404)
@@ -279,4 +281,3 @@ def deleteimage(request):
 #     response['deleted_data'] = data
 #     return JsonResponse(response)
 
-# https://open.spotify.com/playlist/7ymfS4lhUr5E13AWmQzbuU?si=d99de69e613f41c4
