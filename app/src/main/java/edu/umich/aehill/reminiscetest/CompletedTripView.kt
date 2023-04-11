@@ -69,18 +69,8 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
         Spacer(modifier = Modifier.height(24.dp))
         AsyncImage(
-            modifier = Modifier
-                .padding(start = 50.dp)
-                .size(100.dp)
-                .clickable {
-                    photoPicker.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
-                    )
-                },
             model = ImageRequest.Builder(LocalContext.current)
-                .data(thumbnailUri)
+                .data(currentTrip.thumbnailUri)
                 .crossfade(enable = true)
                 .build(),
             contentDescription = "Avatar Image",

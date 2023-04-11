@@ -49,7 +49,7 @@ object TripStore {
 
                         currentTrip = Trip(tripId = tripEntry[0].toString(), userId = tripEntry[1].toString(),
                         destination = tripEntry[2].toString(), startDate = tripEntry[3].toString(), endDate = tripEntry[4].toString(),
-                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString())
+                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString(), thumbnailUri = tripEntry[8].toString())
 
                         Log.d("TripStore/updateCurrentTrip", "current trip id has been updated to " + currentTrip.tripId.toString())
                         Log.d("TripStore/updateCurrentTrip", tripEntry.toString())
