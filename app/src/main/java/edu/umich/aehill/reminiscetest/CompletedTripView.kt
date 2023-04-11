@@ -68,14 +68,14 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
         Spacer(modifier = Modifier.height(24.dp))
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(currentTrip.thumbnailUri)
-                .crossfade(enable = true)
-                .build(),
-            contentDescription = "Avatar Image",
-            contentScale = ContentScale.Crop,
-        )
+//        AsyncImage(
+//            model = ImageRequest.Builder(LocalContext.current)
+//                .data(currentTrip.thumbnailUri)
+//                .crossfade(enable = true)
+//                .build(),
+//            contentDescription = "Avatar Image",
+//            contentScale = ContentScale.Crop,
+//        )
         Log.d("destination", "${currentTrip.destination}")
         Text(
             text = currentTrip.destination.toString(),
