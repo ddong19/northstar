@@ -116,9 +116,9 @@ def postthumbnail(request):
 
     cursor = connection.cursor()
     insert_stmt = (
-    "UPDATE trips"
-    "SET thumbnail = %s" 
-    "WHERE trip_id = %s"
+    "UPDATE trips "
+    "SET thumbnail = %s " 
+    "WHERE trip_id = %s "
     "RETURNING *;"
     )
     data = (thumbnail_uri, trip_id)
