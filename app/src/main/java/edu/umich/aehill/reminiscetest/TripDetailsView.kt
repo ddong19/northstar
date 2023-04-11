@@ -106,7 +106,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
             colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
             label = {
-                Text("Playlist Link", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
+                Text("Playlist ID", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
             }
         )
     }
