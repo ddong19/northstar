@@ -151,8 +151,6 @@ fun DisplayWeatherContent(context: Context, destination: String?, startDate: Str
         val weatherDataEnd = weatherStateEnd.collectAsState().value
         Log.e("DisplayWeatherContent START", weatherDataStart.toString())
         Log.e("DisplayWeatherContent END", weatherDataEnd.toString())
-        // Add the weather data for the current date to the list
-//        weatherDataList.add(weatherData)
 
     Box(
         contentAlignment = Alignment.Center,
@@ -411,7 +409,6 @@ fun DisplayWeatherContent(context: Context, destination: String?, startDate: Str
 
 }
 
-
 fun formatDateForDisplay(inputDate: String?): String {
     val month = inputDate?.substring(0, 2)
     val day = inputDate?.substring(2, 4)
@@ -438,7 +435,6 @@ fun WeatherView(
 ) {
     Scaffold(
         topBar = {
-            // Your existing top bar code here
         },
         content = {
             Box(
