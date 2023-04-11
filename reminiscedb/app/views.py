@@ -80,10 +80,6 @@ def posttrip(request):
 def getalltrips(request, user_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
-    
-    # json_data = json.loads(request.body)
-    # user_id_request = json_data['user_id']
-
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id))
@@ -106,6 +102,32 @@ def gettripdata(request, trip_id):
 
     response = {}
     response['trip_data'] = data
+    return JsonResponse(response)
+
+# # POST THUMBNAIL
+@csrf_exempt
+def postthumbnail(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id = json_data['trip_id']
+    thumbnail_uri = json_data['thumbnail_uri']
+
+    cursor = connection.cursor()
+    insert_stmt = (
+    "UPDATE trips"
+    "SET thumbnail = %s" 
+    "WHERE trip_id = %s"
+    "RETURNING *;"
+    )
+    data = (thumbnail_uri, trip_id)
+    cursor.execute(insert_stmt, data)
+
+    data = cursor.fetchall()
+
+    response = {}
+    response['completed_request'] = data
     return JsonResponse(response)
 
 @csrf_exempt
@@ -213,35 +235,6 @@ def deleteimage(request):
     response = {}
     response['deleted_data'] = data
     return JsonResponse(response)
-
-
-
-
-
-# # POST THUMBNAIL
-# @csrf_exempt
-# def postthumbnail(request):
-#     if request.method != 'POST':
-#         return HttpResponse(status=404)
-
-#     json_data = json.loads(request.body)
-#     trip_id = json_data['trip_id']
-#     user_id = json_data['user_id']
-#     thumbnail_uri = json_data['thumbnail_uri']
-
-#     cursor = connection.cursor()
-#     insert_stmt = (
-#     "INSERT INTO thumbnail (trip_id, user_id, thumbnail_uri) "
-#     "VALUES (%s, %s, %s) RETURNING *;"
-#     )
-#     data = (trip_id, user_id, thumbnail_uri)
-#     cursor.execute(insert_stmt, data)
-
-#     data = cursor.fetchall()
-
-#     response = {}
-#     response['completed_request'] = data
-#     return JsonResponse(response)
 
 
 # # GET THUMBNAIL
