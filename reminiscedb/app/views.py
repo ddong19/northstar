@@ -188,7 +188,9 @@ def getspotifyplaylist(request, playlistID):
     result = get(url, headers=headers)
     json_result = json.loads(result.content)
 
-    return json_result
+    response = {}
+    response['data'] = json_result
+    return JsonResponse(response)
 
 @csrf_exempt
 def deleteimage(request):
