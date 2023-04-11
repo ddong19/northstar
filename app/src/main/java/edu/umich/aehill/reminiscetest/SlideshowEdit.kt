@@ -27,13 +27,14 @@ import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
+import edu.umich.aehill.reminiscetest.TripStore.deleteImage
 import kotlin.collections.*
 
 
 
 @Composable
 @SuppressLint("UnrememberedMutableState")
-fun deleteImageRow(bitmap: Bitmap, image: TripImage) {
+fun deleteImageRow(context: Context, bitmap: Bitmap, image: TripImage) {
     var buttonText by remember { mutableStateOf("Delete Photo") }
     Row(
         modifier = Modifier
@@ -49,14 +50,16 @@ fun deleteImageRow(bitmap: Bitmap, image: TripImage) {
                 .padding(4.dp), // add padding between images,
             contentScale = ContentScale.Fit
         )
-        Button(
-            onClick = {
-                Log.d("deleting photo", "photo deleted!")
-                Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
-                currentTrip.imageURIs?.remove(image)
-                Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
-                buttonText = "Deleted!"
-            }
+         Button(
+             onClick = {
+                 Log.d("deleting photo", "photo deleted!")
+                 Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
+                 // call to the backend to delete the image w the particular URI from the backend as well
+                 deleteImage(context, image)
+                 currentTrip.imageURIs?.remove(image)
+                 Log.d("imageURI size", "${currentTrip.imageURIs?.size}")
+                 buttonText = "Deleted!"
+             }
         ) {
             Text(text = buttonText)
         }
@@ -95,7 +98,7 @@ fun SlideshowEditContent(context: Context) {
                     bitmaps.add(newBitmap)
                     newBitmap
                 }
-                deleteImageRow(bitmap = bitmap, imageUris[index])
+                deleteImageRow(context, bitmap = bitmap, imageUris[index])
                 index += 1
             }
         }

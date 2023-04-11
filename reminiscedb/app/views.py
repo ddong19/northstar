@@ -80,10 +80,6 @@ def posttrip(request):
 def getalltrips(request, user_id):
     if request.method != 'GET':
         return HttpResponse(status=404)
-    
-    # json_data = json.loads(request.body)
-    # user_id_request = json_data['user_id']
-
 
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM trips WHERE user_id = {} ORDER BY trip_id DESC;'.format(user_id))
@@ -106,6 +102,32 @@ def gettripdata(request, trip_id):
 
     response = {}
     response['trip_data'] = data
+    return JsonResponse(response)
+
+# # POST THUMBNAIL
+@csrf_exempt
+def postthumbnail(request):
+    if request.method != 'POST':
+        return HttpResponse(status=404)
+
+    json_data = json.loads(request.body)
+    trip_id = json_data['trip_id']
+    thumbnail_uri = json_data['thumbnail_uri']
+
+    cursor = connection.cursor()
+    insert_stmt = (
+    "UPDATE trips "
+    "SET thumbnail = %s " 
+    "WHERE trip_id = %s "
+    "RETURNING *;"
+    )
+    data = (thumbnail_uri, trip_id)
+    cursor.execute(insert_stmt, data)
+
+    data = cursor.fetchall()
+
+    response = {}
+    response['completed_request'] = data
     return JsonResponse(response)
 
 @csrf_exempt
@@ -177,18 +199,22 @@ def get_token():
     token = json_result["access_token"]
     return token
 
-def getspotifyplaylist(request, playlist_id):
+# https://open.spotify.com/playlist/0qber30AnP7EpENFD93KIm?si=9ca0b77ad27c46e5
+# example call for playlist above: https://ubuntu@34.75.243.151/getspotifyplaylist/0qber30AnP7EpENFD93KIm
+def getspotifyplaylist(request, playlistID):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
     # https://developer.spotify.com/documentation/web-api/reference/get-playlist
-    url = "https://api.spotify.com/v1/playlists/{}".format(playlist_id)
+    field = "fields=owner.id,tracks.items.track.name,name"
+    url = "https://api.spotify.com/v1/playlists/{}".format(playlistID)
     headers = {"Authorization": "Bearer " + get_token()}
-
-    result = get(url, headers=headers)
+    result = get(url, headers=headers, fields=field)
     json_result = json.loads(result.content)
 
-    return json_result
+    response = {}
+    response['data'] = json_result
+    return JsonResponse(response)
 
 @csrf_exempt
 def deleteimage(request):
@@ -200,10 +226,51 @@ def deleteimage(request):
 
     cursor = connection.cursor()
     insert_stmt = (
-    "DELETE FROM images WHERE image_uri = image_uri RETURNING *;"
+    "DELETE FROM images WHERE image_uri = %s RETURNING *;"
     )
 
-    cursor.execute(insert_stmt, image_uri)
+    cursor.execute(insert_stmt, (image_uri,))
     data = cursor.fetchall()
 
-    return JsonResponse(data)
+    response = {}
+    response['deleted_data'] = data
+    return JsonResponse(response)
+
+
+# # GET THUMBNAIL
+# def getthumbnail(request, trip_id):
+#     if request.method != 'GET':
+#         return HttpResponse(status=404)
+
+#     cursor = connection.cursor()
+#     cursor.execute('SELECT * FROM thumbnail WHERE trip_id = {};'.format(trip_id))
+#     data = cursor.fetchall()
+
+#     response = {}
+#     response['thumbnail_data'] = data
+#     return JsonResponse(response)
+
+# # EDIT THUMBNAIL
+# # insert_stmt = ("UPDATE courses SET published_date = '2020-08-01' WHERE course_id = 3;")
+
+# # DELETE THUMBNAIL
+# @csrf_exempt
+# def deletethumbnail(request):
+#     if request.method != 'POST':
+#         return HttpResponse(status=404)
+
+#     json_data = json.loads(request.body)
+#     thumbnail_uri = json_data['thumbnail_uri']
+
+#     cursor = connection.cursor()
+#     insert_stmt = (
+#     "DELETE FROM thumbnail WHERE thumbnail_uri = %s RETURNING *;"
+#     )
+
+#     cursor.execute(insert_stmt, (thumbnail_uri,))
+#     data = cursor.fetchall()
+
+#     response = {}
+#     response['deleted_data'] = data
+#     return JsonResponse(response)
+

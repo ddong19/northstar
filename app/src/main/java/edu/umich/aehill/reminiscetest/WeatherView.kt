@@ -109,13 +109,14 @@ class WeatherApiViewModel : ViewModel() {
 }
 
 @Composable
-fun DisplayWeatherContent(context: Context, tripID: String?, destination: String?, startDate: String?, endDate: String?) {
+fun DisplayWeatherContent(context: Context, destination: String?, startDate: String?, endDate: String?) {
     Log.e("GetWeather", "DISPLAYING WEATHER CONTENT")
         val startDateDisplay = formatDateForDisplay(startDate)
         val endDateDisplay = formatDateForDisplay(endDate)
 
         val formattedStartDateApi = formatDateForApi(startDate)
         val formattedEndDateApi = formatDateForApi(endDate)
+
 // Initializes a viewModel for obtaining weatherAPI information
         val weatherApiViewModel = viewModel<WeatherApiViewModel>()
         val weatherLiveDataStart = weatherApiViewModel.weatherDataStart
@@ -443,7 +444,6 @@ fun WeatherView(
     context: Context,
     navController: NavHostController,
     customModifier: Modifier,
-    tripID: String?,
     destination: String?,
     startDate: String?,
     endDate: String?
@@ -462,7 +462,7 @@ fun WeatherView(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-                DisplayWeatherContent(context, tripID, destination, startDate, endDate)
+                DisplayWeatherContent(context, destination, startDate, endDate)
             }
         }
     )

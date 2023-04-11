@@ -109,10 +109,10 @@ class MainActivity : ComponentActivity() {
                     arguments = listOf(navArgument("destination") { type = NavType.StringType }, navArgument("startDate") { type = NavType.StringType }, navArgument("endDate") { type = NavType.StringType })
                 )
                 { navBackStackEntry ->
-                    WeatherView(this@MainActivity, navController, reusableModifier, "3", navBackStackEntry.arguments?.getString("destination"),navBackStackEntry.arguments?.getString("startDate"),navBackStackEntry.arguments?.getString("endDate"))
+                    WeatherView(this@MainActivity, navController, reusableModifier, navBackStackEntry.arguments?.getString("destination"),navBackStackEntry.arguments?.getString("startDate"),navBackStackEntry.arguments?.getString("endDate"))
                 }
                 composable("SlideshowEditView"){
-                    SlideshowView(this@MainActivity, navController, reusableModifier)
+                    SlideshowEditView(this@MainActivity, navController, reusableModifier)
                 }
 
             }

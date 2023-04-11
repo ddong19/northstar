@@ -32,7 +32,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     var tripEndDate by remember { mutableStateOf("") }
     var tripFriend1 by remember { mutableStateOf("") }
     var tripFriend2 by remember { mutableStateOf("") }
-    val friendMenuOptions = listOf("alannaemmrie", "ritikas", "jonhuber")
+    val friendMenuOptions = listOf("alannaemmrie", "ritikas", "jhuber")
     var menu1Expanded by remember { mutableStateOf(false) }
     var menu2Expanded by remember { mutableStateOf(false) }
 
@@ -40,7 +40,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
             text = "Enter your trip details!",
-            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
+            modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp).fillMaxWidth(1f),
             fontSize = 25.sp,
             textAlign = TextAlign.Center,
             color = Color.White
@@ -263,6 +263,7 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 contentDescription = "Right Arrow",
                 colorFilter = ColorFilter.tint(Color.White), // Make the arrow gray
                 modifier = Modifier.size(48.dp)
+
             )
         }
     }

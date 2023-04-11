@@ -19,10 +19,10 @@ object TripStore {
 
     private fun getCorrespondingFriendTripID(friendUsername: String): Int {
         return when (friendUsername) {
-            "alannaemmrie" -> 272
-            "jhuber" -> 279
+            "alannaemmrie" -> 387
+            "jhuber" -> 389
             else -> { // ritikas
-                280
+                388
             }
         }
     }
@@ -49,7 +49,7 @@ object TripStore {
 
                         currentTrip = Trip(tripId = tripEntry[0].toString(), userId = tripEntry[1].toString(),
                         destination = tripEntry[2].toString(), startDate = tripEntry[3].toString(), endDate = tripEntry[4].toString(),
-                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString())
+                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString(), thumbnailURI = tripEntry[8].toString())
 
                         Log.d("TripStore/updateCurrentTrip", "current trip id has been updated to " + currentTrip.tripId.toString())
                         Log.d("TripStore/updateCurrentTrip", tripEntry.toString())
@@ -139,6 +139,7 @@ object TripStore {
     private fun getImagesForTripFriend(context: Context, friendUsername: String, isFriendOne: Boolean){
 
         var tripId = getCorrespondingFriendTripID(friendUsername)
+        Log.d("friendID", "FRIEND USERNAME IS: "+ friendUsername)
         Log.d("getimagesfortripfriends", "trip id is " + tripId)
 
         val url = serverUrl+"/gettripimages/"+tripId
@@ -219,6 +220,29 @@ object TripStore {
             queue = newRequestQueue(context)
         }
         queue.add(postRequest)    }
+
+    // delete image from db
+    fun deleteImage(context: Context, image:TripImage) {
+        val jsonObj = mapOf(
+            "image_uri" to image.URI
+        )
+
+        Log.e("TripStore/deleteImage", "Deleting image now!")
+
+        val postRequest = JsonObjectRequest(
+            Request.Method.POST,
+            serverUrl+"/deleteimage/", JSONObject(jsonObj),
+            {
+                Log.d("deleteImage", "image deleted!")
+            },
+            { error -> Log.e("deleteImage", error.localizedMessage ?: "JsonObjectRequest error") }
+        )
+
+        if (!this::queue.isInitialized) {
+            queue = newRequestQueue(context)
+        }
+        queue.add(postRequest)
+    }
 
 
 }
