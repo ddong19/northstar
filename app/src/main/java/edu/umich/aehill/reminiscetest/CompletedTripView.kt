@@ -76,6 +76,7 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
 //            contentDescription = "Avatar Image",
 //            contentScale = ContentScale.Crop,
 //        )
+
         Log.d("destination", "${currentTrip.destination}")
         Text(
             text = currentTrip.destination.toString(),
