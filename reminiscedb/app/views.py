@@ -206,10 +206,13 @@ def getspotifyplaylist(request, playlistID):
         return HttpResponse(status=404)
 
     # https://developer.spotify.com/documentation/web-api/reference/get-playlist
-    field = "fields=owner.id,tracks.items.track.name,name"
+    # field = "fields=owner.id,tracks.items.track.name,name"
     url = "https://api.spotify.com/v1/playlists/{}".format(playlistID)
-    headers = {"Authorization": "Bearer " + get_token()}
-    result = get(url, headers=headers, fields=field)
+    headers = {
+        "Authorization": "Bearer " + get_token(),
+        "fields": "owner.id,tracks.items.track.name,name"
+        }
+    result = get(url, headers=headers)
     json_result = json.loads(result.content)
 
     response = {}
