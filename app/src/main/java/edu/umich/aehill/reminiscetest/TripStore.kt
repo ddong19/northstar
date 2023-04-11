@@ -50,11 +50,8 @@ object TripStore {
 
                         currentTrip = Trip(tripId = tripEntry[0].toString(), userId = tripEntry[1].toString(),
                         destination = tripEntry[2].toString(), startDate = tripEntry[3].toString(), endDate = tripEntry[4].toString(),
-<<<<<<< Updated upstream
-                        ownerUsername = tripEntry[5].toString(), description = tripEntry[7].toString(), friends = tripEntry[7].toString(), thumbnailURI = tripEntry[8].toString())
-=======
                         spotifyPlaylistId = tripEntry[5].toString(), description = tripEntry[6].toString(), friends = tripEntry[7].toString())
->>>>>>> Stashed changes
+
 
                         Log.d("TripStore/updateCurrentTrip", "current trip id has been updated to " + currentTrip.tripId.toString())
                         Log.d("TripStore/updateCurrentTrip", "current spotify playlist id is ${currentTrip.spotifyPlaylistId}")
