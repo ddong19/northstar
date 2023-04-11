@@ -67,6 +67,9 @@ def posttrip(request):
     trip_description = json_data['trip_description']
 
     cursor = connection.cursor()
+
+    if trip_spotify == '':
+        trip_spotify = None
     
     insert_stmt = (
     "INSERT INTO trips (user_id, trip_destination, trip_start, trip_end, trip_spotify, trip_people, trip_description) "
@@ -116,10 +119,10 @@ def postthumbnail(request):
 
     cursor = connection.cursor()
     insert_stmt = (
-    "UPDATE trips "
-    "SET thumbnail = %s " 
-    "WHERE trip_id = %s "
-    "RETURNING *;"
+        "UPDATE trips "
+        "SET thumbnail = %s " 
+        "WHERE trip_id = %s "
+        "RETURNING *;"
     )
     data = (thumbnail_uri, trip_id)
     cursor.execute(insert_stmt, data)
@@ -199,6 +202,7 @@ def get_token():
     token = json_result["access_token"]
     return token
 
+# https://open.spotify.com/playlist/37i9dQZF1DX8IzjtXj8ThV?si=62a694ac201146f6
 # https://open.spotify.com/playlist/0qber30AnP7EpENFD93KIm?si=9ca0b77ad27c46e5
 # example call for playlist above: https://ubuntu@34.75.243.151/getspotifyplaylist/0qber30AnP7EpENFD93KIm
 def getspotifyplaylist(request, playlistID):
