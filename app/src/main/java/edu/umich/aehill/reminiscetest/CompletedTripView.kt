@@ -144,7 +144,6 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                     context = context,
                     navController = navController,
                     customModifier = Modifier,
-                    tripID = "3",
                     destination = "${currentTrip.destination}",
                     startDate = "${currentTrip.startDate}",
                     endDate = "${currentTrip.endDate}"
