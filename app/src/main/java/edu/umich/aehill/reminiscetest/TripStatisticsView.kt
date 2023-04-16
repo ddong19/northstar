@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
+import edu.umich.aehill.reminiscetest.UserStore.users
 
 @Composable
 fun TripStatisticsContent(context: Context) {
@@ -100,7 +101,7 @@ fun TripStatisticsContent(context: Context) {
 
 fun userPhotos(): Pair<String, String> {
     var userFriends = currentTrip.friends?.split(",")?.toMutableList()
-    userFriends?.add(0, currentUser.username)
+    users.currentUser?.let { userFriends?.add(0, it.username) }
     Log.d("userFriends","userFriends are: $userFriends")
     var mostPhotos = 0
     var mostUser = ""
@@ -128,7 +129,7 @@ fun userPhotos(): Pair<String, String> {
 
 fun userDistances(): Pair<String, String> {
     var userFriends = currentTrip.friends?.split(",")?.toMutableList()
-    userFriends?.add(0, currentUser.username)
+    users.currentUser?.let { userFriends?.add(0, it.username) }
     Log.d("userFriends","userFriends are: $userFriends")
     val userPoints = listOf(
         LatLng(42.2808, 83.7430),
