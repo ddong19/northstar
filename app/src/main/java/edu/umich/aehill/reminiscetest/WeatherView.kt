@@ -72,10 +72,10 @@ class WeatherApiViewModel : ViewModel() {
         })
     }
 
-    fun getWeatherDataEnd(destination: String?, startDate: String?, callback: () -> Unit) {
-        val url = "https://api.weatherapi.com/v1/history.json?key=3452a2a700ef444980c22811231104&q=$destination&dt=$startDate"
+    fun getWeatherDataEnd(destination: String?, endDate: String?, callback: () -> Unit) {
+        val url = "https://api.weatherapi.com/v1/history.json?key=3452a2a700ef444980c22811231104&q=$destination&dt=$endDate"
         Log.d("destination Weather", "$destination")
-        Log.d("destination Start Date", "$startDate")
+        Log.d("destination Start Date", "$endDate")
 
         val client = OkHttpClient()
 
