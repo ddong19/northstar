@@ -5,14 +5,11 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.android.volley.toolbox.Volley.newRequestQueue
 import edu.umich.aehill.reminiscetest.SpotifyStore.updateCurrentSpotify
 import org.json.JSONArray
 import org.json.JSONException
-import edu.umich.aehill.reminiscetest.Trip
 import org.json.JSONObject
-import edu.umich.aehill.reminiscetest.UserStore
 
 object TripStore {
     var currentTrip = Trip()
