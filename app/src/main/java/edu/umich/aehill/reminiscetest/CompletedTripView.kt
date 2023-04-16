@@ -12,7 +12,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
-import edu.umich.aehill.reminiscetest.UserStore.users
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -40,6 +39,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
+import edu.umich.aehill.reminiscetest.UserStore.users
+
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class)
@@ -95,6 +96,13 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     var showSlideshow by remember { mutableStateOf(false) }
     var showWeather by remember { mutableStateOf(false) }
 
+    // THIS WAS FOR ERROR TESTING - IT IS NOT HARDCODED AND IS NEVER USED
+    val images = listOf(
+        "https://cdn.pixabay.com/photo/2023/03/11/07/36/bird-7843879_1280.jpg",
+        "https://cdn.pixabay.com/photo/2023/03/13/18/09/red-tulips-7850506_1280.jpg",
+        "https://cdn.pixabay.com/photo/2023/03/14/11/57/flowers-7852176_1280.jpg",
+        "https://cdn.pixabay.com/photo/2023/03/14/12/41/ornamental-cherry-7852285_1280.jpg",
+    )
 
     val tripImagesAndFriendImages = mutableListOf<TripImage>()
 
@@ -226,6 +234,28 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalContext.current)
                                             .data(tripImagesAndFriendImages[index].URI)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.height(250.dp)
+                                    )
+                                }
+                            )
+                        }
+                    } else {
+                        // This is for error testing and should never run, that is why it has hard
+                        // coded images in it
+                        Log.d("running", "running in wrong one")
+                        Card(
+                            modifier = Modifier.padding(10.dp, 150.dp, 8.dp, 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            AutoSlidingCarousel(
+                                itemsCount = images.size,
+                                itemContent = { index ->
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(images[index])
                                             .build(),
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop,
