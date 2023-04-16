@@ -32,9 +32,9 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
     var tripEndDate by remember { mutableStateOf("") }
     var tripFriend1 by remember { mutableStateOf("") }
     var tripFriend2 by remember { mutableStateOf("") }
-    val friendMenuOptions = listOf("alannaemmrie", "ritikas", "jhuber")
     var menu1Expanded by remember { mutableStateOf(false) }
     var menu2Expanded by remember { mutableStateOf(false) }
+    val friendMenuOptions = getUserMenuOptions(tripFriend1, tripFriend2)
 
 
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
@@ -272,6 +272,23 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
 
 
 }
+
+fun getUserMenuOptions(friendOne : String = "", friendTwo : String = "") : MutableList<String> {
+
+    var options = mutableListOf<String>()
+
+    UserStore.users.allUsers?.forEach { user ->
+        var newUsernameString = user.username
+        if(newUsernameString != UserStore.users.currentUser?.username &&
+                newUsernameString != friendOne &&
+                newUsernameString != friendTwo){
+            options = (options + newUsernameString) as MutableList
+        }
+    }
+
+    return options
+}
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -282,6 +299,7 @@ fun TripDetailView(context: Context, navController: NavHostController, customMod
         }
     )
 }
+
 
 
 /* inspired by https://stackoverflow.com/questions/68468942/how-to-apply-a-mask-date-mm-dd-yyyy-in-textfield-with-jetpack-compose

@@ -100,7 +100,7 @@ fun TripStatisticsContent(context: Context) {
 
 fun userPhotos(): Pair<String, String> {
     var userFriends = currentTrip.friends?.split(",")?.toMutableList()
-    userFriends?.add(0, currentUser.username)
+    UserStore.users.currentUser?.let { userFriends?.add(0, it.username) }
     Log.d("userFriends","userFriends are: $userFriends")
     var mostPhotos = 0
     var mostUser = ""
@@ -128,7 +128,7 @@ fun userPhotos(): Pair<String, String> {
 
 fun userDistances(): Pair<String, String> {
     var userFriends = currentTrip.friends?.split(",")?.toMutableList()
-    userFriends?.add(0, currentUser.username)
+    UserStore.users.currentUser?.let { userFriends?.add(0, it.username) }
     Log.d("userFriends","userFriends are: $userFriends")
     val userPoints = listOf(
         LatLng(42.2808, 83.7430),
