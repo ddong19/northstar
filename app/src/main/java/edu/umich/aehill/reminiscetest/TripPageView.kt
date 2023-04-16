@@ -42,6 +42,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
+import edu.umich.aehill.reminiscetest.UserStore.users
 import edu.umich.aehill.reminiscetest.TripStore.updateCurrentTrip
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 import org.json.JSONObject
@@ -55,12 +56,12 @@ fun TripPageContent(context: Context, navController: NavHostController, destinat
     LaunchedEffect(Unit) {
         if (isLaunching) {
             isLaunching = false
-            updateCurrentTrip(context, 3) // user id is 3
+            updateCurrentTrip(context, users.currentUser?.userId!!.toInt())
         }
     }
 
 
-    val user_id = 3
+
     val queue = Volley.newRequestQueue(context)
     var thumbnailUri: Any? by remember { mutableStateOf(R.drawable.baseline_add_circle_outline_24) }
     val photoPicker = rememberLauncherForActivityResult(

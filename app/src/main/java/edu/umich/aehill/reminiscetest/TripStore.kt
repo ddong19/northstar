@@ -5,11 +5,15 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.android.volley.toolbox.Volley.newRequestQueue
 import edu.umich.aehill.reminiscetest.SpotifyStore.updateCurrentSpotify
 import org.json.JSONArray
 import org.json.JSONException
+import edu.umich.aehill.reminiscetest.Trip
 import org.json.JSONObject
+import edu.umich.aehill.reminiscetest.UserStore.users
+
 
 object TripStore {
     var currentTrip = Trip()
@@ -20,8 +24,9 @@ object TripStore {
         return when (friendUsername) {
             "alannaemmrie" -> 387
             "jhuber" -> 389
-            else -> { // ritikas
-                388
+            "ritikas" -> 388
+            else -> { // dan2
+                497
             }
         }
     }
@@ -198,7 +203,7 @@ object TripStore {
     fun postNewTrip(context: Context, startDate: String, endDate: String, destination: String, spotifyUsername: String,
                         description: String, friends: String) {
         val jsonObj = mapOf(
-            "user_id" to 3, // dummy user
+            "user_id" to users.currentUser?.userId!!.toInt(),
             "trip_destination" to destination,
             "trip_start" to startDate,
             "trip_end" to endDate,

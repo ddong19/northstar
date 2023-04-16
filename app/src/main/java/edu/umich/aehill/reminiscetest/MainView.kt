@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import edu.umich.aehill.reminiscetest.UserStore.users
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -28,7 +29,7 @@ fun MainView(context: Context, navController: NavHostController, customModifier:
     LaunchedEffect(Unit) {
         if (isLaunching) {
             isLaunching = false
-            TripStore.updateCurrentTrip(context, 3) // user id is 3
+            TripStore.updateCurrentTrip(context, users.currentUser?.userId!!.toInt())
         }
     }
 

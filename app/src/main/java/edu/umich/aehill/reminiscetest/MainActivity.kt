@@ -72,9 +72,6 @@ class MainActivity : ComponentActivity() {
                 composable("MainView") {
                     MainView(this@MainActivity, navController, reusableModifier)
                 }
-                composable("Settings"){
-                    Settings(this@MainActivity, navController, reusableModifier)
-                }
                 composable("TripDetailsView"){
                     TripDetailView(this@MainActivity, navController, reusableModifier)
                 }
@@ -92,9 +89,6 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("TravelMapView"){
                     TravelMapView(this@MainActivity, navController, reusableModifier)
-                }
-                composable("SlideshowView"){
-                    SlideshowView(this@MainActivity, navController, reusableModifier)
                 }
                 composable("LoginView"){
                     LoginView(this@MainActivity, navController, loginViewModifier)

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
+import edu.umich.aehill.reminiscetest.UserStore.users
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -41,7 +42,7 @@ fun ScaffoldBack(context: Context, navController: NavHostController, customModif
                 },
                 actions = {
                     Text(
-                        text = "Daniel Dong", // Replace with the desired text
+                        text = "${users.currentUser?.username}", // Replace with the desired text
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold, // Add this property to make the text bold
                         color = Color.White

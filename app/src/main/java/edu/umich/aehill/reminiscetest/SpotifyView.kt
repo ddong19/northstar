@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import edu.umich.aehill.reminiscetest.SpotifyStore.currentSpotify
+import edu.umich.aehill.reminiscetest.UserStore.users
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -68,7 +69,7 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
                 },
                 actions = {
                     Text(
-                        text = "Daniel Dong", // Replace with the desired text
+                        text = "${users.currentUser?.username}",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold, // Add this property to make the text bold
                         color = Color.White
@@ -102,15 +103,6 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
             )
 
             Spacer(modifier = Modifier.height(50.dp))
-
-            // this is so dumb why is there no ?? operator
-            var hardcodedSongs = listOf(
-                "Song 1",
-                "Song 2",
-                "Song 3",
-                "Song 4",
-                "Song 5"
-            )
 
             LazyColumn( modifier = Modifier.fillMaxSize(),
             ){
