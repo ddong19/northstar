@@ -14,37 +14,40 @@ object UserStore {
     private lateinit var queue: RequestQueue
     val serverUrl = "https://34.75.243.151"
 
-    fun getUserIdFromUsername(users : MutableList<SingleUser>?, username: String) : String {
-
+    fun getUserIdFromUsername(users: MutableList<SingleUser>?, username: String): String? {
         // loop over & create users arr
         if (users != null) {
             for (item in users) {
-                if(item.username == username){
+                if (item.username == username) {
                     return item.userId
                 }
             }
         }
 
-        return "" // throw error here -- theoretically shouldnt happen unless they try to log in
-        // with a bad username
-
+        return null
     }
 
     // change Users current user to be the logged in user
-    fun updateCurrentUser(context: Context, username: String){
-
+    fun updateCurrentUser(context: Context, username: String): String? {
         var allUsersArr = users.allUsers
 
         // go through & find the correct user id for the user name
         var currentUserUserId = getUserIdFromUsername(allUsersArr, username)
 
-        var newCurrentUser = SingleUser(userId = currentUserUserId, username = username)
+        if (currentUserUserId != null) {
+            var newCurrentUser = SingleUser(userId = currentUserUserId, username = username)
+            users = Users(currentUser = newCurrentUser, usersArr = allUsersArr)
 
-        users = Users(currentUser = newCurrentUser, usersArr = allUsersArr)
+            Log.d("updateCurrentUser", "logged in username is now ${users.currentUser?.username} and the id is ${users.currentUser?.userId}")
+        }
 
-        Log.d("updateCurrentUser", "logged in username is now ${users.currentUser?.username} and the id is ${users.currentUser?.userId}")
-
+        return currentUserUserId
     }
+
+    fun usercheck(input: String?): Boolean {
+        return input != null
+    }
+
 
     fun getAllUsers(context: Context){
 

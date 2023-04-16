@@ -39,6 +39,8 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import android.graphics.Color as AndroidColor
 import edu.umich.aehill.reminiscetest.UserStore.updateCurrentUser
+import edu.umich.aehill.reminiscetest.UserStore.getUserIdFromUsername
+import edu.umich.aehill.reminiscetest.UserStore.usercheck
 
 
 var typedInUserName : String = ""
@@ -174,7 +176,16 @@ fun LoginColumn(context: Context, navController: NavHostController, customModifi
             Button(onClick = {
                 //context.doLogin()
                 updateCurrentUser(context, typedInUserName)
-                navController.navigate("MainView")
+                val user1 = updateCurrentUser(context, typedInUserName)
+
+                if (usercheck(user1)) {
+                    // Navigate to the next screen only if the currentUser is not null
+                    navController.navigate("MainView")
+                } else {
+                    // Display a toast with an error message
+                    navController.navigate("LoginView")
+                    Toast.makeText(context, "Invalid Username or password", Toast.LENGTH_SHORT).show()
+                }
             }, modifier = Modifier.fillMaxWidth()) {
                 Text("SIGN IN", Modifier.padding(vertical = 8.dp))
             }
