@@ -20,7 +20,7 @@ object TripStore {
 
     private fun getCorrespondingFriendTripID(friendUsername: String): Int {
         return when (friendUsername) {
-            "alannaemmrie" -> 387
+            "alannaemmrie" -> 502
             "jhuber" -> 389
             "ritikas" -> 388
             else -> { // dan2
