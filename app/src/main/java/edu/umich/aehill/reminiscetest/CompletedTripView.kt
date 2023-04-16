@@ -68,14 +68,16 @@ fun CompletedTripContent(context: Context, navController: NavHostController) {
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(1f)) {
         Spacer(modifier = Modifier.height(24.dp))
-//        AsyncImage(
-//            model = ImageRequest.Builder(LocalContext.current)
-//                .data(currentTrip.thumbnailUri)
-//                .crossfade(enable = true)
-//                .build(),
-//            contentDescription = "Avatar Image",
-//            contentScale = ContentScale.Crop,
-//        )
+        Log.d("THUMBNAIL URI COMPLETED: ", "${currentTrip.thumbnailURI}")
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(currentTrip.thumbnailUri)
+                .crossfade(enable = true)
+                .build(),
+            contentDescription = "Avatar Image",
+            modifier = Modifier.size(78.dp),
+            contentScale = ContentScale.Crop,
+        )
 
         Log.d("destination", "${currentTrip.destination}")
         Text(
