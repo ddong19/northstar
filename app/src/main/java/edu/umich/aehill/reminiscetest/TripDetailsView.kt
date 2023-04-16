@@ -169,24 +169,6 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 }
             }
         }
-
-        /*
-
-        OutlinedTextField(
-            value = tripFriend1,
-            onValueChange = {
-                tripFriend1 = it
-                Log.e("tripdetailsview", "value entered into tripfriend1")
-            },
-            modifier = Modifier.padding(8.dp, 20.dp, 8.dp, 0.dp).fillMaxWidth(1f),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
-            label = {
-                Text("Friend Username 1", Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp), textAlign=TextAlign.Start, fontSize = 18.sp)
-            }
-        )
-
-         */
     }
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         /*
@@ -250,12 +232,6 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             if(tripFriend2 != "" && tripFriend2 != tripFriend1){ // account for empty & duplicates
                 tripFriendsString += "," + tripFriend2
             }
-
-            /*
-            Log.d("TripDetailsView/PostTripDetails",
-                "friends being added to trip are: $tripFriendsString"
-            )
-             */
             
             postNewTrip(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription, tripFriendsString)
             navController.navigate("TripPageView/$tripLocation")
@@ -269,8 +245,6 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
             )
         }
     }
-
-
 }
 
 fun getUserMenuOptions(friendOne : String = "", friendTwo : String = "") : MutableList<String> {
