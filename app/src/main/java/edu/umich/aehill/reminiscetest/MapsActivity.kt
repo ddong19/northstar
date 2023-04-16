@@ -1,9 +1,7 @@
 package edu.umich.aehill.reminiscetest
 
 import android.graphics.Color
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory

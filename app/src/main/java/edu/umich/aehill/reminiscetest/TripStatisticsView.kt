@@ -2,7 +2,6 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Point
 import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement

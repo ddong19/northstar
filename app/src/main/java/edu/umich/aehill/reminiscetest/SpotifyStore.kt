@@ -5,7 +5,6 @@ import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -14,7 +13,6 @@ object SpotifyStore{
     var currentSpotify = Spotify()
     private lateinit var queue: RequestQueue
     private const val serverUrl = "https://34.75.243.151"
-    //https://34.75.243.151/getspotifyplaylist/5UqpxDYAkDN1TLhqUUdAlO
 
     fun updateCurrentSpotify(context: Context, playlistId: String?) {
         Log.d("updateCurrentSpotify", "playlist id is ${playlistId}")

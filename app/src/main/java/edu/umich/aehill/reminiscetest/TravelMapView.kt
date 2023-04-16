@@ -2,7 +2,6 @@ package edu.umich.aehill.reminiscetest
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,9 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import android.content.pm.PackageManager
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import edu.umich.aehill.reminiscetest.ui.theme.ScaffoldBack
 

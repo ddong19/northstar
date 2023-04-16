@@ -7,7 +7,7 @@ class SpotifySong(var artist: String, var name: String, var songImageURI: String
 
 class Spotify(var playlistName: String? = null, var songs: MutableList<SpotifySong>? = null) {}
 
-// for updating trip images & friend trip images arrs
+// for updating song arr
 class SpotifyPropDelegate private constructor ():
     ReadWriteProperty<Any?, MutableList<SpotifySong>?> {
     private var _value: MutableList<SpotifySong>? = null

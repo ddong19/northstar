@@ -202,22 +202,3 @@ fun SpotifyView(context: Context, navController: NavHostController, customModifi
         }
     }
 }
-
-//// DAMN: https://open.spotify.com/album/4eLPsYPBmXABThSJ821sqY
-//IconButton(onClick = {
-//    try{
-//        val uri = Uri.parse("https://open.spotify.com/album/4eLPsYPBmXABThSJ821sqY")
-//        val intent = Intent(Intent.ACTION_VIEW, uri)
-//        context.startActivity(intent)
-//    }
-//    catch(e : ActivityNotFoundException){
-//    }
-//}) {
-//    Image(
-//        painter = painterResource(id = R.drawable.spotify),
-//        contentDescription = "Spotify",
-//        modifier = Modifier.size(48.dp),
-//        contentScale = ContentScale.Fit
-//    )
-//}
-//Text("Spotify", color = Color.White)
