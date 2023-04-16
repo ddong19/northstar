@@ -30,4 +30,5 @@ urlpatterns = [
    path('gettripimages/<int:trip_id>', views.gettripimages, name='gettripimages'),
    path('getspotifyplaylist/<str:playlistID>', views.getspotifyplaylist, name='getspotifyplaylist'),
    path('deleteimage/', views.deleteimage, name='deleteimage'),
+   path('getuserid/<str:username>', views.getuserid, name='getuserid'),
 ]

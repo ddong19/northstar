@@ -241,6 +241,24 @@ def deleteimage(request):
     return JsonResponse(response)
 
 
+def getuserid(request, username):
+    if request.method != 'GET':
+        return HttpResponse(status=404)
+
+    # json_data = json.loads(request.body)
+    # user_id_request = json_data['user_id']
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT id FROM users WHERE username = {};'.format(username))
+    data = cursor.fetchall()
+
+    response = {}
+    response['id'] = data
+    return JsonResponse(response)
+
+
+
+
 # # GET THUMBNAIL
 # def getthumbnail(request, trip_id):
 #     if request.method != 'GET':
