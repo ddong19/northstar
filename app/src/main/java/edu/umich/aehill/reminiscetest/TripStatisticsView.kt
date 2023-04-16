@@ -27,12 +27,10 @@ import edu.umich.aehill.reminiscetest.TripStore.currentTrip
 
 @Composable
 fun TripStatisticsContent(context: Context) {
-    var userMostPhotos by remember { mutableStateOf("") }
-    var userLeastPhotos by remember { mutableStateOf("") }
+    var userAllPhotos by remember { mutableStateOf(Pair("", "")) }
     var userAllDistances by remember { mutableStateOf(Pair("", "")) }
 
-    userMostPhotos = userMostPhotos()
-    userLeastPhotos = userLeastPhotos()
+    userAllPhotos = userPhotos()
     userAllDistances = userDistances()
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
@@ -54,7 +52,7 @@ fun TripStatisticsContent(context: Context) {
     }
     Row(horizontalArrangement = Arrangement.Center, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
-            text = "$userMostPhotos",
+            text = "${userAllPhotos.first}",
             modifier = Modifier.padding(28.dp, 25.dp, 28.dp, 0.dp).fillMaxWidth(1f),
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
@@ -73,7 +71,7 @@ fun TripStatisticsContent(context: Context) {
     }
     Row(horizontalArrangement = Arrangement.Center, modifier=Modifier.fillMaxWidth(1f)) {
         Text(
-            text = "$userLeastPhotos",
+            text = "${userAllPhotos.second}",
             modifier = Modifier.padding(28.dp, 25.dp, 28.dp, 0.dp).fillMaxWidth(1f),
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
@@ -100,66 +98,37 @@ fun TripStatisticsContent(context: Context) {
     }
 }
 
-fun userMostPhotos(): String {
-    var userFriends = currentTrip.friends?.split(",")
+fun userPhotos(): Pair<String, String> {
+    var userFriends = currentTrip.friends?.split(",")?.toMutableList()
+    userFriends?.add(0, currentUser.username)
     Log.d("userFriends","userFriends are: $userFriends")
-    var userMostPhotos = ""
-    if (currentTrip.imageURIs?.size!! > currentTrip.friendOneImageURIs?.size!!) {
-        if (currentTrip.imageURIs?.size!! > currentTrip.friendTwoImageURIs?.size!!) {
-            // user has most photos
-            userMostPhotos = "dan2"
-        } else {
-            // friend2 has most photos
-            if (userFriends!!.size > 1) {
-                userMostPhotos = userFriends[1]
-            }
+    var mostPhotos = 0
+    var mostUser = ""
+    var leastPhotos = 0
+    var leastUser = ""
+    val allUserPhotos = listOf(currentTrip.imageURIs?.size,
+                               currentTrip.friendOneImageURIs?.size,
+                               currentTrip.friendTwoImageURIs?.size)
+    for (i in allUserPhotos.indices){
+        if (allUserPhotos[i] == null){
+            continue
         }
-    } else if (currentTrip.friendOneImageURIs?.size!! > currentTrip.friendTwoImageURIs?.size!!) {
-        // friend1 has most photos
-        if (userFriends!!.isNotEmpty()) {
-            userMostPhotos = userFriends[0]
+        val user = userFriends?.get(i)
+        if (user != null && allUserPhotos[i]!! > mostPhotos){
+            mostPhotos = allUserPhotos[i]!!
+            mostUser = user
         }
-    } else {
-        if (userFriends!!.size > 1) {
-            userMostPhotos = userFriends[1]
+        if (user != null && allUserPhotos[i]!! < leastPhotos){
+            leastPhotos = allUserPhotos[i]!!
+            leastUser = user
         }
     }
-
-    Log.d("userMostPhotos", "user with most photos is $userMostPhotos")
-    return userMostPhotos
-}
-fun userLeastPhotos(): String {
-    var userFriends = currentTrip.friends?.split(",")
-    Log.d("userFriends","userFriends are: $userFriends")
-    var userLeastPhotos = ""
-
-    if (currentTrip.imageURIs?.size!! < currentTrip.friendOneImageURIs?.size!!) {
-        if (currentTrip.imageURIs?.size!! < currentTrip.friendTwoImageURIs?.size!!) {
-            // user has most photos
-            userLeastPhotos = "dan2"
-        } else {
-            // friend2 has most photos
-            if (userFriends!!.size > 1) {
-                userLeastPhotos = userFriends[1]
-            }
-        }
-    } else if (currentTrip.friendOneImageURIs?.size!! < currentTrip.friendTwoImageURIs?.size!!) {
-        // friend1 has most photos
-        if (userFriends!!.isNotEmpty()) {
-            userLeastPhotos = userFriends[0]
-        }
-    } else {
-        if (userFriends!!.size > 1) {
-            userLeastPhotos = userFriends[1]
-        }
-    }
-
-    Log.d("userMostPhotos", "user with most photos is $userLeastPhotos")
-    return userLeastPhotos
+    return Pair(mostUser, leastUser)
 }
 
 fun userDistances(): Pair<String, String> {
-    var userFriends = currentTrip.friends?.split(",")
+    var userFriends = currentTrip.friends?.split(",")?.toMutableList()
+    userFriends?.add(0, currentUser.username)
     Log.d("userFriends","userFriends are: $userFriends")
     val userPoints = listOf(
         LatLng(42.2808, 83.7430),
@@ -193,25 +162,18 @@ fun userDistances(): Pair<String, String> {
         if (allPoints[i] == null){
             continue
         }
+        val user = userFriends?.get(i)
         var dist = calculateDistance(allPoints[i])
         if (dist > maxDist){
             maxDist = dist
-            maxUser?.let {
-                maxUser = if (i == 0) {
-                    "dan2"
-                } else ({
-                    maxUser = userFriends?.get(i-1) ?: ""
-                }).toString()
+            if (user != null) {
+                maxUser = user
             }
         }
         if (dist < minDist){
             minDist = dist
-            minUser?.let {
-                minUser = if (i == 0) {
-                    "dan2"
-                } else ({
-                    minUser = userFriends?.get(i-1) ?: ""
-                }).toString()
+            if (user != null) {
+                minUser = user
             }
         }
     }
