@@ -241,7 +241,7 @@ def deleteimage(request):
     return JsonResponse(response)
 
 
-def getuserid(request, username):
+def getallusers(request):
     if request.method != 'GET':
         return HttpResponse(status=404)
 
@@ -249,11 +249,11 @@ def getuserid(request, username):
     # user_id_request = json_data['user_id']
 
     cursor = connection.cursor()
-    cursor.execute('SELECT id FROM users WHERE username = {};'.format(username))
+    cursor.execute('SELECT id,username FROM users;')
     data = cursor.fetchall()
 
     response = {}
-    response['id'] = data
+    response['users'] = data
     return JsonResponse(response)
 
 
