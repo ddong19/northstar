@@ -12,6 +12,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import edu.umich.aehill.reminiscetest.Trip
 import org.json.JSONObject
+import edu.umich.aehill.reminiscetest.UserStore
 
 object TripStore {
     var currentTrip = Trip()

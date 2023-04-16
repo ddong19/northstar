@@ -251,9 +251,11 @@ fun TripDetailsViewContent(context: Context, navController: NavHostController){
                 tripFriendsString += "," + tripFriend2
             }
 
+            /*
             Log.d("TripDetailsView/PostTripDetails",
                 "friends being added to trip are: $tripFriendsString"
             )
+             */
             
             postNewTrip(context, tripStartDate, tripEndDate, tripLocation, spotifyUsername, tripDescription, tripFriendsString)
             navController.navigate("TripPageView/$tripLocation")

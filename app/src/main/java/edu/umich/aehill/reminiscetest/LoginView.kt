@@ -32,14 +32,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.draw.alpha
 import android.util.Log
 import android.view.ViewGroup
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import android.graphics.Color as AndroidColor
+import edu.umich.aehill.reminiscetest.UserStore.updateCurrentUser
 
 
-
+var typedInUserName : String = ""
+fun setUsername(name : String){
+    typedInUserName = name
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,6 +52,15 @@ import android.graphics.Color as AndroidColor
 fun LoginView(context: Context, navController: NavHostController, customModifier: Modifier) {
 
     val videoUri = getVideoUri(context)
+
+    var isLaunching by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (isLaunching) {
+            isLaunching = false
+            UserStore.getAllUsers(context) // user id is 3
+        }
+    }
 
     FancyLoginScreenTheme {
         // A surface container using the 'background' color from the theme
@@ -152,13 +166,14 @@ fun LoginColumn(context: Context, navController: NavHostController, customModifi
             */
             TextInput(InputType.Name, keyboardActions = KeyboardActions(onNext = {
                 passwordFocusRequester.requestFocus()
-            }))
+            }), isUsername = true)
             TextInput(InputType.Password, keyboardActions = KeyboardActions(onDone = {
                 focusManager.clearFocus()
                 context.doLogin()
-            }), focusRequester = passwordFocusRequester)
+            }), focusRequester = passwordFocusRequester, isUsername = false)
             Button(onClick = {
                 //context.doLogin()
+                updateCurrentUser(context, typedInUserName)
                 navController.navigate("MainView")
             }, modifier = Modifier.fillMaxWidth()) {
                 Text("SIGN IN", Modifier.padding(vertical = 8.dp))
@@ -221,13 +236,18 @@ sealed class InputType(
 fun TextInput(
     inputType: InputType,
     focusRequester: FocusRequester? = null,
-    keyboardActions: KeyboardActions
+    keyboardActions: KeyboardActions,
+    isUsername: Boolean
 ) {
     var value by remember { mutableStateOf("") }
 
     TextField(
         value = value,
-        onValueChange = { value = it },
+        onValueChange = {
+            value = it
+            if(isUsername){
+                setUsername(value)
+            } },
         modifier = Modifier
             .fillMaxWidth(),
         leadingIcon = { Icon(imageVector = inputType.icon, contentDescription = null) },
