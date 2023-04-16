@@ -219,9 +219,11 @@ fun getLatLong(context: Context, uri: Uri): Pair<Double, Double>? {
         val exifInterface = ExifInterface(filePath)
         val latLong = FloatArray(2)
         if (exifInterface.getLatLong(latLong)) {
+            // If we're allowed to access the image metadata, this will return the photo coordinates
             return Pair(latLong[0].toDouble(), latLong[1].toDouble())
         }
     }
+    // If we are unable to access image metadata, we'll return (-50, -50) that will let us know
     return Pair(-50.0, -50.0)
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
